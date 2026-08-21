@@ -53,22 +53,21 @@ export default function CallToActionSection() {
           </div>
         </div>
 
-        {/* CTA Actions */}
-        <div className="flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row pt-2">
-          <Link
-            href={isAuthenticated ? '/chat' : '/login'}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 h-12 w-full px-8 text-sm sm:text-base font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/40 active:scale-95 sm:w-auto cursor-pointer"
-          >
-            <span>{isAuthenticated ? 'Open App' : 'Try Free'}</span>
-            <ArrowUpRight className="h-4 w-4" />
-          </Link>
-
+        {/* Base CTA Buttons (Matches User Spec) */}
+        <div className="flex w-full flex-col items-center justify-center gap-2.5 sm:w-auto sm:flex-row pt-2">
           <a
             href="#demo"
-            className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 dark:border-border bg-white/80 dark:bg-card/80 h-12 w-full px-8 text-sm sm:text-base font-semibold text-foreground shadow-xs hover:bg-slate-50 dark:hover:bg-muted transition-colors backdrop-blur-md sm:w-auto cursor-pointer"
+            className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 border border-slate-200/90 dark:border-border text-slate-900 dark:text-white bg-white dark:bg-card h-12 w-full px-6 text-sm sm:text-base font-medium hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 sm:w-auto shadow-xs"
           >
-            <span>Test Sandbox</span>
+            <span>View Plans</span>
           </a>
+
+          <Link
+            href={isAuthenticated ? '/chat' : '/login'}
+            className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 h-12 w-full px-6 text-sm sm:text-base font-medium sm:w-auto shadow-md shadow-slate-900/10 dark:shadow-white/5 active:scale-98"
+          >
+            <span>{isAuthenticated ? 'Open App' : 'Try Free'}</span>
+          </Link>
         </div>
       </div>
     </section>

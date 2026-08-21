@@ -67,22 +67,21 @@ export default function HeroSection() {
             Instant bi-directional WebSocket communication, TanStack Query caching, and role-gated group channels — all in a private, secure workspace built for high-performance team collaboration.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
-            <Link
-              href={isAuthenticated ? '/chat' : '/login'}
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/40 active:scale-95 cursor-pointer"
-            >
-              <span>{isAuthenticated ? 'Open App' : 'Get Started'}</span>
-              <ArrowUpRight className="h-4 w-4" />
-            </Link>
-
+          {/* Base CTA Buttons (Matches User Spec) */}
+          <div className="flex w-full flex-col items-center justify-center gap-2.5 sm:w-auto sm:flex-row pt-3">
             <a
               href="#demo"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 dark:bg-card/80 px-8 py-3.5 text-sm font-semibold text-card-foreground shadow-xs hover:bg-muted transition-colors backdrop-blur-md cursor-pointer"
+              className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 border border-slate-200/90 dark:border-border text-slate-900 dark:text-white bg-white dark:bg-card h-12 w-full px-6 text-sm sm:text-base font-medium hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 sm:w-auto shadow-xs"
             >
-              <span>Try Live Sandbox</span>
+              <span>View Sandbox</span>
             </a>
+
+            <Link
+              href={isAuthenticated ? '/chat' : '/login'}
+              className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 h-12 w-full px-6 text-sm sm:text-base font-medium sm:w-auto shadow-md shadow-slate-900/10 dark:shadow-white/5 active:scale-98"
+            >
+              <span>{isAuthenticated ? 'Open App' : 'Try Free'}</span>
+            </Link>
           </div>
         </div>
 
