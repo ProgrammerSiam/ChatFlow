@@ -212,10 +212,10 @@ export default function ConversationDetailsPanel({
           {/* User Hero Card */}
           <div className="flex flex-col items-center text-center space-y-3 pt-2">
             <div className="relative">
-              <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-bold text-2xl shadow-md">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-bold text-2xl shadow-md">
                 {title.charAt(0).toUpperCase()}
               </div>
-              <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 ring-4 ring-white dark:ring-card" />
+              <span className="absolute bottom-0 right-0 h-4.5 w-4.5 rounded-full bg-emerald-500 ring-4 ring-white dark:ring-card" />
             </div>
 
             <div>

@@ -24,6 +24,7 @@ import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import { User } from '@/types';
 import ConfirmModal from '@/shared/ConfirmModal';
+import CoolTooltip from '@/shared/CoolTooltip';
 
 export default function UserProfileModal() {
   const router = useRouter();
@@ -52,21 +53,6 @@ export default function UserProfileModal() {
     },
     enabled: isProfileOpen,
     staleTime: 10 * 1000,
-  });
-
-  // Health check query
-  const healthQuery = useQuery({
-    queryKey: ['health'],
-    queryFn: async () => {
-      try {
-        const res = await api.getHealth();
-        return res || { status: 'ok' };
-      } catch {
-        return { status: 'unknown' };
-      }
-    },
-    enabled: isProfileOpen,
-    staleTime: 30 * 1000,
   });
 
   // Close on Escape key
@@ -137,8 +123,8 @@ export default function UserProfileModal() {
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-border/60">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 font-bold shadow-2xs">
-              <Sparkles className="h-4.5 w-4.5" />
+            <div className="flex h-9.5 w-9.5 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 font-bold shadow-2xs">
+              <UserIcon className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">
@@ -158,16 +144,20 @@ export default function UserProfileModal() {
         {meQuery.isLoading && !currentUser ? (
           <div className="py-12 flex flex-col items-center justify-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-            <p className="text-xs text-muted-foreground">Loading account profile...</p>
+            <p className="text-xs text-muted-foreground">
+              Loading account profile...
+            </p>
           </div>
         ) : (
           <div className="mt-5 space-y-4">
             {/* Avatar and Name Hero Card */}
-            <div className="flex flex-col items-center text-center space-y-2.5 p-5 bg-purple-50/60 dark:bg-purple-950/20 rounded-2xl border border-purple-100/80 dark:border-purple-900/40">
-              <div className="relative flex h-18 w-18 items-center justify-center rounded-[20px] bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-extrabold text-2xl shadow-md">
-                {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+            <div className="flex flex-col items-center text-center space-y-2.5 p-6 bg-gradient-to-b from-purple-50/80 via-indigo-50/30 to-white/60 dark:from-purple-950/40 dark:via-purple-900/20 dark:to-muted/20 rounded-[28px] border border-purple-100/80 dark:border-purple-800/30 shadow-xs">
+              <div className="relative flex h-18 w-18 items-center justify-center rounded-full bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-extrabold text-2xl shadow-md">
+                {currentUser?.name
+                  ? currentUser.name.charAt(0).toUpperCase()
+                  : 'U'}
                 <span
-                  className={`absolute -bottom-1 -right-1 h-4.5 w-4.5 rounded-full border-3 border-white dark:border-card ${
+                  className={`absolute bottom-0.5 right-0.5 h-4.5 w-4.5 rounded-full border-3 border-white dark:border-card ${
                     isSocketConnected ? 'bg-emerald-500' : 'bg-amber-500'
                   }`}
                   title={isSocketConnected ? 'Socket Connected' : 'Connecting'}
@@ -177,43 +167,53 @@ export default function UserProfileModal() {
                 <h3 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">
                   {currentUser?.name || 'User Profile'}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-500 font-mono mt-0.5">{currentUser?.phone || ''}</p>
+                <p className="text-xs sm:text-sm text-slate-500 font-mono mt-0.5">
+                  {currentUser?.phone || ''}
+                </p>
               </div>
             </div>
 
             {/* Detailed Info List with Increased Height & Larger Text */}
             <div className="space-y-2.5">
               {/* User ID */}
-              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 shadow-2xs">
+              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 ">
                 <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
                   <Key className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
-                  <span className="font-semibold text-xs sm:text-sm">User ID</span>
+                  <span className="font-semibold text-xs sm:text-sm">
+                    User ID
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-slate-900 dark:text-white font-semibold text-xs sm:text-sm max-w-[150px] truncate">
                     {currentUser?._id || 'N/A'}
                   </span>
                   {currentUser?._id && (
-                    <button
-                      onClick={handleCopyId}
-                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-800 dark:hover:text-white cursor-pointer transition-colors"
-                      title="Copy User ID"
+                    <CoolTooltip
+                      content={copied ? 'Copied to clipboard' : 'Copy User ID'}
+                      side="top"
                     >
-                      {copied ? (
-                        <Check className="h-4 w-4 text-emerald-500" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                    </button>
+                      <button
+                        onClick={handleCopyId}
+                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-800 dark:hover:text-white cursor-pointer transition-colors"
+                      >
+                        {copied ? (
+                          <Check className="h-4 w-4 text-emerald-500" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </button>
+                    </CoolTooltip>
                   )}
                 </div>
               </div>
 
               {/* Phone Number */}
-              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 shadow-2xs">
+              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 ">
                 <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
                   <Phone className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
-                  <span className="font-semibold text-xs sm:text-sm">Phone Number</span>
+                  <span className="font-semibold text-xs sm:text-sm">
+                    Phone Number
+                  </span>
                 </div>
                 <span className="font-semibold text-slate-900 dark:text-white font-mono text-xs sm:text-sm">
                   {currentUser?.phone || 'N/A'}
@@ -221,35 +221,15 @@ export default function UserProfileModal() {
               </div>
 
               {/* Registered Since */}
-              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 shadow-2xs">
+              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 ">
                 <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
                   <Calendar className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
-                  <span className="font-semibold text-xs sm:text-sm">Registered Since</span>
+                  <span className="font-semibold text-xs sm:text-sm">
+                    Registered Since
+                  </span>
                 </div>
                 <span className="text-slate-900 dark:text-white font-semibold text-xs sm:text-sm">
                   {formatDate(currentUser?.createdAt)}
-                </span>
-              </div>
-
-              {/* Session Status */}
-              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 shadow-2xs">
-                <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
-                  <ShieldCheck className="h-4.5 w-4.5 text-emerald-500" />
-                  <span className="font-semibold text-xs sm:text-sm">Session Status</span>
-                </div>
-                <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                  ● Bearer JWT Active
-                </span>
-              </div>
-
-              {/* Service Health */}
-              <div className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-white dark:bg-muted/30 border border-slate-200/80 dark:border-border/70 shadow-2xs">
-                <div className="flex items-center gap-3 text-slate-600 dark:text-slate-400">
-                  <Activity className="h-4.5 w-4.5 text-purple-600 dark:text-purple-400" />
-                  <span className="font-semibold text-xs sm:text-sm">Service Health</span>
-                </div>
-                <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                  ● {healthQuery.data?.status === 'ok' ? 'System Operational' : 'Checking...'}
                 </span>
               </div>
             </div>
