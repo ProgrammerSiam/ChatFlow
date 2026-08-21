@@ -23,8 +23,8 @@ export default function HowItWorksSection() {
             <div className="relative z-10 mb-6 overflow-hidden rounded-[28px] p-2 bg-slate-50 dark:bg-card/50 border border-slate-200/80 dark:border-border/60 shadow-xs transition-all duration-300 group-hover:shadow-xl group-hover:border-purple-300/80">
               <div className="relative overflow-hidden rounded-[22px] bg-gradient-to-b from-slate-50 to-purple-50/40 dark:from-card dark:to-purple-950/20 h-[220px] flex items-center justify-center p-6">
                 
-                {/* Purple Cloud Aura */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 rounded-full bg-purple-400/25 blur-3xl pointer-events-none" />
+                {/* Purple Cloud Aura (Emanating from Left) */}
+                <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-purple-400/35 blur-3xl pointer-events-none" />
 
                 {/* Isometric Stacked Cards */}
                 <div className="relative w-full max-w-[240px] flex flex-col items-center justify-center -space-y-4">
@@ -82,8 +82,8 @@ export default function HowItWorksSection() {
             <div className="relative z-10 mb-6 overflow-hidden rounded-[28px] p-2 bg-slate-50 dark:bg-card/50 border border-slate-200/80 dark:border-border/60 shadow-xs transition-all duration-300 group-hover:shadow-xl group-hover:border-purple-300/80">
               <div className="relative overflow-hidden rounded-[22px] bg-gradient-to-b from-slate-50 to-purple-50/40 dark:from-card dark:to-purple-950/20 h-[220px] flex flex-col justify-center p-4">
                 
-                {/* Purple Cloud Aura */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-purple-400/30 blur-3xl pointer-events-none" />
+                {/* Purple Cloud Aura (Emanating from Left) */}
+                <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-purple-400/35 blur-3xl pointer-events-none" />
 
                 {/* Chat Composer Box */}
                 <div className="relative z-10 w-full rounded-2xl bg-white dark:bg-card border border-slate-200/90 dark:border-border/80 p-3.5 shadow-lg shadow-purple-500/5 space-y-3">
@@ -143,8 +143,8 @@ export default function HowItWorksSection() {
             <div className="relative z-10 mb-6 overflow-hidden rounded-[28px] p-2 bg-slate-50 dark:bg-card/50 border border-slate-200/80 dark:border-border/60 shadow-xs transition-all duration-300 group-hover:shadow-xl group-hover:border-purple-300/80">
               <div className="relative overflow-hidden rounded-[22px] bg-gradient-to-b from-slate-50 to-purple-50/40 dark:from-card dark:to-purple-950/20 h-[220px] flex flex-col justify-center gap-2.5 p-4">
                 
-                {/* Purple Cloud Aura */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-purple-400/30 blur-3xl pointer-events-none" />
+                {/* Purple Cloud Aura (Emanating from Left) */}
+                <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-48 h-48 rounded-full bg-purple-400/35 blur-3xl pointer-events-none" />
 
                 {/* Outgoing Prompt Bubble */}
                 <div className="relative z-10 self-end max-w-[88%] rounded-2xl bg-white dark:bg-card border border-purple-200/80 dark:border-purple-800/80 px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-sm">
