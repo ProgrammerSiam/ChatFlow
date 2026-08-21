@@ -1,15 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Info, Users, User as UserIcon } from 'lucide-react';
+import {
+  ArrowLeft,
+  Info,
+  Users,
+  User as UserIcon,
+  PanelRightClose,
+  PanelRightOpen,
+} from 'lucide-react';
 import { useConversations } from '@/hooks/useConversations';
 import { useMessages } from '@/hooks/useMessages';
 import { useSendMessage } from '@/hooks/useSendMessage';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
-import GroupInfoDrawer from './GroupInfoDrawer';
+import ConversationDetailsPanel from './ConversationDetailsPanel';
 import CoolTooltip from '@/shared/CoolTooltip';
 
 export default function ChatPanel({ conversationId }: { conversationId: string }) {
@@ -17,7 +24,10 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
   const { messages, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useMessages(conversationId);
   const { sendMessage, retryMessage, isPending } = useSendMessage(conversationId);
-  const { isGroupInfoOpen, setGroupInfoOpen, setActiveConversationId } = useChatUIStore();
+  const { setActiveConversationId } = useChatUIStore();
+
+  // Show right details panel initially by default on desktop
+  const [showRightPanel, setShowRightPanel] = useState(true);
 
   useEffect(() => {
     setActiveConversationId(conversationId);
@@ -37,78 +47,125 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
     : conversation?.participant?.phone || '';
 
   return (
-    <div className="relative flex-1 flex flex-col h-full rounded-[24px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 shadow-xs overflow-hidden">
-      {/* Top Header */}
-      <header className="h-14 border-b border-slate-100 dark:border-border/50 px-4 flex items-center justify-between bg-white/80 dark:bg-card/80 backdrop-blur-sm text-card-foreground z-10 shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          {/* Back button for mobile */}
-          <Link
-            href="/chat"
-            className="md:hidden p-2 -ml-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Link>
+    <div className="flex-1 flex h-full gap-2 sm:gap-3 overflow-hidden select-none">
+      
+      {/* Middle Main Chat Panel (Reduced width, side-by-side) */}
+      <div className="flex-1 flex flex-col h-full rounded-[24px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 shadow-xs overflow-hidden min-w-0">
+        {/* Top Header */}
+        <header className="h-14 border-b border-slate-100 dark:border-border/50 px-4 flex items-center justify-between bg-white/80 dark:bg-card/80 backdrop-blur-sm text-card-foreground z-10 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Back button for mobile */}
+            <Link
+              href="/chat"
+              className="md:hidden p-2 -ml-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
 
-          <div
-            onClick={() => isGroup && setGroupInfoOpen(!isGroupInfoOpen)}
-            className={`flex items-center gap-3 min-w-0 ${
-              isGroup ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''
-            }`}
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary font-bold text-sm shadow-inner">
-              {isGroup ? (
-                <Users className="h-5 w-5" />
-              ) : title ? (
-                title.charAt(0).toUpperCase()
-              ) : (
-                <UserIcon className="h-4 w-4" />
-              )}
-            </div>
-
-            <div className="min-w-0">
-              <h2 className="text-sm font-semibold truncate leading-tight">{title}</h2>
-              <p className="text-xs text-muted-foreground truncate">{subtitle}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Group Details Toggle */}
-        {isGroup && (
-          <CoolTooltip content="Group Info & Members" side="left">
             <button
-              onClick={() => setGroupInfoOpen(!isGroupInfoOpen)}
-              className={`p-2 rounded-xl border transition-colors ${
-                isGroupInfoOpen
-                  ? 'bg-primary text-primary-foreground border-primary'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted border-border'
+              onClick={() => setShowRightPanel(!showRightPanel)}
+              className="flex items-center gap-3 min-w-0 text-left hover:opacity-85 transition-opacity cursor-pointer"
+            >
+              {/* Header Avatar Squircle */}
+              <div className="relative shrink-0">
+                <div
+                  className={`flex h-10 w-10 items-center justify-center rounded-[14px] font-bold text-xs shadow-2xs ${
+                    isGroup
+                      ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
+                      : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
+                  }`}
+                >
+                  {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
+                </div>
+                {!isGroup && (
+                  <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
+                )}
+              </div>
+
+              <div className="min-w-0">
+                <h2 className="text-sm font-semibold truncate leading-tight text-slate-900 dark:text-white">
+                  {title}
+                </h2>
+                <p className="text-xs text-slate-400 truncate mt-0.5">{subtitle}</p>
+              </div>
+            </button>
+          </div>
+
+          {/* Right Panel Toggle Button */}
+          <CoolTooltip
+            content={
+              showRightPanel
+                ? isGroup
+                  ? 'Hide Group Info'
+                  : 'Hide Profile'
+                : isGroup
+                ? 'Show Group Info'
+                : 'Show Contact Info'
+            }
+            side="left"
+          >
+            <button
+              onClick={() => setShowRightPanel(!showRightPanel)}
+              className={`flex h-9 w-9 items-center justify-center rounded-xl border transition-all cursor-pointer shadow-2xs ${
+                showRightPanel
+                  ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border-purple-200 dark:border-purple-800'
+                  : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted border-slate-200/80 dark:border-border'
               }`}
             >
-              <Info className="h-5 w-5" />
+              {isGroup ? (
+                <Users className="h-4.5 w-4.5" />
+              ) : (
+                <UserIcon className="h-4.5 w-4.5" />
+              )}
             </button>
           </CoolTooltip>
-        )}
-      </header>
+        </header>
 
-      {/* Messages Viewport */}
-      <MessageList
-        messages={messages}
-        isLoading={isLoading}
-        isFetchingNextPage={isFetchingNextPage}
-        hasNextPage={hasNextPage}
-        participants={conversation?.participants}
-        isGroup={isGroup}
-        fetchNextPage={fetchNextPage}
-        onRetryMessage={retryMessage}
-      />
+        {/* Messages Viewport */}
+        <MessageList
+          messages={messages}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
+          hasNextPage={hasNextPage}
+          participants={conversation?.participants}
+          isGroup={isGroup}
+          fetchNextPage={fetchNextPage}
+          onRetryMessage={retryMessage}
+        />
 
-      {/* Message Input Bar */}
-      <MessageInput
-        onSendMessage={sendMessage}
-        disabled={isPending || isLoading}
-      />
+        {/* Message Input Bar */}
+        <MessageInput
+          onSendMessage={sendMessage}
+          disabled={isPending || isLoading}
+        />
+      </div>
 
-      {/* Group Info Drawer */}
-      {conversation && <GroupInfoDrawer conversation={conversation} />}
+      {/* Right Side Info & Profile Panel (Rendered initially on desktop) */}
+      {showRightPanel && conversation && (
+        <div className="hidden lg:flex w-72 xl:w-80 h-full shrink-0 animate-in fade-in slide-in-from-right-4 duration-200">
+          <ConversationDetailsPanel
+            conversation={conversation}
+            onClose={() => setShowRightPanel(false)}
+          />
+        </div>
+      )}
+
+      {/* Mobile / Tablet Overlay Drawer */}
+      {showRightPanel && conversation && (
+        <div className="lg:hidden">
+          <div
+            onClick={() => setShowRightPanel(false)}
+            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
+          />
+          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-sm p-3 flex flex-col">
+            <ConversationDetailsPanel
+              conversation={conversation}
+              onClose={() => setShowRightPanel(false)}
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
