@@ -14,6 +14,7 @@ import {
   Check,
   Activity,
   Loader2,
+  Home,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
