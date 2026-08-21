@@ -11,7 +11,6 @@ import {
   LogOut,
   Sparkles,
   MessageSquarePlus,
-  MoreHorizontal,
 } from 'lucide-react';
 import BrandLogo from '@/shared/BrandLogo';
 import CoolTooltip from '@/shared/CoolTooltip';
@@ -442,9 +441,7 @@ export default function Sidebar() {
                     <span className="text-sm font-medium text-slate-900 dark:text-white truncate">
                       {title}
                     </span>
-                    <span className="flex items-center text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors shrink-0">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </span>
+                    <span className="text-xs text-slate-400 shrink-0">{time}</span>
                   </div>
                   <p className="text-xs text-slate-400 dark:text-slate-500 truncate leading-snug mt-0.5">
                     {subtitle}
