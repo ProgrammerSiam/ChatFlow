@@ -19,9 +19,9 @@ export default function HeroSection() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <section className="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-28 bg-gradient-to-b from-purple-50/70 via-indigo-50/30 to-background dark:from-purple-950/20 dark:via-background dark:to-background">
+    <section className="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-28 bg-[#FAFAFA] dark:bg-background">
       {/* Background ethereal cloud aura */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[650px] w-full max-w-7xl bg-gradient-to-b from-purple-200/40 via-indigo-100/30 to-transparent dark:from-purple-900/15 dark:via-indigo-950/10 dark:to-transparent blur-[140px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[650px] w-full max-w-7xl bg-gradient-to-b from-purple-200/30 via-indigo-100/20 to-transparent dark:from-purple-900/15 dark:via-indigo-950/10 dark:to-transparent blur-[140px] pointer-events-none" />
 
       <div className="container mx-auto px-4 max-w-5xl">
         {/* Top Tag Pill (Matches Design System Spec) */}
@@ -228,7 +228,7 @@ export default function HeroSection() {
           </div>
 
           {/* Smooth, Gradual Bottom Fade Transition */}
-          <div className="absolute -bottom-4 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none z-20" />
+          <div className="absolute -bottom-4 left-0 right-0 h-32 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/60 to-transparent dark:from-background dark:via-background/60 pointer-events-none z-20" />
         </div>
       </div>
     </section>
