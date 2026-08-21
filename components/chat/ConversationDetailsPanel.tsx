@@ -139,12 +139,56 @@ export default function ConversationDetailsPanel({
   const existingParticipantIds = new Set((conversation.participants || []).map((p) => p._id));
   const availableUsersToAdd = users.filter((u) => !existingParticipantIds.has(u._id));
 
-  const handleCopyPhone = (phone?: string) => {
-    if (!phone) return;
-    navigator.clipboard.writeText(phone);
-    setCopiedPhone(true);
-    toast.success('Phone number copied');
-    setTimeout(() => setCopiedPhone(false), 2000);
+  const [copiedContact, setCopiedContact] = useState(false);
+  const [sharedContact, setSharedContact] = useState(false);
+
+  // Real-time Copy Contact/Chat details
+  const handleCopyContact = async (contactName: string, contactPhone?: string) => {
+    const textToCopy = contactPhone ? `${contactName} (${contactPhone})` : contactName;
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(textToCopy);
+        setCopiedContact(true);
+        toast.success(`Copied "${textToCopy}" to clipboard`);
+        setTimeout(() => setCopiedContact(false), 2000);
+      }
+    } catch {
+      toast.error('Failed to copy to clipboard');
+    }
+  };
+
+  // Real-time Share via Web Share API or Clipboard Fallback
+  const handleShareContact = async (contactName: string, contactPhone?: string) => {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+    const shareData = {
+      title: `Chat with ${contactName} on ChatFlow`,
+      text: `Connect with ${contactName}${contactPhone ? ` (${contactPhone})` : ''} on ChatFlow!`,
+      url: shareUrl,
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        setSharedContact(true);
+        toast.success('Shared successfully');
+        setTimeout(() => setSharedContact(false), 2000);
+        return;
+      } catch (err: unknown) {
+        if ((err as Error)?.name === 'AbortError') return; // User closed share sheet
+      }
+    }
+
+    // Fallback: Copy direct chat URL to clipboard
+    try {
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        setSharedContact(true);
+        toast.success('Chat link copied to clipboard');
+        setTimeout(() => setSharedContact(false), 2000);
+      }
+    } catch {
+      toast.error('Failed to copy chat link');
+    }
   };
 
   const handleRename = async () => {
@@ -292,22 +336,30 @@ export default function ConversationDetailsPanel({
               <p className="text-xs text-slate-400 font-mono mt-0.5">{phone || 'Registered User'}</p>
             </div>
 
-            {/* Quick Action Pills */}
+            {/* Quick Action Pills: Real-time Copy & Share */}
             <div className="flex items-center gap-2 pt-1">
               <button
-                onClick={() => handleCopyPhone(phone)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-border bg-slate-50 dark:bg-muted/40 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors cursor-pointer"
+                onClick={() => handleCopyContact(title, phone)}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border transition-all cursor-pointer text-xs font-semibold shadow-2xs ${
+                  copiedContact
+                    ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300'
+                    : 'border-slate-200/80 dark:border-border bg-slate-50 dark:bg-muted/40 hover:bg-slate-100 hover:border-purple-300 text-slate-700 dark:text-slate-200'
+                }`}
               >
-                {copiedPhone ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-                <span>{copiedPhone ? 'Copied' : 'Copy'}</span>
+                {copiedContact ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="h-3.5 w-3.5 text-slate-500" />}
+                <span>{copiedContact ? 'Copied' : 'Copy'}</span>
               </button>
 
               <button
-                onClick={() => toast.success('Profile shared')}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-border bg-slate-50 dark:bg-muted/40 hover:bg-slate-100 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors cursor-pointer"
+                onClick={() => handleShareContact(title, phone)}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border transition-all cursor-pointer text-xs font-semibold shadow-2xs ${
+                  sharedContact
+                    ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300'
+                    : 'border-slate-200/80 dark:border-border bg-slate-50 dark:bg-muted/40 hover:bg-slate-100 hover:border-purple-300 text-slate-700 dark:text-slate-200'
+                }`}
               >
-                <Share2 className="h-3.5 w-3.5" />
-                <span>Share</span>
+                {sharedContact ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Share2 className="h-3.5 w-3.5 text-slate-500" />}
+                <span>{sharedContact ? 'Shared' : 'Share'}</span>
               </button>
             </div>
           </div>
@@ -470,6 +522,33 @@ export default function ConversationDetailsPanel({
           <p className="text-xs text-slate-400">
             {(conversation.participants || []).length} participants • {(conversation.admins || []).length} admin(s)
           </p>
+
+          {/* Quick Action Pills: Group Real-time Copy & Share */}
+          <div className="flex items-center gap-2 pt-1">
+            <button
+              onClick={() => handleCopyContact(conversation.name || 'Group Channel')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border transition-all cursor-pointer text-xs font-semibold shadow-2xs ${
+                copiedContact
+                  ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300'
+                  : 'border-slate-200/80 dark:border-border bg-slate-50 dark:bg-muted/40 hover:bg-slate-100 hover:border-purple-300 text-slate-700 dark:text-slate-200'
+              }`}
+            >
+              {copiedContact ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="h-3.5 w-3.5 text-slate-500" />}
+              <span>{copiedContact ? 'Copied' : 'Copy'}</span>
+            </button>
+
+            <button
+              onClick={() => handleShareContact(conversation.name || 'Group Channel')}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border transition-all cursor-pointer text-xs font-semibold shadow-2xs ${
+                sharedContact
+                  ? 'border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300'
+                  : 'border-slate-200/80 dark:border-border bg-slate-50 dark:bg-muted/40 hover:bg-slate-100 hover:border-purple-300 text-slate-700 dark:text-slate-200'
+              }`}
+            >
+              {sharedContact ? <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> : <Share2 className="h-3.5 w-3.5 text-slate-500" />}
+              <span>{sharedContact ? 'Shared' : 'Share'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Admin Action: Add Members */}
