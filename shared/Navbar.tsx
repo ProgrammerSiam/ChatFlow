@@ -1,14 +1,51 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
 import BrandLogo from '@/shared/BrandLogo';
 
 export default function Navbar() {
   const { isAuthenticated } = useAuthStore();
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+
+    // Track if user scrolled past initial threshold for glassmorphism styling
+    if (latest > 20) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
+
+    // Scrolling down past threshold -> hide navbar
+    if (latest > previous && latest > 100) {
+      setHidden(true);
+    }
+    // Scrolling up -> instantly reveal navbar with spring animation
+    else if (latest < previous) {
+      setHidden(false);
+    }
+  });
 
   return (
-    <header className="sticky top-0 z-50 w-full pt-4 pb-2 px-4">
+    <motion.header
+      variants={{
+        visible: { y: 0, opacity: 1 },
+        hidden: { y: -100, opacity: 0 },
+      }}
+      animate={hidden ? 'hidden' : 'visible'}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 w-full px-4 transition-all duration-300 ${
+        scrolled
+          ? 'py-2.5 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800/70 shadow-sm'
+          : 'pt-4 pb-2 bg-transparent'
+      }`}
+    >
       <div className="container mx-auto flex items-center justify-between max-w-6xl">
         {/* Brand Logo (Matches UI Design System) */}
         <Link href="/" className="inline-flex">
@@ -59,6 +96,7 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }
+

@@ -21,7 +21,7 @@ export default function HeroSection() {
   const { isAuthenticated } = useAuthStore();
 
   return (
-    <section className="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-28 bg-[#FAFAFA] dark:bg-background">
+    <section className="relative overflow-hidden pt-20 pb-16 md:pt-28 md:pb-28 bg-[#FAFAFA] dark:bg-background">
       {/* Background ethereal cloud aura */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[650px] w-full max-w-7xl bg-gradient-to-b from-purple-200/30 via-indigo-100/20 to-transparent dark:from-purple-900/15 dark:via-indigo-950/10 dark:to-transparent blur-[140px] pointer-events-none" />
 
