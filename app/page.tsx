@@ -1,10 +1,10 @@
 import Navbar from '@/shared/Navbar';
 import Footer from '@/shared/Footer';
 import HeroSection from '@/sections/HeroSection';
+import AboutSection from '@/sections/AboutSection';
+import IntuitiveChatFeatures from '@/sections/IntuitiveChatFeatures';
 import LiveDemoSection from '@/sections/LiveDemoSection';
-import FeatureBentoGrid from '@/sections/FeatureBentoGrid';
 import HowItWorksSection from '@/sections/HowItWorksSection';
-import TechStackStrip from '@/sections/TechStackStrip';
 import CtaSection from '@/sections/CtaSection';
 
 export default function HomePage() {
@@ -13,10 +13,10 @@ export default function HomePage() {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
+        <AboutSection />
+        <IntuitiveChatFeatures />
         <LiveDemoSection />
-        <FeatureBentoGrid />
         <HowItWorksSection />
-        <TechStackStrip />
         <CtaSection />
       </main>
       <Footer />

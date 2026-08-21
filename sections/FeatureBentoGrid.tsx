@@ -1,112 +1,162 @@
 'use client';
 
-import {
-  Activity,
-  Zap,
-  Layers,
-  ArrowDownCircle,
-  Users,
-  Search,
-} from 'lucide-react';
-
-const FEATURES = [
-  {
-    icon: Activity,
-    title: 'Real-Time WebSocket Engine',
-    description:
-      'Socket.io client handles bi-directional messaging with automated gap-fill invalidations on reconnection.',
-    badge: 'Socket.IO v4',
-    span: 'md:col-span-2 lg:col-span-8',
-    gradient: 'from-blue-500/10 to-indigo-500/5',
-  },
-  {
-    icon: Zap,
-    title: 'Optimistic UI Dispatch',
-    description:
-      'Zero perceived latency with immediate message append, real-time status transitions, and one-tap retry on failure.',
-    badge: '0ms Perceived Latency',
-    span: 'md:col-span-1 lg:col-span-4',
-    gradient: 'from-amber-500/10 to-orange-500/5',
-  },
-  {
-    icon: ArrowDownCircle,
-    title: 'Smart Auto-Scroll Logic',
-    description:
-      'Auto-scrolls when you are at the bottom, but preserves your reading position when scrolling history with a floating "↓ New message" pill.',
-    badge: 'UX Polish',
-    span: 'md:col-span-1 lg:col-span-4',
-    gradient: 'from-emerald-500/10 to-teal-500/5',
-  },
-  {
-    icon: Layers,
-    title: 'TanStack Server Caching',
-    description:
-      'Reverse infinite queries with cursor pagination, background refetching, and deduped message stream consolidation.',
-    badge: 'TanStack Query v5',
-    span: 'md:col-span-2 lg:col-span-8',
-    gradient: 'from-purple-500/10 to-pink-500/5',
-  },
-  {
-    icon: Users,
-    title: 'Group Admin Management',
-    description:
-      'Permission-gated group administration: rename groups, add or remove members, and promote co-admins securely.',
-    badge: 'Admin Gated',
-    span: 'md:col-span-1 lg:col-span-6',
-    gradient: 'from-cyan-500/10 to-blue-500/5',
-  },
-  {
-    icon: Search,
-    title: 'Fuzzy Discovery & Debounce',
-    description:
-      'Debounced user search with client-side self-exclusion and direct sidebar cache short-circuiting to prevent duplicate network calls.',
-    badge: '300ms Debounced',
-    span: 'md:col-span-1 lg:col-span-6',
-    gradient: 'from-rose-500/10 to-red-500/5',
-  },
-];
+import { ArrowUpRight, Sparkles, Layers, Cpu, ShieldCheck } from 'lucide-react';
 
 export default function FeatureBentoGrid() {
   return (
-    <section id="features" className="py-20 md:py-28">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
-            Engineered for High-Performance Chat
-          </h2>
-          <p className="text-base text-muted-foreground max-w-2xl mx-auto">
-            Every layer from client-side state caching to real-time socket events has been built with production-grade precision.
-          </p>
+    <section id="features" className="py-20 md:py-28 bg-background">
+      <div className="container mx-auto px-4 max-w-6xl space-y-16">
+        {/* Split Header (Matches Screenshot 2) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column Title & Pill Action */}
+          <div className="lg:col-span-6 space-y-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15]">
+              <span className="text-muted-foreground/45 font-bold">ChatFlow:</span> beyond the chat
+            </h2>
+
+            <a
+              href="#demo"
+              className="inline-flex items-center gap-2 rounded-full bg-purple-100 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/40 px-5 py-2.5 text-xs font-semibold text-purple-700 dark:text-purple-300 shadow-xs hover:bg-purple-200 dark:hover:bg-purple-900/60 transition-colors"
+            >
+              <span>Explore Functions</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+
+          {/* Right Column Editorial Description */}
+          <div className="lg:col-span-6 flex items-center">
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+              ChatFlow is your unified real-time workspace, built to remember, organize, and amplify every conversation. It’s an all-in-one platform where advanced WebSockets meet powerful TanStack caching for ultimate workflow efficiency.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
-          {FEATURES.map((feat) => {
-            const Icon = feat.icon;
-            return (
-              <div
-                key={feat.title}
-                className={`${feat.span} group relative rounded-3xl border border-border bg-gradient-to-br ${feat.gradient} p-8 shadow-sm transition-all hover:shadow-xl hover:border-primary/30 flex flex-col justify-between`}
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-card border text-primary shadow-xs group-hover:scale-110 transition-transform">
-                      <Icon className="h-6 w-6" />
-                    </div>
-                    <span className="rounded-full bg-background/80 border px-3 py-1 text-[11px] font-semibold text-muted-foreground backdrop-blur">
-                      {feat.badge}
-                    </span>
-                  </div>
+        {/* 3-Column Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: Full Memory & History (With Floating Visual Pills) */}
+          <div className="group relative rounded-3xl border border-border/80 bg-gradient-to-b from-purple-50/50 via-card to-card dark:from-purple-950/10 dark:via-card dark:to-card p-6 sm:p-7 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+            {/* Visual Top Preview with Floating Tags */}
+            <div className="relative h-44 w-full rounded-2xl bg-gradient-to-tr from-purple-100 via-pink-50 to-indigo-100 dark:from-purple-950/40 dark:via-indigo-950/30 dark:to-purple-900/20 flex items-center justify-center overflow-hidden border border-border/40 mb-6">
+              {/* Organic 3D Abstract Glow */}
+              <div className="absolute h-28 w-28 rounded-full bg-gradient-to-tr from-purple-400 via-pink-400 to-indigo-400 blur-xl opacity-60 group-hover:scale-125 transition-transform duration-500" />
 
-                  <h3 className="text-xl font-bold tracking-tight text-foreground">
-                    {feat.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {feat.description}
-                  </p>
-                </div>
+              {/* Floating Pill 1 */}
+              <div className="absolute top-4 left-6 z-10 flex items-center gap-1.5 rounded-full bg-white/90 dark:bg-card/90 border border-border px-3 py-1 text-[10px] font-bold text-foreground shadow-xs backdrop-blur-md">
+                <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
+                <span>Total archive</span>
               </div>
-            );
-          })}
+
+              {/* Floating Pill 2 */}
+              <div className="absolute bottom-5 right-6 z-10 flex items-center gap-1.5 rounded-full bg-white/90 dark:bg-card/90 border border-border px-3 py-1 text-[10px] font-bold text-foreground shadow-xs backdrop-blur-md">
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
+                <span>Cross-Search</span>
+              </div>
+
+              <div className="relative z-0 h-16 w-16 rounded-full bg-white/30 dark:bg-white/10 backdrop-blur-md flex items-center justify-center text-purple-600 dark:text-purple-300 shadow-inner">
+                <Layers className="h-8 w-8" />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-foreground tracking-tight">
+                Full Memory & History
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Access a complete history of all direct and group chats, active participants, and messages, ensuring you never lose context or valuable output.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 2: Real-Time Engine & Vault */}
+          <div className="group relative rounded-3xl border border-border/80 bg-gradient-to-b from-blue-50/40 via-card to-card dark:from-blue-950/10 dark:via-card dark:to-card p-6 sm:p-7 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+            {/* Visual Header */}
+            <div className="relative h-44 w-full rounded-2xl bg-gradient-to-tr from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-blue-900/20 flex flex-col items-center justify-center p-6 border border-border/40 mb-6 text-center">
+              <div className="h-14 w-14 rounded-2xl bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3 shadow-inner">
+                <Cpu className="h-7 w-7" />
+              </div>
+              <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400">
+                0ms Optimistic Latency
+              </span>
+              <span className="text-[10px] text-muted-foreground mt-0.5">
+                Socket.io Handshake + Zustand Sync
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-foreground tracking-tight">
+                Real-Time Engine & Vault
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Access zero-latency Socket.io communication and securely persist your session and chat states with persistent client-side store hydration.
+              </p>
+            </div>
+          </div>
+
+          {/* Card 3: Personal Chat Curator */}
+          <div className="group relative rounded-3xl border border-border/80 bg-gradient-to-b from-purple-50/40 via-card to-card dark:from-purple-950/10 dark:via-card dark:to-card p-6 sm:p-7 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden">
+            {/* Visual Header */}
+            <div className="relative h-44 w-full rounded-2xl bg-gradient-to-tr from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-950/40 dark:via-pink-950/30 dark:to-purple-900/20 flex flex-col items-center justify-center p-6 border border-border/40 mb-6 text-center">
+              <div className="h-14 w-14 rounded-2xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3 shadow-inner">
+                <ShieldCheck className="h-7 w-7" />
+              </div>
+              <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400">
+                Smart Auto-Curation
+              </span>
+              <span className="text-[10px] text-muted-foreground mt-0.5">
+                Role Gating & Live Sorting
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="text-lg font-bold text-foreground tracking-tight">
+                Personal Chat Curator
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                ChatFlow organizes conversations, active participant lists, unread counters, and live group admin roles automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Metrics & Architecture Strip (Matches Screenshot 2) */}
+        <div className="pt-10 border-t border-border/70 flex flex-col lg:flex-row items-center justify-between gap-8">
+          {/* Left Large Metric */}
+          <div className="space-y-1 text-center lg:text-left">
+            <div className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+              3,572,401,988
+            </div>
+            <p className="text-xs text-muted-foreground max-w-sm">
+              Real-time socket packets processed with sub-10ms delivery across connected clients
+            </p>
+          </div>
+
+          {/* Right Clean Tech Ecosystem Logos */}
+          <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-xs font-bold text-muted-foreground/80">
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <span className="h-2 w-2 rounded-full bg-purple-500" />
+              <span>Socket.IO v4</span>
+            </div>
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <span className="h-2 w-2 rounded-full bg-blue-500" />
+              <span>TanStack Query v5</span>
+            </div>
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <span className="h-2 w-2 rounded-full bg-amber-500" />
+              <span>Zustand</span>
+            </div>
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <span className="h-2 w-2 rounded-full bg-slate-800 dark:bg-slate-200" />
+              <span>Next.js 16</span>
+            </div>
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <span className="h-2 w-2 rounded-full bg-cyan-500" />
+              <span>React 19</span>
+            </div>
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <span className="h-2 w-2 rounded-full bg-teal-500" />
+              <span>Tailwind v4</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

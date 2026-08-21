@@ -1,205 +1,226 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
-  ArrowRight,
+  ArrowUpRight,
   Sparkles,
-  MessageCircle,
-  Zap,
-  CheckCheck,
-  Shield,
+  Play,
+  Languages,
+  Mic,
+  ChevronUp,
+  Wifi,
+  Battery,
+  MoreVertical,
+  LayoutGrid,
 } from 'lucide-react';
-
-interface SimulatedMessage {
-  id: string;
-  sender: 'alex' | 'sarah';
-  name: string;
-  text: string;
-  time: string;
-}
-
-const INITIAL_SIMULATED_MESSAGES: SimulatedMessage[] = [
-  {
-    id: '1',
-    sender: 'sarah',
-    name: 'Sarah Connor',
-    text: 'Hey Alex! Did you see the new real-time WebSocket architecture in ChatFlow?',
-    time: '10:42 AM',
-  },
-  {
-    id: '2',
-    sender: 'alex',
-    name: 'You',
-    text: 'Yes! Optimistic UI delivery with reverse pagination feels lightning fast ⚡',
-    time: '10:43 AM',
-  },
-  {
-    id: '3',
-    sender: 'sarah',
-    name: 'Sarah Connor',
-    text: 'Plus the smart auto-scroll keeps your position when reading earlier messages! 🔥',
-    time: '10:43 AM',
-  },
-];
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function HeroSection() {
-  const [messages, setMessages] = useState<SimulatedMessage[]>(INITIAL_SIMULATED_MESSAGES);
-  const [typing, setTyping] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTyping(true);
-      setTimeout(() => {
-        setTyping(false);
-        setMessages((prev) => {
-          if (prev.length > 5) {
-            return INITIAL_SIMULATED_MESSAGES;
-          }
-          const isSarah = prev[prev.length - 1].sender === 'alex';
-          return [
-            ...prev,
-            {
-              id: Date.now().toString(),
-              sender: isSarah ? 'sarah' : 'alex',
-              name: isSarah ? 'Sarah Connor' : 'You',
-              text: isSarah
-                ? 'Automatic gap-filling on reconnection keeps everything in sync seamlessly!'
-                : 'Zero redundant fetches and instant search debounce too! 🚀',
-              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            },
-          ];
-        });
-      }, 1600);
-    }, 5500);
-
-    return () => clearInterval(interval);
-  }, []);
+  const { isAuthenticated } = useAuthStore();
 
   return (
-    <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
-      {/* Background radial gradients */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-[500px] w-[650px] rounded-full bg-primary/10 blur-[130px] pointer-events-none" />
+    <section className="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-28 bg-gradient-to-b from-purple-50/70 via-indigo-50/30 to-background dark:from-purple-950/20 dark:via-background dark:to-background">
+      {/* Background ethereal cloud aura */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[650px] w-full max-w-7xl bg-gradient-to-b from-purple-200/40 via-indigo-100/30 to-transparent dark:from-purple-900/15 dark:via-indigo-950/10 dark:to-transparent blur-[140px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Left Column: Headline and CTAs */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-semibold text-primary shadow-xs">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Real-Time WebSocket & Optimistic Chat Platform</span>
+      <div className="container mx-auto px-4 max-w-5xl">
+        {/* Top Tag Pill */}
+        <div className="flex justify-center mb-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/60 dark:border-purple-700/50 bg-purple-50/80 dark:bg-purple-950/50 px-4 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300 shadow-xs backdrop-blur-md">
+            <Sparkles className="h-3.5 w-3.5 text-purple-500 fill-purple-400" />
+            <span>Your Smart Real-Time Chat Engine</span>
+          </div>
+        </div>
+
+        {/* Main Headline with Inline Avatar Stack */}
+        <div className="text-center space-y-4 max-w-4xl mx-auto">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.12]">
+            Your Pocket Assistant for{' '}
+            <span className="inline-flex items-center align-middle mx-1">
+              Idea
+              <span className="inline-flex items-center -space-x-2.5 mx-2.5 px-2 py-1 rounded-full bg-white/80 dark:bg-muted/80 border border-border shadow-xs align-middle">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-slate-900 border-2 border-white dark:border-card">
+                  🧑‍💼
+                </span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white border-2 border-white dark:border-card">
+                  👩‍💻
+                </span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[10px] font-extrabold text-white border-2 border-white dark:border-card">
+                  1+
+                </span>
+              </span>
+            </span>
+            Transformation.
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed pt-2">
+            Maximize your productivity with advanced WebSockets & state caching. Simple chat interface, powerful real-time collaboration.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <Link
+              href={isAuthenticated ? '/chat' : '/login'}
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/40 active:scale-95"
+            >
+              <span>{isAuthenticated ? 'Open App' : 'Get App'}</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+
+            <a
+              href="#demo"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 dark:bg-card/80 px-8 py-3.5 text-sm font-semibold text-card-foreground shadow-xs hover:bg-muted transition-colors backdrop-blur-md"
+            >
+              <span>Learn More</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Realistic Mobile Device Showcase with Floating Glass Widgets */}
+        <div className="relative mt-14 sm:mt-20 mx-auto max-w-4xl flex items-center justify-center">
+          {/* Subtle back glowing orb behind devices */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-80 w-80 sm:h-96 sm:w-96 rounded-full bg-purple-400/20 blur-[100px] pointer-events-none" />
+
+          {/* Floating Widget 1 (Top Left) */}
+          <div className="hidden lg:flex absolute -left-6 top-16 z-20 items-center gap-3 rounded-2xl border border-white/80 dark:border-white/10 bg-white/75 dark:bg-card/75 p-3.5 shadow-xl shadow-purple-500/5 backdrop-blur-xl animate-in fade-in slide-in-from-left duration-700">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300">
+              <Mic className="h-5 w-5" />
             </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12]">
-              Instant messaging with <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-indigo-300">zero friction</span>.
-            </h1>
-
-            <p className="text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Experience ultra-responsive direct & group conversations powered by Socket.io, TanStack Query caching, Zustand state management, and smart auto-scroll.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
-              <Link
-                href="/login"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 rounded-2xl bg-primary px-8 py-3.5 text-sm font-semibold text-primary-foreground shadow-lg hover:opacity-95 active:scale-95 transition-all"
-              >
-                <span>Launch ChatFlow</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-
-              <a
-                href="#demo"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl border border-input bg-card/80 px-6 py-3.5 text-sm font-semibold text-card-foreground shadow-xs hover:bg-muted transition-colors backdrop-blur"
-              >
-                <Zap className="h-4 w-4 text-amber-500" />
-                <span>Try Live Sandbox</span>
-              </a>
-            </div>
-
-            {/* Micro value badges */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-4 text-xs text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <CheckCheck className="h-4 w-4 text-emerald-500" />
-                <span>Instant Optimistic Delivery</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-500" />
-                <span>JWT Handshake Auth</span>
-              </div>
+            <div>
+              <p className="text-xs font-bold leading-tight text-foreground">Answers on the go.</p>
+              <p className="text-[11px] text-muted-foreground">Just speak up.</p>
             </div>
           </div>
 
-          {/* Right Column: Simulated Live Chat Preview Card */}
-          <div className="lg:col-span-5">
-            <div className="relative mx-auto max-w-md rounded-3xl border border-border/80 bg-card/90 p-4 shadow-2xl backdrop-blur text-card-foreground">
-              {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b">
-                <div className="flex items-center gap-3">
-                  <div className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-sm shadow">
-                    SC
-                    <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card bg-emerald-500" />
+          {/* Floating Widget 2 (Bottom Left) */}
+          <div className="hidden lg:flex absolute -left-4 bottom-16 z-20 items-center gap-3 rounded-2xl border border-white/80 dark:border-white/10 bg-white/75 dark:bg-card/75 px-4 py-2.5 shadow-xl shadow-purple-500/5 backdrop-blur-xl animate-in fade-in slide-in-from-left duration-700">
+            <Languages className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <div className="h-2 w-24 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden">
+              <div className="h-full w-2/3 bg-purple-500 rounded-full" />
+            </div>
+          </div>
+
+          {/* Floating Widget 3 (Top Right - Voice Waveform Player) */}
+          <div className="hidden lg:flex absolute -right-6 top-20 z-20 items-center gap-3 rounded-2xl border border-purple-200/60 dark:border-purple-800/40 bg-gradient-to-r from-purple-100/90 via-indigo-50/90 to-purple-100/90 dark:from-purple-950/80 dark:via-indigo-950/80 dark:to-purple-950/80 px-4 py-3 shadow-xl shadow-purple-500/10 backdrop-blur-xl animate-in fade-in slide-in-from-right duration-700">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white shadow-sm">
+              <Play className="h-3.5 w-3.5 ml-0.5 fill-white" />
+            </div>
+            <div className="flex items-center gap-0.5">
+              {[4, 8, 14, 18, 10, 16, 22, 12, 6, 18, 24, 14, 8, 12, 16, 10, 5].map((h, i) => (
+                <span
+                  key={i}
+                  style={{ height: `${h}px` }}
+                  className={`w-0.5 rounded-full ${
+                    i < 8 ? 'bg-purple-600 dark:bg-purple-400' : 'bg-purple-300 dark:bg-purple-800'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Floating Widget 4 (Bottom Right - High-Speed Badge) */}
+          <div className="hidden lg:flex absolute -right-4 bottom-14 z-20 flex-col items-center justify-center rounded-2xl border border-white/80 dark:border-white/10 bg-white/75 dark:bg-card/75 p-3.5 shadow-xl shadow-purple-500/5 backdrop-blur-xl text-center w-32 animate-in fade-in slide-in-from-right duration-700">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-950/60 text-purple-600 mb-1">
+              <ChevronUp className="h-4 w-4" />
+            </div>
+            <p className="text-[11px] font-bold text-foreground leading-tight">High-speed</p>
+            <p className="text-[10px] text-muted-foreground">processing</p>
+          </div>
+
+          {/* Dual Phone Showcase Container */}
+          <div className="relative flex items-end justify-center gap-4 sm:gap-6 w-full pt-4">
+            {/* Soft Ambient Ground Glow */}
+            <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[90%] max-w-xl h-24 bg-purple-500/10 dark:bg-purple-500/5 blur-3xl rounded-full pointer-events-none" />
+
+            {/* Phone 1 (Main Interactive Frame) */}
+            <div className="relative z-10 w-[280px] sm:w-[320px] rounded-[44px] border-[6px] border-slate-900/90 dark:border-slate-800 bg-white dark:bg-card shadow-[0_25px_60px_-15px_rgba(79,70,229,0.12)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden text-card-foreground">
+              {/* Dynamic Island & Status Bar */}
+              <div className="pt-3 px-6 pb-2 flex items-center justify-between text-[11px] font-bold">
+                <span>9:41</span>
+                {/* Dynamic Island Pill */}
+                <div className="h-4 w-20 rounded-full bg-slate-900" />
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Wifi className="h-3 w-3" />
+                  <Battery className="h-3.5 w-3.5" />
+                </div>
+              </div>
+
+              {/* Chat Header in Phone */}
+              <div className="px-4 py-3 border-b flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-purple-700 font-bold text-xs">
+                    ES
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold leading-tight">Sarah Connor</h3>
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                      Active Now • Real-Time Socket
-                    </p>
+                    <h4 className="text-xs font-bold leading-tight">Emerson Sterling</h4>
+                    <p className="text-[10px] text-muted-foreground">sterling@chatflow.io</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                <div className="flex items-center gap-1 text-muted-foreground">
+                  <MoreVertical className="h-3.5 w-3.5" />
+                  <LayoutGrid className="h-3.5 w-3.5" />
                 </div>
               </div>
 
-              {/* Chat bubbles viewport */}
-              <div className="h-72 overflow-y-auto space-y-3 py-3 pr-1">
-                {messages.map((m) => {
-                  const isSelf = m.sender === 'alex';
-                  return (
-                    <div
-                      key={m.id}
-                      className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}
-                    >
-                      <div
-                        className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-xs shadow-xs ${
-                          isSelf
-                            ? 'bg-primary text-primary-foreground rounded-br-xs'
-                            : 'bg-muted text-card-foreground rounded-bl-xs border border-border/60'
-                        }`}
-                      >
-                        <p className="leading-relaxed">{m.text}</p>
-                        <div
-                          className={`mt-1 text-[9px] text-right ${
-                            isSelf ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                          }`}
-                        >
-                          {m.time}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-
-                {typing && (
-                  <div className="flex items-center gap-1.5 bg-muted/80 w-16 px-3 py-2 rounded-full text-xs text-muted-foreground animate-pulse">
-                    <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce [animation-delay:0.2s]" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce [animation-delay:0.4s]" />
+              {/* 3D Iridescent Orb & Greeting */}
+              <div className="p-6 flex flex-col items-center text-center space-y-4">
+                <div className="relative flex h-24 w-24 items-center justify-center">
+                  {/* Glowing Animated Orb */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-400 via-pink-400 to-indigo-300 blur-md opacity-70 animate-pulse" />
+                  <div className="relative h-20 w-20 rounded-full bg-gradient-to-tr from-purple-400 via-indigo-200 to-pink-300 shadow-inner flex items-center justify-center">
+                    <div className="h-14 w-14 rounded-full bg-white/40 backdrop-blur-sm shadow-sm" />
                   </div>
-                )}
+                </div>
+
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold text-purple-600 dark:text-purple-400">
+                    Hello, Siam
+                  </p>
+                  <h3 className="text-sm font-bold text-foreground">
+                    How can I assist you today?
+                  </h3>
+                </div>
+
+                {/* Micro conversation bubble */}
+                <div className="w-full text-left rounded-2xl bg-muted/60 p-3 text-[11px] text-muted-foreground border">
+                  ⚡ Socket connected: 0ms latency with TanStack Query cache.
+                </div>
+              </div>
+            </div>
+
+            {/* Phone 2 (Secondary Overlapping Frame) */}
+            <div className="relative z-10 hidden sm:block w-[260px] rounded-[40px] border-[6px] border-slate-900/90 dark:border-slate-800 bg-white dark:bg-card shadow-[0_25px_60px_-15px_rgba(79,70,229,0.1)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden opacity-95">
+              {/* Dynamic Island & Status Bar */}
+              <div className="pt-3 px-6 pb-2 flex items-center justify-between text-[11px] font-bold">
+                <span>9:41</span>
+                <div className="h-4 w-18 rounded-full bg-slate-900" />
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Wifi className="h-3 w-3" />
+                  <Battery className="h-3.5 w-3.5" />
+                </div>
               </div>
 
-              {/* Mock input footer */}
-              <div className="pt-2 border-t flex items-center gap-2">
-                <div className="flex-1 rounded-xl bg-background border px-3 py-2 text-xs text-muted-foreground">
-                  Simulated active stream...
+              {/* Message Feed Preview */}
+              <div className="p-4 space-y-3">
+                <div className="flex items-center gap-1.5 text-purple-600 text-[10px] font-semibold">
+                  <Sparkles className="h-3 w-3" />
+                  <span>Real-Time Voice Stream</span>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground text-xs shadow">
-                  <MessageCircle className="h-4 w-4" />
+
+                <div className="rounded-2xl bg-purple-50 dark:bg-purple-950/40 p-3 text-[11px] text-foreground leading-relaxed border border-purple-200/50 dark:border-purple-800/40">
+                  Make sure the team flow is motivating and action-oriented. I am heading to the office now, so send this in the next five minutes, please...
+                </div>
+
+                <div className="rounded-2xl bg-muted/70 p-2.5 text-[10px] text-muted-foreground">
+                  ✓ Synchronized across all connected clients.
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Smooth, Gradual Bottom Fade Transition */}
+          <div className="absolute -bottom-4 left-0 right-0 h-32 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none z-20" />
         </div>
       </div>
     </section>
