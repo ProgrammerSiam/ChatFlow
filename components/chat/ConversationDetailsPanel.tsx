@@ -31,6 +31,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import CoolTooltip from '@/shared/CoolTooltip';
 import ConfirmModal from '@/shared/ConfirmModal';
+import AddMembersModal from './AddMembersModal';
 
 interface ConversationDetailsPanelProps {
   conversation: Conversation;
@@ -374,79 +375,14 @@ export default function ConversationDetailsPanel({
 
         {/* Admin Action: Add Members */}
         {isAdmin && (
-          <div className="space-y-2.5 pt-1">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Admin Tools</span>
-              <button
-                onClick={() => setIsAddingMembers(!isAddingMembers)}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 hover:underline cursor-pointer"
-              >
-                <UserPlus className="h-3.5 w-3.5" />
-                <span>{isAddingMembers ? 'Close' : 'Add Members'}</span>
-              </button>
-            </div>
-
-            {isAddingMembers && (
-              <div className="p-3 bg-slate-50 dark:bg-muted/40 rounded-2xl border border-slate-200/70 space-y-2.5">
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search user to add..."
-                  className="w-full h-9.5 rounded-xl border border-slate-200 bg-white px-3 text-xs focus:outline-none focus:ring-2 focus:ring-purple-400"
-                />
-
-                {selectedToAdd.length > 0 && (
-                  <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto">
-                    {selectedToAdd.map((u) => (
-                      <span
-                        key={u._id}
-                        className="inline-flex items-center gap-1 rounded-lg bg-purple-100 text-purple-700 px-2 py-0.5 text-xs font-medium"
-                      >
-                        {u.name}
-                        <button onClick={() => toggleSelectUserToAdd(u)}>
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                <div className="max-h-36 overflow-y-auto space-y-1 pr-0.5">
-                  {isSearchingUsers ? (
-                    <div className="py-3 text-center text-xs text-slate-400">Searching...</div>
-                  ) : availableUsersToAdd.length === 0 ? (
-                    <div className="py-3 text-center text-xs text-slate-400">No users found to add</div>
-                  ) : (
-                    availableUsersToAdd.map((u) => {
-                      const isSelected = selectedToAdd.some((p) => p._id === u._id);
-                      return (
-                        <button
-                          key={u._id}
-                          onClick={() => toggleSelectUserToAdd(u)}
-                          className={`w-full flex items-center justify-between p-2 rounded-xl text-xs text-left transition-colors ${
-                            isSelected ? 'bg-purple-100 text-purple-900 font-semibold' : 'hover:bg-white'
-                          }`}
-                        >
-                          <span>{u.name}</span>
-                          <span className="font-mono text-[10px] text-slate-400">{u.phone}</span>
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-
-                {selectedToAdd.length > 0 && (
-                  <button
-                    onClick={handleAddMembers}
-                    disabled={isSubmittingMembers}
-                    className="w-full h-9 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold shadow-xs"
-                  >
-                    {isSubmittingMembers ? 'Adding...' : `Add ${selectedToAdd.length} Member(s)`}
-                  </button>
-                )}
-              </div>
-            )}
+          <div className="pt-1">
+            <button
+              onClick={() => setIsAddingMembers(true)}
+              className="w-full h-10.5 flex items-center justify-center gap-2 rounded-xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/40 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+            >
+              <UserPlus className="h-4 w-4" />
+              <span>Add Members</span>
+            </button>
           </div>
         )}
 
@@ -561,7 +497,14 @@ export default function ConversationDetailsPanel({
         confirmText="Remove Member"
         variant="danger"
         icon="trash"
-      />
+      {/* Add Members Popup Modal */}
+      {isGroup && (
+        <AddMembersModal
+          isOpen={isAddingMembers}
+          onClose={() => setIsAddingMembers(false)}
+          conversation={conversation}
+        />
+      )}
 
     </aside>
   );
