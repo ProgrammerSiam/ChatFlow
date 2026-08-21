@@ -123,8 +123,14 @@ export default function UserProfileModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-md rounded-[32px] border border-border/80 bg-white/95 dark:bg-card/95 p-7 shadow-2xl backdrop-blur-2xl text-card-foreground">
+    <div
+      onClick={() => setProfileOpen(false)}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b">
           <div className="flex items-center gap-2.5 font-bold text-sm">

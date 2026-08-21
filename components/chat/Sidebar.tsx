@@ -10,8 +10,9 @@ import {
   MessageSquare,
   LogOut,
   Sparkles,
-  User as UserIcon,
   MessageSquarePlus,
+  UserCheck,
+  Hash,
 } from 'lucide-react';
 import BrandLogo from '@/shared/BrandLogo';
 import CoolTooltip from '@/shared/CoolTooltip';
@@ -23,6 +24,24 @@ import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 type FilterTab = 'all' | 'direct' | 'groups' | 'unread';
+
+// Modern Deterministic Gradient Avatar Generator
+function getAvatarGradient(name: string = '') {
+  const gradients = [
+    'from-[#725CFF] via-[#8B78FF] to-[#C9C1FF]',
+    'from-[#6366F1] via-[#818CF8] to-[#C7D2FE]',
+    'from-[#EC4899] via-[#F472B6] to-[#FBCFE8]',
+    'from-[#10B981] via-[#34D399] to-[#A7F3D0]',
+    'from-[#F59E0B] via-[#FBBF24] to-[#FDE68A]',
+    'from-[#06B6D4] via-[#22D3EE] to-[#CFFAFE]',
+  ];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % gradients.length;
+  return gradients[index];
+}
 
 export default function Sidebar() {
   const params = useParams();
@@ -102,10 +121,10 @@ export default function Sidebar() {
     }
   };
 
-  // Collapsed Sidebar View (Icon Only)
+  // Collapsed Sidebar View (Icon Only Dock Mode)
   if (isSidebarCollapsed) {
     return (
-      <aside className="w-18 h-full rounded-[24px] bg-[#FAFAFA] dark:bg-card border border-slate-200/80 dark:border-border/70 p-2.5 flex flex-col justify-between items-center shadow-xs select-none shrink-0 transition-all duration-300">
+      <aside className="w-18 h-full rounded-[24px] bg-[#FAFAFA] dark:bg-card border border-slate-200/80 dark:border-border/70 p-2.5 flex flex-col justify-between items-center shadow-xs select-none shrink-0 transition-all duration-300 relative z-20">
         {/* Top: Brand Squircle & Expand Button */}
         <div className="flex flex-col items-center gap-3 w-full">
           <CoolTooltip content="Expand sidebar" side="right">
@@ -137,7 +156,7 @@ export default function Sidebar() {
                 onClick={() => setNewChatOpen(true)}
                 className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer"
               >
-                <Plus className="h-4.5 w-4.5" />
+                <MessageSquarePlus className="h-4.5 w-4.5" />
               </button>
             </CoolTooltip>
 
@@ -154,25 +173,28 @@ export default function Sidebar() {
           <div className="w-8 border-t border-slate-200/60 dark:border-border/60 my-1" />
 
           {/* Conversations Avatars Feed */}
-          <div className="flex-1 overflow-y-auto space-y-2 w-full flex flex-col items-center max-h-[calc(100vh-280px)]">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2.5 w-full flex flex-col items-center max-h-[calc(100vh-280px)]">
             {filteredConversations.map((conv) => {
               const isGroup = conv.type === 'group';
               const isActive = activeId === conv._id;
               const title = isGroup ? conv.name || 'Group' : conv.participant?.name || 'User';
+              const gradient = getAvatarGradient(title);
 
               return (
                 <CoolTooltip key={conv._id} content={title} side="right">
                   <Link
                     href={`/chat/${conv._id}`}
-                    className={`relative flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs transition-all ${
+                    className={`relative flex h-10 w-10 items-center justify-center rounded-2xl font-bold text-xs text-white shadow-2xs transition-all ${
                       isActive
-                        ? 'ring-2 ring-purple-600 bg-purple-600 text-white shadow-xs'
-                        : isGroup
-                        ? 'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 hover:scale-105'
-                        : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 hover:scale-105'
+                        ? 'ring-2 ring-purple-600 scale-105 shadow-md'
+                        : 'hover:scale-105'
+                    } ${
+                      isGroup
+                        ? 'bg-gradient-to-tr from-[#8E7CFF] via-[#725CFF] to-[#C9C1FF]'
+                        : `bg-gradient-to-tr ${gradient}`
                     }`}
                   >
-                    {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
+                    {isGroup ? <Users className="h-4 w-4" /> : title.charAt(0).toUpperCase()}
                     {conv.unreadCount && conv.unreadCount > 0 ? (
                       <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-purple-600 text-white text-[9px] font-bold ring-2 ring-white">
                         {conv.unreadCount}
@@ -190,7 +212,7 @@ export default function Sidebar() {
           <CoolTooltip content="My Profile & Settings" side="right">
             <button
               onClick={() => setProfileOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-xs shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-500 via-indigo-500 to-purple-600 text-white font-semibold text-xs shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
             >
               {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
             </button>
@@ -242,24 +264,28 @@ export default function Sidebar() {
         <div className="grid grid-cols-2 gap-2.5">
           <button
             onClick={() => setNewChatOpen(true)}
-            className="h-10.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium text-[13px] sm:text-sm flex items-center justify-center gap-2 shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 active:scale-[0.99] transition-all cursor-pointer"
+            className="h-10.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium text-[13px] sm:text-sm flex items-center justify-center gap-2 shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 active:scale-[0.99] transition-all cursor-pointer group"
           >
-            <MessageSquarePlus className="h-4 w-4" />
+            <div className="flex h-5 w-5 items-center justify-center rounded-lg bg-white/15 dark:bg-slate-900/15 group-hover:scale-105 transition-transform">
+              <MessageSquarePlus className="h-3.5 w-3.5" />
+            </div>
             <span>New chat</span>
           </button>
 
           <button
             onClick={() => setNewGroupOpen(true)}
-            className="h-10.5 rounded-xl border border-slate-200/80 dark:border-border/80 bg-white dark:bg-muted/40 hover:bg-slate-50 dark:hover:bg-muted text-slate-800 dark:text-slate-200 font-medium text-[13px] sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs"
+            className="h-10.5 rounded-xl border border-slate-200/80 dark:border-border/80 bg-white dark:bg-muted/40 hover:bg-slate-50 dark:hover:bg-muted text-slate-800 dark:text-slate-200 font-medium text-[13px] sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs group"
           >
-            <Users className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <div className="flex h-5 w-5 items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 group-hover:scale-105 transition-transform">
+              <Users className="h-3.5 w-3.5" />
+            </div>
             <span>New group</span>
           </button>
         </div>
 
         {/* Search Bar */}
         <div className="relative flex items-center">
-          <Search className="absolute left-3.5 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
           <input
             type="text"
             value={filterQuery}
@@ -285,7 +311,7 @@ export default function Sidebar() {
         </div>
 
         {/* Category Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
           <button
             onClick={() => setActiveFilter('all')}
             className={`px-3 py-1.5 rounded-xl text-xs sm:text-[13px] font-medium transition-colors cursor-pointer shrink-0 ${
@@ -334,13 +360,13 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Real Conversations List */}
-      <div className="flex-1 overflow-y-auto my-2 pr-1 -mr-1 space-y-1.5">
+      {/* Real Conversations List with Modern Squircle Avatars */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar my-2 pr-1 -mr-1 space-y-1.5">
         {isLoading ? (
           <div className="space-y-2 py-2">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl animate-pulse">
-                <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-muted shrink-0" />
+                <div className="h-10 w-10 rounded-2xl bg-slate-100 dark:bg-muted shrink-0" />
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-3/4 rounded bg-slate-100 dark:bg-muted" />
                   <div className="h-3 w-1/2 rounded bg-slate-100 dark:bg-muted" />
@@ -360,7 +386,7 @@ export default function Sidebar() {
           </div>
         ) : filteredConversations.length === 0 ? (
           <div className="py-10 px-2 text-center space-y-3">
-            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300">
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300">
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
@@ -397,6 +423,7 @@ export default function Sidebar() {
             const time = formatConversationTime(
               conv.lastMessage?.createdAt || conv.updatedAt || conv.createdAt
             );
+            const gradient = getAvatarGradient(title);
 
             return (
               <Link
@@ -408,18 +435,25 @@ export default function Sidebar() {
                     : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-muted/40'
                 }`}
               >
-                {/* Avatar */}
-                <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold text-sm shadow-2xs ${
-                    isGroup
-                      ? 'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300'
-                      : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'
-                  }`}
-                >
-                  {isGroup ? (
-                    <Users className="h-5 w-5" />
-                  ) : (
-                    title.charAt(0).toUpperCase()
+                {/* Modern Squircle Gradient Avatar */}
+                <div className="relative shrink-0">
+                  <div
+                    className={`flex h-10 w-10 items-center justify-center rounded-[14px] font-bold text-xs text-white shadow-2xs group-hover:scale-105 transition-transform ${
+                      isGroup
+                        ? 'bg-gradient-to-tr from-[#8E7CFF] via-[#725CFF] to-[#C9C1FF]'
+                        : `bg-gradient-to-tr ${gradient}`
+                    }`}
+                  >
+                    {isGroup ? (
+                      <Users className="h-4.5 w-4.5" />
+                    ) : (
+                      title.charAt(0).toUpperCase()
+                    )}
+                  </div>
+                  
+                  {/* Online Indicator Badge for Direct Chats */}
+                  {!isGroup && (
+                    <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
                   )}
                 </div>
 
@@ -438,7 +472,7 @@ export default function Sidebar() {
 
                 {/* Unread Counter Badge */}
                 {conv.unreadCount && conv.unreadCount > 0 ? (
-                  <span className="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-purple-600 text-white text-[10px] font-bold px-1.5 shrink-0">
+                  <span className="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-purple-600 text-white text-[10px] font-bold px-1.5 shrink-0 shadow-xs">
                     {conv.unreadCount}
                   </span>
                 ) : null}
@@ -456,8 +490,8 @@ export default function Sidebar() {
               onClick={() => setProfileOpen(true)}
               className="flex items-center gap-3 min-w-0 text-left cursor-pointer hover:opacity-85 transition-opacity flex-1"
             >
-              {/* Avatar Circle */}
-              <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-xs shadow-xs">
+              {/* Profile Avatar Squircle */}
+              <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-[13px] bg-gradient-to-tr from-purple-500 via-indigo-500 to-purple-600 text-white font-semibold text-xs shadow-xs">
                 {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
               </div>
 

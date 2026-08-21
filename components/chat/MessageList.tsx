@@ -142,7 +142,7 @@ export default function MessageList({
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 space-y-3"
+        className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar p-4 space-y-3"
       >
         {/* Loading older messages indicator */}
         {isFetchingNextPage && (

@@ -74,27 +74,40 @@ export default function NewGroupModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-lg rounded-[32px] border border-border/80 bg-white/95 dark:bg-card/95 p-7 shadow-2xl backdrop-blur-2xl text-card-foreground">
-        <div className="flex items-center justify-between pb-4 border-b">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 font-bold">
-              <Users className="h-4 w-4" />
+    <div
+      onClick={() => setNewGroupOpen(false)}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-lg rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
+      >
+        
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-border/60">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 font-bold shadow-2xs">
+              <Users className="h-5 w-5" />
             </div>
-            <h2 className="text-base font-bold tracking-tight">Create Group Chat</h2>
+            <div>
+              <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                Create Group Chat
+              </h2>
+              <p className="text-xs text-slate-400">Start a new shared collaboration workspace</p>
+            </div>
           </div>
           <button
             onClick={() => setNewGroupOpen(false)}
-            className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+            className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-muted hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4.5 w-4.5" />
           </button>
         </div>
 
-        <form onSubmit={handleCreateGroup} className="space-y-4 mt-4">
+        <form onSubmit={handleCreateGroup} className="space-y-4 mt-5">
           {/* Group Name Input */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Group Name
             </label>
             <input
@@ -104,27 +117,27 @@ export default function NewGroupModal() {
               placeholder="e.g. Design & Engineering Flow"
               required
               autoFocus
-              className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 shadow-xs"
+              className="w-full h-11 sm:h-12 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-muted/40 px-4 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-400/80 focus:border-purple-400 shadow-2xs transition-all"
             />
           </div>
 
           {/* Selected Chips */}
           {selectedParticipants.length > 0 && (
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Selected Teammates ({selectedParticipants.length})
               </label>
-              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-2 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/40">
+              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-2.5 rounded-xl bg-purple-50/60 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/40">
                 {selectedParticipants.map((u) => (
                   <span
                     key={u._id}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-card border border-purple-200 dark:border-purple-800/40 px-3 py-1 text-xs font-semibold text-foreground shadow-xs"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-white dark:bg-card border border-purple-200 dark:border-purple-800/40 px-2.5 py-1 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-2xs"
                   >
                     <span>{u.name}</span>
                     <button
                       type="button"
                       onClick={() => toggleSelectUser(u)}
-                      className="rounded-full p-0.5 hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
+                      className="rounded-md p-0.5 hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 cursor-pointer"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -136,30 +149,30 @@ export default function NewGroupModal() {
 
           {/* Search Participants */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Add Members (Select at least 2)
             </label>
-            <div className="relative">
-              <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
+            <div className="relative flex items-center">
+              <Search className="absolute left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search teammates by name or phone..."
-                className="w-full rounded-2xl border border-input bg-background pl-10 pr-4 py-2.5 text-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 shadow-xs"
+                className="w-full h-11 sm:h-12 rounded-xl border border-slate-200 dark:border-border bg-white dark:bg-muted/40 pl-10 pr-4 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-400/80 focus:border-purple-400 shadow-2xs transition-all"
               />
             </div>
           </div>
 
           {/* Search Results List */}
-          <div className="max-h-48 overflow-y-auto space-y-1 pr-1 border rounded-2xl p-1 bg-background/50">
+          <div className="max-h-48 overflow-y-auto overflow-x-hidden no-scrollbar space-y-1 pr-1 border border-slate-200/80 dark:border-border/70 rounded-xl p-1.5 bg-slate-50/50 dark:bg-muted/20">
             {isLoading ? (
-              <div className="py-6 flex flex-col items-center justify-center gap-2 text-muted-foreground">
+              <div className="py-6 flex flex-col items-center justify-center gap-2 text-slate-400">
                 <Loader2 className="h-5 w-5 animate-spin text-purple-600" />
                 <span className="text-xs">Searching teammates...</span>
               </div>
             ) : users.length === 0 ? (
-              <div className="py-6 text-center text-muted-foreground space-y-1">
+              <div className="py-6 text-center text-slate-400 space-y-1">
                 <UserIcon className="h-6 w-6 mx-auto opacity-30" />
                 <p className="text-xs">No teammates found</p>
               </div>
@@ -174,18 +187,18 @@ export default function NewGroupModal() {
                     className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-colors cursor-pointer ${
                       isSelected
                         ? 'bg-purple-100/70 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-800/60'
-                        : 'hover:bg-muted/60'
+                        : 'hover:bg-white dark:hover:bg-muted/60'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-bold text-xs shadow-inner">
+                      <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-bold text-xs shadow-2xs">
                         {targetUser.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="font-bold text-xs leading-tight text-foreground">
+                        <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white">
                           {targetUser.name}
                         </p>
-                        <p className="text-[11px] text-muted-foreground font-mono">
+                        <p className="text-xs text-slate-400 font-mono mt-0.5">
                           {targetUser.phone}
                         </p>
                       </div>
@@ -195,7 +208,7 @@ export default function NewGroupModal() {
                       className={`flex h-5 w-5 items-center justify-center rounded-md border ${
                         isSelected
                           ? 'bg-purple-600 border-purple-600 text-white'
-                          : 'border-muted-foreground/40'
+                          : 'border-slate-300 dark:border-border'
                       }`}
                     >
                       {isSelected && <Check className="h-3.5 w-3.5" />}
@@ -211,16 +224,16 @@ export default function NewGroupModal() {
             <button
               type="submit"
               disabled={isCreatingGroup || selectedParticipants.length < 2 || !groupName.trim()}
-              className="w-full flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 py-3 text-xs font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/40 active:scale-98 disabled:opacity-50 cursor-pointer"
+              className="w-full h-11 sm:h-12 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8E7CFF] via-[#725CFF] to-[#6366F1] text-sm font-medium text-white shadow-xs hover:opacity-95 active:scale-[0.99] disabled:opacity-50 transition-all cursor-pointer"
             >
               {isCreatingGroup ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4.5 w-4.5 animate-spin" />
                   <span>Creating Group Channel...</span>
                 </>
               ) : (
                 <>
-                  <Users className="h-4 w-4" />
+                  <Users className="h-4.5 w-4.5" />
                   <span>Create Group ({selectedParticipants.length + 1} Members)</span>
                 </>
               )}

@@ -235,3 +235,13 @@ html {
     border-color: var(--border);
   }
 }
+
+/* Hide scrollbars globally where needed while preserving smooth scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

@@ -14,7 +14,7 @@ export function useUserSearch(initialQuery: string = '') {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedQuery(query.trim());
-    }, 300);
+    }, 250);
 
     return () => clearTimeout(handler);
   }, [query]);
@@ -22,10 +22,9 @@ export function useUserSearch(initialQuery: string = '') {
   const { data, isLoading, isFetching, error, refetch } = useQuery({
     queryKey: ['users', 'search', debouncedQuery],
     queryFn: async () => {
-      if (!debouncedQuery) return [];
       return api.searchUsers(debouncedQuery);
     },
-    enabled: debouncedQuery.length > 0,
+    enabled: true,
     staleTime: 15 * 1000,
   });
 
@@ -39,7 +38,7 @@ export function useUserSearch(initialQuery: string = '') {
     setQuery,
     debouncedQuery,
     users,
-    isLoading: isLoading || (debouncedQuery !== query && query.length > 0),
+    isLoading: isLoading || (debouncedQuery !== query.trim()),
     isFetching,
     error,
     refetch,

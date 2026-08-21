@@ -167,7 +167,12 @@ export default function GroupInfoDrawer({
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-card border-l shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+    <>
+      <div
+        onClick={() => setGroupInfoOpen(false)}
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
+      />
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-card border-l shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
       {/* Drawer Header */}
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="font-semibold text-lg flex items-center gap-2">
@@ -196,13 +201,13 @@ export default function GroupInfoDrawer({
                   type="text"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  className="rounded-lg border border-input bg-background px-3 py-1.5 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="h-10 rounded-xl border border-slate-200 dark:border-border bg-background px-3 text-sm font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
                   autoFocus
                 />
                 <button
                   onClick={handleRename}
                   disabled={isUpdatingName}
-                  className="rounded-lg bg-primary p-1.5 text-primary-foreground hover:opacity-90"
+                  className="h-10 px-3 rounded-xl bg-purple-600 p-1.5 text-white hover:bg-purple-700"
                 >
                   {isUpdatingName ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -212,7 +217,7 @@ export default function GroupInfoDrawer({
                 </button>
                 <button
                   onClick={() => setIsEditingName(false)}
-                  className="rounded-lg border p-1.5 text-muted-foreground hover:bg-muted"
+                  className="h-10 px-3 rounded-xl border border-slate-200 dark:border-border text-muted-foreground hover:bg-muted"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -223,7 +228,7 @@ export default function GroupInfoDrawer({
                 {isAdmin && (
                   <button
                     onClick={() => setIsEditingName(true)}
-                    className="rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted"
+                    className="rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted"
                     title="Rename Group (Admin)"
                   >
                     <Edit2 className="h-4 w-4" />
@@ -247,7 +252,7 @@ export default function GroupInfoDrawer({
               </span>
               <button
                 onClick={() => setIsAddingMembers(!isAddingMembers)}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:underline"
               >
                 <UserPlus className="h-3.5 w-3.5" />
                 {isAddingMembers ? 'Close Add Form' : 'Add Members'}
@@ -255,13 +260,13 @@ export default function GroupInfoDrawer({
             </div>
 
             {isAddingMembers && (
-              <div className="p-3 bg-muted/40 rounded-xl border space-y-3">
+              <div className="p-3 bg-slate-50 dark:bg-muted/40 rounded-xl border border-slate-200 dark:border-border space-y-3">
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search user to add..."
-                  className="w-full rounded-lg border border-input bg-background px-3 py-1.5 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="w-full h-10.5 rounded-xl border border-slate-200 dark:border-border bg-background px-3.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
                 />
 
                 {selectedToAdd.length > 0 && (
@@ -415,5 +420,6 @@ export default function GroupInfoDrawer({
         </button>
       </div>
     </div>
+    </>
   );
 }
