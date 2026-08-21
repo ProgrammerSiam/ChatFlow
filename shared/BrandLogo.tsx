@@ -22,30 +22,30 @@ export default function BrandLogo({
   }[size];
 
   return (
-    <div className={`flex items-center gap-2.5 group cursor-pointer ${className}`}>
-      {/* Mascot Squircle Icon (Matches User Screenshot) */}
+    <div className={`flex items-center gap-2.5 group cursor-pointer border-0 outline-none ${className}`}>
+      {/* Purple Gradient Squircle Icon with Chat Bubble */}
       <div
-        className={`relative flex items-center justify-center bg-gradient-to-tr from-[#725CFF] via-[#8C76FF] to-[#B8AAFF] text-white shadow-sm shadow-[#725CFF]/20 group-hover:scale-105 transition-transform ${sizeClasses.box}`}
+        className={`relative flex items-center justify-center bg-gradient-to-tr from-[#725CFF] via-[#8C76FF] to-[#B8AAFF] text-white shadow-xs group-hover:scale-105 transition-transform ${sizeClasses.box}`}
       >
         <svg
           width={sizeClasses.svg}
           height={sizeClasses.svg}
-          viewBox="0 0 28 28"
+          viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Mascot Body */}
+          {/* Rounded Chat Speech Bubble */}
           <path
-            d="M6 14C6 9.58172 9.58172 6 14 6C17.3137 6 20.1508 8.01947 21.3658 10.9023C21.7828 11.8916 22 12.9234 22 14C22 15.5 22 17.5 20.5 19C19 20.5 17.5 20.5 15.5 20.5C14.5 20.5 13.5 21 12.5 21.5C11 22.25 8.5 21.5 7.5 20C6.5 18.5 6 16.5 6 14Z"
+            d="M4.5 12C4.5 7.85786 7.85786 4.5 12 4.5C16.1421 4.5 19.5 7.85786 19.5 12C19.5 16.1421 16.1421 19.5 12 19.5C10.55 19.5 9.2 19.08 8.08 18.35L4.5 19.5L5.65 15.92C4.92 14.8 4.5 13.45 4.5 12Z"
             fill="white"
           />
-          {/* Left Eye */}
-          <ellipse cx="11.5" cy="13.5" rx="1.2" ry="2" fill="#725CFF" />
-          {/* Right Eye */}
-          <ellipse cx="16.5" cy="13.5" rx="1.2" ry="2" fill="#725CFF" />
-          {/* Sparkle on Head */}
+          {/* Left Chat Eye */}
+          <circle cx="10" cy="12" r="1.15" fill="#725CFF" />
+          {/* Right Chat Eye */}
+          <circle cx="14" cy="12" r="1.15" fill="#725CFF" />
+          {/* Top-Right Sparkle Diamond */}
           <path
-            d="M21 4L22.2 7.2L25 8L22.2 8.8L21 12L19.8 8.8L17 8L19.8 7.2L21 4Z"
+            d="M18.5 2.5L19.2 4.5L21.2 5.2L19.2 5.9L18.5 7.9L17.8 5.9L15.8 5.2L17.8 4.5L18.5 2.5Z"
             fill="white"
           />
         </svg>
@@ -54,7 +54,7 @@ export default function BrandLogo({
       {/* Typography: Bold Name + Muted Suffix */}
       <span className={`font-bold tracking-tight text-slate-900 dark:text-white leading-none ${sizeClasses.text}`}>
         {name}
-        <span className="font-medium text-slate-400 dark:text-slate-500">{suffix}</span>
+        <span className="font-normal text-slate-400 dark:text-slate-500">{suffix}</span>
       </span>
     </div>
   );
