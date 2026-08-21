@@ -33,7 +33,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <AuthInitializer>
         {children}
-        <Toaster position="top-right" richColors closeButton />
+        <Toaster position="top-center" richColors closeButton />
       </AuthInitializer>
     </QueryClientProvider>
   );
