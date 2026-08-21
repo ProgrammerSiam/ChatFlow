@@ -5,7 +5,7 @@ import AboutSection from '@/sections/AboutSection';
 import IntuitiveChatFeatures from '@/sections/IntuitiveChatFeatures';
 import LiveDemoSection from '@/sections/LiveDemoSection';
 import HowItWorksSection from '@/sections/HowItWorksSection';
-import CtaSection from '@/sections/CtaSection';
+import FaqSection from '@/sections/FaqSection';
 
 export default function HomePage() {
   return (
@@ -17,7 +17,7 @@ export default function HomePage() {
         <IntuitiveChatFeatures />
         <LiveDemoSection />
         <HowItWorksSection />
-        <CtaSection />
+        <FaqSection />
       </main>
       <Footer />
     </div>

@@ -127,6 +127,11 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
+                  <a href="#faq" className="hover:text-white transition-colors">
+                    FAQ
+                  </a>
+                </li>
+                <li>
                   <a
                     href="https://frontend-task-chatapp.onrender.com/docs"
                     target="_blank"

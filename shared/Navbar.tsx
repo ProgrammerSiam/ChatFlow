@@ -48,7 +48,13 @@ export default function Navbar() {
             href="#how-it-works"
             className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            How it Works
+            Process
+          </a>
+          <a
+            href="#faq"
+            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            FAQ
           </a>
         </nav>
 
