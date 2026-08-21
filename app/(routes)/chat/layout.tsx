@@ -45,7 +45,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   const isDetailView = pathname !== '/chat' && pathname.startsWith('/chat/');
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-[#F4F4F6] dark:bg-background/95 p-2 sm:p-3 gap-2 sm:gap-3 select-none">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#FAFAFA] dark:bg-background p-2 sm:p-3 gap-2 sm:gap-3 select-none">
       <ConnectionBanner />
       <div className="flex flex-1 overflow-hidden gap-2 sm:gap-3">
         {/* Left Sidebar */}

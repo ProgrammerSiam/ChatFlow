@@ -33,11 +33,7 @@ export default function Sidebar() {
 
   const { conversations, isLoading, error, refetch } = useConversations();
   const { user, logout } = useAuthStore();
-  const {
-    setNewChatOpen,
-    setNewGroupOpen,
-    setProfileOpen,
-  } = useChatUIStore();
+  const { setNewChatOpen, setNewGroupOpen, setProfileOpen } = useChatUIStore();
 
   const [filterQuery, setFilterQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
@@ -55,7 +51,8 @@ export default function Sidebar() {
       // Tab filter
       if (activeFilter === 'direct' && c.type !== 'direct') return false;
       if (activeFilter === 'groups' && c.type !== 'group') return false;
-      if (activeFilter === 'unread' && (!c.unreadCount || c.unreadCount === 0)) return false;
+      if (activeFilter === 'unread' && (!c.unreadCount || c.unreadCount === 0))
+        return false;
 
       // Text filter
       if (!filterQuery.trim()) return true;
@@ -93,7 +90,10 @@ export default function Sidebar() {
         date.getFullYear() === now.getFullYear();
 
       if (isToday) {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
       }
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     } catch {
@@ -102,8 +102,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-full md:w-72 lg:w-80 h-full rounded-[24px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 p-3 sm:p-3.5 flex flex-col justify-between shadow-xs select-none shrink-0 overflow-hidden">
-      
+    <aside className="w-full md:w-72 lg:w-80 h-full rounded-[24px] bg-[#FAFAFA] dark:bg-card  p-3 sm:p-3.5 flex flex-col justify-between  select-none shrink-0 overflow-hidden">
       {/* Top Section */}
       <div className="flex flex-col gap-3">
         {/* Brand Header */}
@@ -207,7 +206,10 @@ export default function Sidebar() {
         {isLoading ? (
           <div className="space-y-2 py-2">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center gap-2.5 p-2 rounded-xl animate-pulse">
+              <div
+                key={i}
+                className="flex items-center gap-2.5 p-2 rounded-xl animate-pulse"
+              >
                 <div className="h-9 w-9 rounded-xl bg-slate-100 dark:bg-muted shrink-0" />
                 <div className="flex-1 space-y-1.5">
                   <div className="h-3.5 w-3/4 rounded bg-slate-100 dark:bg-muted" />
@@ -233,10 +235,14 @@ export default function Sidebar() {
             </div>
             <div>
               <p className="text-xs font-medium text-slate-800 dark:text-slate-200">
-                {filterQuery ? 'No matching chats found' : 'No conversations yet'}
+                {filterQuery
+                  ? 'No matching chats found'
+                  : 'No conversations yet'}
               </p>
               <p className="text-[11px] text-slate-400 mt-0.5">
-                {filterQuery ? 'Try another search query' : 'Start your first direct or group chat'}
+                {filterQuery
+                  ? 'Try another search query'
+                  : 'Start your first direct or group chat'}
               </p>
             </div>
             {!filterQuery && (
@@ -257,8 +263,14 @@ export default function Sidebar() {
             const title = isGroup
               ? conv.name || 'Group Chat'
               : conv.participant?.name || 'User';
-            const subtitle = conv.lastMessage?.text || (isGroup ? `${conv.participants?.length || 0} participants` : conv.participant?.phone || 'No messages yet');
-            const time = formatConversationTime(conv.lastMessage?.createdAt || conv.updatedAt || conv.createdAt);
+            const subtitle =
+              conv.lastMessage?.text ||
+              (isGroup
+                ? `${conv.participants?.length || 0} participants`
+                : conv.participant?.phone || 'No messages yet');
+            const time = formatConversationTime(
+              conv.lastMessage?.createdAt || conv.updatedAt || conv.createdAt
+            );
 
             return (
               <Link
@@ -291,7 +303,9 @@ export default function Sidebar() {
                     <span className="text-xs font-medium text-slate-900 dark:text-white truncate">
                       {title}
                     </span>
-                    <span className="text-[10px] text-slate-400 shrink-0">{time}</span>
+                    <span className="text-[10px] text-slate-400 shrink-0">
+                      {time}
+                    </span>
                   </div>
                   <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate leading-snug">
                     {subtitle}
@@ -341,7 +355,6 @@ export default function Sidebar() {
           </button>
         </div>
       </div>
-
     </aside>
   );
 }
