@@ -232,20 +232,20 @@ export default function MessageList({
 
                 {/* Message Bubble */}
                 <div
-                  className={`group relative max-w-[82%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-xs text-sm transition-all ${
+                  className={`group relative max-w-[82%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
                     isSelf
                       ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
                       : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
                   }`}
                 >
-                  <p className="whitespace-pre-wrap break-words leading-relaxed">
+                  <p className="whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium">
                     {message.text}
                   </p>
 
                   {/* Message Meta: Timestamp & Status */}
                   <div
-                    className={`flex items-center justify-end gap-1.5 mt-1 text-[10px] ${
-                      isSelf ? 'text-white/80' : 'text-muted-foreground'
+                    className={`flex items-center justify-end gap-1.5 mt-1 text-[11px] font-medium ${
+                      isSelf ? 'text-white/85' : 'text-muted-foreground'
                     }`}
                   >
                     <span>{formatMessageTime(message.createdAt)}</span>

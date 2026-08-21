@@ -83,10 +83,10 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
               </div>
 
               <div className="min-w-0">
-                <h2 className="text-sm font-semibold truncate leading-tight text-slate-900 dark:text-white">
+                <h2 className="text-base sm:text-lg font-bold tracking-tight truncate leading-tight text-slate-900 dark:text-white">
                   {title}
                 </h2>
-                <p className="text-xs text-slate-400 truncate mt-0.5">{subtitle}</p>
+                <p className="text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 truncate mt-0.5 font-medium">{subtitle}</p>
               </div>
             </button>
           </div>

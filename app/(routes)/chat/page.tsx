@@ -97,12 +97,13 @@ export default function ChatIndexPage() {
               readOnly
               onClick={() => setNewChatOpen(true)}
               placeholder="Search teammates..."
-              className="w-full h-9.5 rounded-2xl border border-slate-200/90 dark:border-border/80 bg-slate-50/80 hover:bg-white dark:bg-muted/40 dark:hover:bg-muted/70 pl-9.5 pr-11 text-xs sm:text-[13px] text-slate-900 dark:text-white placeholder:text-slate-400 group-hover:border-purple-300 dark:group-hover:border-purple-700/60 group-hover:shadow-xs cursor-pointer transition-all focus:outline-none"
+              className="w-full h-9.5 rounded-2xl border border-slate-200/90 dark:border-border/80 bg-slate-50/80 hover:bg-white dark:bg-muted/40 dark:hover:bg-muted/70 pl-9.5 pr-14 text-xs sm:text-[13px] text-slate-900 dark:text-white placeholder:text-slate-400 group-hover:border-purple-300 dark:group-hover:border-purple-700/60 group-hover:shadow-xs cursor-pointer transition-all focus:outline-none"
             />
-            <div className="absolute right-2.5 flex items-center gap-0.5 pointer-events-none">
-              <span className="flex items-center justify-center h-5 px-1.5 rounded-md bg-white dark:bg-card border border-slate-200/80 dark:border-border text-[10px] font-semibold text-slate-400 dark:text-slate-400 shadow-2xs">
-                ⌘K
-              </span>
+            <div className="absolute right-2.5 flex items-center pointer-events-none">
+              <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white dark:bg-card border border-slate-200/90 dark:border-border text-slate-500 dark:text-slate-400 shadow-2xs">
+                <span className="text-[11px] leading-none font-sans">⌘</span>
+                <span className="text-[10px] font-bold font-mono leading-none">K</span>
+              </kbd>
             </div>
           </div>
 
