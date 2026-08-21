@@ -567,7 +567,7 @@ export default function ConversationDetailsPanel({
           <div className="pt-1">
             <button
               onClick={() => setIsAddingMembers(true)}
-              className="w-full h-10.5 flex items-center justify-center gap-2 rounded-xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/40 text-xs font-semibold transition-all cursor-pointer"
+              className="w-full h-10.5 flex items-center justify-center gap-2 rounded-xl bg-slate-950 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 border border-slate-900 dark:border-white text-xs font-semibold shadow-md shadow-slate-950/20 transition-all cursor-pointer"
             >
               <UserPlus className="h-4 w-4" />
               <span>Add Members</span>

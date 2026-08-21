@@ -220,8 +220,8 @@ export default function NewGroupModal() {
                 onClick={() => setFilterMode('all')}
                 className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                   filterMode === 'all'
-                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
-                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                    ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
                 }`}
               >
                 <Users className="h-3 w-3" />
@@ -233,8 +233,8 @@ export default function NewGroupModal() {
                 onClick={() => setFilterMode('direct_only')}
                 className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                   filterMode === 'direct_only'
-                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
-                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                    ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
                 }`}
               >
                 <MessageSquare className="h-3 w-3" />
@@ -247,11 +247,11 @@ export default function NewGroupModal() {
                   onClick={() => setFilterMode('shared_groups_only')}
                   className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                     filterMode === 'shared_groups_only'
-                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/60 shadow-2xs'
-                      : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                      ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                      : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
                   }`}
                 >
-                  <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                  <Users className="h-3 w-3" />
                   <span>In Your Groups ({sharedGroupsUsersCount})</span>
                 </button>
               )}
@@ -261,8 +261,8 @@ export default function NewGroupModal() {
                 onClick={() => setFilterMode('new_only')}
                 className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                   filterMode === 'new_only'
-                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
-                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                    ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
                 }`}
               >
                 <UserPlus className="h-3 w-3" />
@@ -385,7 +385,7 @@ export default function NewGroupModal() {
             <button
               type="submit"
               disabled={isCreatingGroup || selectedParticipants.length < 2 || !groupName.trim()}
-              className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8E7CFF] via-[#725CFF] to-[#6366F1] text-sm font-medium text-white shadow-xs hover:opacity-95 active:scale-[0.99] disabled:opacity-50 transition-all cursor-pointer"
+              className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-slate-950 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 text-sm font-semibold shadow-md shadow-slate-950/20 active:scale-[0.99] disabled:opacity-40 transition-all cursor-pointer border border-slate-900 dark:border-white"
             >
               {isCreatingGroup ? (
                 <>

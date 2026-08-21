@@ -277,7 +277,7 @@ export default function MemberProfileModal({
             <button
               onClick={handleDirectMessage}
               disabled={isStartingChat}
-              className="w-full h-11 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8E7CFF] via-[#725CFF] to-[#6366F1] text-xs font-semibold text-white shadow-xs hover:opacity-95 active:scale-[0.99] transition-all cursor-pointer"
+              className="w-full h-11 flex items-center justify-center gap-2 rounded-xl bg-slate-950 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-xs font-semibold text-white dark:text-slate-950 shadow-md shadow-slate-950/20 active:scale-[0.99] transition-all cursor-pointer border border-slate-900 dark:border-white"
             >
               <MessageSquare className="h-4 w-4" />
               <span>{existingDirectConv ? 'Open Direct Chat' : 'Start Direct Chat'}</span>
