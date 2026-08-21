@@ -28,6 +28,7 @@ export const useChatUIStore = create<ChatUIState>((set) => ({
   activeConversationId: null,
   isSocketConnected: false,
   isReconnecting: false,
+  isSidebarCollapsed: false,
 
   setNewChatOpen: (open) => set({ isNewChatOpen: open }),
   setNewGroupOpen: (open) => set({ isNewGroupOpen: open }),
@@ -36,4 +37,7 @@ export const useChatUIStore = create<ChatUIState>((set) => ({
   setActiveConversationId: (id) => set({ activeConversationId: id }),
   setSocketConnected: (connected) => set({ isSocketConnected: connected }),
   setReconnecting: (reconnecting) => set({ isReconnecting: reconnecting }),
+  setSidebarCollapsed: (collapsed) => set({ isSidebarCollapsed: collapsed }),
+  toggleSidebarCollapsed: () =>
+    set((state) => ({ isSidebarCollapsed: !state.isSidebarCollapsed })),
 }));
