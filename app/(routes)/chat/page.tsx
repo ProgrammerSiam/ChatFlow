@@ -121,8 +121,8 @@ export default function ChatIndexPage() {
       </header>
 
       {/* Main Center Content View */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-4 sm:px-6 py-8 sm:py-12 flex flex-col items-center justify-center text-center">
-        <div className="w-full max-w-4xl xl:max-w-5xl space-y-7 flex flex-col items-center">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-4 sm:px-6 py-6 sm:py-10 flex flex-col items-center justify-center text-center">
+        <div className="w-full max-w-3xl xl:max-w-[880px] space-y-6 flex flex-col items-center">
           
           {/* Hero Avatar & Dynamic Status Card */}
           <div className="flex flex-col items-center space-y-3.5">
@@ -268,8 +268,8 @@ export default function ChatIndexPage() {
                 </span>
               </div>
 
-              <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
-                {recentConversations.map((conv) => {
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-10">
+                {recentConversations.map((conv, idx) => {
                   const isGroup = conv.type === 'group';
                   const title = isGroup ? conv.name || 'Group Chat' : conv.participant?.name || 'User';
                   const subtitle =
@@ -282,46 +282,56 @@ export default function ChatIndexPage() {
                     ? new Date(time).toLocaleDateString([], { month: 'short', day: 'numeric' })
                     : '';
 
+                  // Dynamic asymmetric column span (3 - 4 - 3 pattern)
+                  const colSpanClass =
+                    recentConversations.length === 1
+                      ? 'sm:col-span-10'
+                      : recentConversations.length === 2
+                      ? 'sm:col-span-5'
+                      : idx === 1
+                      ? 'sm:col-span-4 bg-gradient-to-br from-white via-white to-purple-50/30 dark:from-card dark:to-purple-950/20 border-purple-200/80 dark:border-purple-800/60 shadow-xs'
+                      : 'sm:col-span-3 bg-white dark:bg-card border-slate-200/80 dark:border-border/70';
+
                   return (
                     <Link
                       key={conv._id}
                       href={`/chat/${conv._id}`}
-                      className="p-3.5 rounded-[22px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-3 group shadow-2xs"
+                      className={`p-3 rounded-2xl border hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-2.5 group shadow-2xs ${colSpanClass}`}
                     >
-                      <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex items-center gap-2.5 min-w-0">
                         <div className="relative shrink-0">
                           <div
-                            className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs shadow-2xs group-hover:scale-105 transition-transform ${
+                            className={`flex h-9 w-9 items-center justify-center rounded-xl font-bold text-xs shadow-2xs group-hover:scale-105 transition-transform ${
                               isGroup
                                 ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
                                 : 'bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white'
                             }`}
                           >
-                            {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
+                            {isGroup ? <Users className="h-4 w-4" /> : title.charAt(0).toUpperCase()}
                           </div>
                           {!isGroup && (
-                            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
+                            <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
                           )}
                         </div>
 
                         <div className="min-w-0">
-                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                          <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                             {title}
                           </p>
-                          <p className="text-xs text-slate-400 truncate mt-0.5">
+                          <p className="text-[11px] text-slate-400 truncate mt-0.5">
                             {subtitle}
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-end gap-1 shrink-0">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         {formattedTime && (
                           <span className="text-[10px] font-mono text-slate-400">
                             {formattedTime}
                           </span>
                         )}
-                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-50 dark:bg-muted text-slate-400 group-hover:bg-slate-950 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950 transition-all">
-                          <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        <div className="flex h-5.5 w-5.5 items-center justify-center rounded-lg bg-slate-50 dark:bg-muted text-slate-400 group-hover:bg-slate-950 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950 transition-all">
+                          <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
                         </div>
                       </div>
                     </Link>
