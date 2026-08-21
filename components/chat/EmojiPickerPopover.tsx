@@ -7,6 +7,7 @@ interface EmojiPickerPopoverProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectEmoji: (emoji: string) => void;
+  triggerRef?: React.RefObject<HTMLElement | null>;
 }
 
 interface EmojiCategory {
@@ -271,6 +272,7 @@ export default function EmojiPickerPopover({
   isOpen,
   onClose,
   onSelectEmoji,
+  triggerRef,
 }: EmojiPickerPopoverProps) {
   const [activeTab, setActiveTab] = useState<string>('popular');
   const [searchQuery, setSearchQuery] = useState('');
@@ -282,7 +284,12 @@ export default function EmojiPickerPopover({
     if (!isOpen) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(target) &&
+        (!triggerRef?.current || !triggerRef.current.contains(target))
+      ) {
         onClose();
       }
     };
@@ -300,7 +307,7 @@ export default function EmojiPickerPopover({
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, triggerRef]);
 
   // Focus search input when popover opens
   useEffect(() => {

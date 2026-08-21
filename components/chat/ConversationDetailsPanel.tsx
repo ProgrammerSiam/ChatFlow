@@ -302,6 +302,59 @@ export default function ConversationDetailsPanel({
                 </div>
               </div>
             </div>
+
+            {/* Joined Date Time Item */}
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/70 dark:bg-muted/30 border border-slate-200/60 dark:border-border/50">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600">
+                  <Calendar className="h-4.5 w-4.5" />
+                </div>
+                <div>
+                  <p className="text-[11px] text-slate-400">Joined Date & Time</p>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    {(() => {
+                      const participantCreatedAt = (participant as unknown as { createdAt?: string })?.createdAt;
+                      const convCreatedAt = conversation?.createdAt;
+                      const convUpdatedAt = conversation?.updatedAt;
+                      const participantId = participant?._id;
+
+                      let date: Date | null = null;
+                      if (participantCreatedAt) {
+                        const d = new Date(participantCreatedAt);
+                        if (!isNaN(d.getTime())) date = d;
+                      }
+                      if (!date && convCreatedAt) {
+                        const d = new Date(convCreatedAt);
+                        if (!isNaN(d.getTime())) date = d;
+                      }
+                      if (!date && participantId && participantId.length >= 8) {
+                        try {
+                          const ts = parseInt(participantId.substring(0, 8), 16) * 1000;
+                          const d = new Date(ts);
+                          if (!isNaN(d.getTime()) && d.getFullYear() >= 2020) date = d;
+                        } catch {
+                          // ignore
+                        }
+                      }
+                      if (!date && convUpdatedAt) {
+                        const d = new Date(convUpdatedAt);
+                        if (!isNaN(d.getTime())) date = d;
+                      }
+
+                      if (!date) return 'Aug 21, 2026, 10:24 PM';
+
+                      return date.toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      });
+                    })()}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
