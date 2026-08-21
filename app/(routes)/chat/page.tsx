@@ -255,48 +255,75 @@ export default function ChatIndexPage() {
 
           {/* Quick Jump to Recent Conversations (if available) */}
           {recentConversations.length > 0 && (
-            <div className="w-full space-y-2.5 pt-2 text-left">
+            <div className="w-full space-y-3 pt-2 text-left">
               <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  Recent Conversations
-                </span>
-                <span className="text-xs text-slate-400">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-purple-600 animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Recent Conversations
+                  </span>
+                </div>
+                <span className="text-xs font-semibold text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/50 px-2.5 py-0.5 rounded-full border border-purple-100 dark:border-purple-900/40">
                   {(conversations || []).length} total
                 </span>
               </div>
 
-              <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
                 {recentConversations.map((conv) => {
                   const isGroup = conv.type === 'group';
-                  const title = isGroup ? conv.name || 'Group' : conv.participant?.name || 'User';
-                  const lastText = conv.lastMessage?.text || 'No messages yet';
+                  const title = isGroup ? conv.name || 'Group Chat' : conv.participant?.name || 'User';
+                  const subtitle =
+                    conv.lastMessage?.text ||
+                    (isGroup
+                      ? `${conv.participants?.length || 0} participants`
+                      : conv.participant?.phone || 'No messages yet');
+                  const time = conv.lastMessage?.createdAt || conv.updatedAt || conv.createdAt;
+                  const formattedTime = time
+                    ? new Date(time).toLocaleDateString([], { month: 'short', day: 'numeric' })
+                    : '';
 
                   return (
                     <Link
                       key={conv._id}
                       href={`/chat/${conv._id}`}
-                      className="p-3 rounded-2xl bg-slate-50/70 dark:bg-muted/30 border border-slate-200/60 dark:border-border/50 hover:bg-purple-50/50 hover:border-purple-200 transition-all flex items-center justify-between gap-2 group"
+                      className="p-3.5 rounded-[22px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md hover:-translate-y-0.5 transition-all flex items-center justify-between gap-3 group shadow-2xs"
                     >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <div
-                          className={`flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl font-bold text-xs ${
-                            isGroup
-                              ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
-                              : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
-                          }`}
-                        >
-                          {isGroup ? <Users className="h-4 w-4" /> : title.charAt(0).toUpperCase()}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="relative shrink-0">
+                          <div
+                            className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs shadow-2xs group-hover:scale-105 transition-transform ${
+                              isGroup
+                                ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
+                                : 'bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white'
+                            }`}
+                          >
+                            {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
+                          </div>
+                          {!isGroup && (
+                            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
+                          )}
                         </div>
+
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white truncate group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                             {title}
                           </p>
-                          <p className="text-[11px] text-slate-400 truncate">
-                            {lastText}
+                          <p className="text-xs text-slate-400 truncate mt-0.5">
+                            {subtitle}
                           </p>
                         </div>
                       </div>
-                      <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        {formattedTime && (
+                          <span className="text-[10px] font-mono text-slate-400">
+                            {formattedTime}
+                          </span>
+                        )}
+                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-slate-50 dark:bg-muted text-slate-400 group-hover:bg-slate-950 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950 transition-all">
+                          <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                      </div>
                     </Link>
                   );
                 })}
