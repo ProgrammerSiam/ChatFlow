@@ -30,6 +30,7 @@ import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import CoolTooltip from '@/shared/CoolTooltip';
+import ConfirmModal from '@/shared/ConfirmModal';
 
 interface ConversationDetailsPanelProps {
   conversation: Conversation;
@@ -58,6 +59,10 @@ export default function ConversationDetailsPanel({
   const [isSubmittingMembers, setIsSubmittingMembers] = useState(false);
   const [loadingActionUserId, setLoadingActionUserId] = useState<string | null>(null);
   const [copiedPhone, setCopiedPhone] = useState(false);
+
+  // Confirmation Modals State
+  const [isLeaveGroupConfirmOpen, setIsLeaveGroupConfirmOpen] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<{ id: string; name: string } | null>(null);
 
   const { query, setQuery, users, isLoading: isSearchingUsers } = useUserSearch();
 
@@ -498,9 +503,9 @@ export default function ConversationDetailsPanel({
 
                       <CoolTooltip content="Remove Member" side="left">
                         <button
-                          onClick={() => handleRemoveMember(p._id, p.name)}
+                          onClick={() => setMemberToRemove({ id: p._id, name: p.name })}
                           disabled={loadingActionUserId === p._id}
-                          className="p-1 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
+                          className="p-1 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 cursor-pointer"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
@@ -518,13 +523,45 @@ export default function ConversationDetailsPanel({
       {/* Footer: Leave Group */}
       <div className="p-3.5 border-t border-slate-100 dark:border-border/50">
         <button
-          onClick={handleLeaveGroup}
+          onClick={() => setIsLeaveGroupConfirmOpen(true)}
           className="w-full h-10 flex items-center justify-center gap-2 rounded-xl border border-rose-200/80 bg-rose-50/60 hover:bg-rose-100 text-rose-600 text-xs font-semibold transition-colors cursor-pointer"
         >
           <LogOut className="h-4 w-4" />
           <span>Leave Group</span>
         </button>
       </div>
+
+      {/* Leave Group Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={isLeaveGroupConfirmOpen}
+        onClose={() => setIsLeaveGroupConfirmOpen(false)}
+        onConfirm={async () => {
+          setIsLeaveGroupConfirmOpen(false);
+          await handleLeaveGroup();
+        }}
+        title={`Leave "${conversation.name}"?`}
+        description="You will no longer receive new messages or announcements from this group channel."
+        confirmText="Leave Group"
+        variant="danger"
+        icon="logout"
+      />
+
+      {/* Remove Member Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={!!memberToRemove}
+        onClose={() => setMemberToRemove(null)}
+        onConfirm={async () => {
+          if (!memberToRemove) return;
+          const { id, name } = memberToRemove;
+          setMemberToRemove(null);
+          await handleRemoveMember(id, name);
+        }}
+        title={`Remove ${memberToRemove?.name || 'Member'}?`}
+        description={`Are you sure you want to remove ${memberToRemove?.name || 'this member'} from the group? They will lose access to the chat history.`}
+        confirmText="Remove Member"
+        variant="danger"
+        icon="trash"
+      />
 
     </aside>
   );

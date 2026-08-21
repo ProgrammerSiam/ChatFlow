@@ -21,6 +21,8 @@ import { Conversation } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
+import ConfirmModal from '@/shared/ConfirmModal';
+
 type FilterTab = 'all' | 'direct' | 'groups' | 'unread';
 
 export default function Sidebar() {
@@ -41,8 +43,10 @@ export default function Sidebar() {
 
   const [filterQuery, setFilterQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
   const handleLogout = () => {
+    setIsLogoutConfirmOpen(false);
     logout();
     queryClient.clear();
     toast.success('Logged out successfully');
@@ -487,7 +491,7 @@ export default function Sidebar() {
           {/* Action Log Out Button */}
           <CoolTooltip content="Log Out" side="top">
             <button
-              onClick={handleLogout}
+              onClick={() => setIsLogoutConfirmOpen(true)}
               className="flex h-8.5 w-8.5 items-center justify-center rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer shrink-0 ml-1"
             >
               <LogOut className="h-4.5 w-4.5" />
@@ -495,6 +499,18 @@ export default function Sidebar() {
           </CoolTooltip>
         </div>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={isLogoutConfirmOpen}
+        onClose={() => setIsLogoutConfirmOpen(false)}
+        onConfirm={handleLogout}
+        title="Log out of ChatFlow?"
+        description="You will be disconnected from the real-time server. You'll need to enter your phone number to log back in."
+        confirmText="Log Out"
+        variant="danger"
+        icon="logout"
+      />
 
     </aside>
   );

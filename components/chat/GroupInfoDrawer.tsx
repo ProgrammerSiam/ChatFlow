@@ -21,6 +21,7 @@ import { useUserSearch } from '@/hooks/useUserSearch';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import ConfirmModal from '@/shared/ConfirmModal';
 
 export default function GroupInfoDrawer({
   conversation,
@@ -42,6 +43,10 @@ export default function GroupInfoDrawer({
   const [isSubmittingMembers, setIsSubmittingMembers] = useState(false);
 
   const [loadingActionUserId, setLoadingActionUserId] = useState<string | null>(null);
+
+  // Confirmation States
+  const [isLeaveGroupConfirmOpen, setIsLeaveGroupConfirmOpen] = useState(false);
+  const [memberToRemove, setMemberToRemove] = useState<{ id: string; name: string } | null>(null);
 
   // Close on Escape key
   useEffect(() => {
@@ -392,9 +397,9 @@ export default function GroupInfoDrawer({
                             </button>
                           )}
                           <button
-                            onClick={() => handleRemoveMember(participant._id, participant.name)}
+                            onClick={() => setMemberToRemove({ id: participant._id, name: participant.name })}
                             title="Remove Member"
-                            className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                            className="rounded-md p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors cursor-pointer"
                           >
                             <UserMinus className="h-4 w-4" />
                           </button>
@@ -412,13 +417,46 @@ export default function GroupInfoDrawer({
       {/* Drawer Footer: Leave Group */}
       <div className="p-4 border-t bg-muted/20">
         <button
-          onClick={handleLeaveGroup}
-          className="w-full flex items-center justify-center gap-2 rounded-xl border border-destructive/30 bg-destructive/5 py-2.5 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors"
+          onClick={() => setIsLeaveGroupConfirmOpen(true)}
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-destructive/30 bg-destructive/5 py-2.5 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors cursor-pointer"
         >
           <LogOut className="h-4 w-4" />
           Leave Group
         </button>
       </div>
+
+      {/* Leave Group Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={isLeaveGroupConfirmOpen}
+        onClose={() => setIsLeaveGroupConfirmOpen(false)}
+        onConfirm={async () => {
+          setIsLeaveGroupConfirmOpen(false);
+          await handleLeaveGroup();
+        }}
+        title={`Leave "${conversation.name}"?`}
+        description="You will no longer receive new messages or announcements from this group channel."
+        confirmText="Leave Group"
+        variant="danger"
+        icon="logout"
+      />
+
+      {/* Remove Member Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={!!memberToRemove}
+        onClose={() => setMemberToRemove(null)}
+        onConfirm={async () => {
+          if (!memberToRemove) return;
+          const { id, name } = memberToRemove;
+          setMemberToRemove(null);
+          await handleRemoveMember(id, name);
+        }}
+        title={`Remove ${memberToRemove?.name || 'Member'}?`}
+        description={`Are you sure you want to remove ${memberToRemove?.name || 'this member'} from the group? They will lose access to the chat history.`}
+        confirmText="Remove Member"
+        variant="danger"
+        icon="trash"
+      />
+
     </div>
     </>
   );
