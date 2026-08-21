@@ -51,6 +51,12 @@ export default function Navbar() {
             Process
           </a>
           <a
+            href="#testimonials"
+            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Reviews
+          </a>
+          <a
             href="#faq"
             className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >

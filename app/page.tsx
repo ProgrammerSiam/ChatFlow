@@ -7,6 +7,7 @@ import LiveDemoSection from '@/sections/LiveDemoSection';
 import HowItWorksSection from '@/sections/HowItWorksSection';
 import TestimonialsSection from '@/sections/TestimonialsSection';
 import FaqSection from '@/sections/FaqSection';
+import CallToActionSection from '@/sections/CallToActionSection';
 
 export default function HomePage() {
   return (
@@ -20,6 +21,7 @@ export default function HomePage() {
         <HowItWorksSection />
         <TestimonialsSection />
         <FaqSection />
+        <CallToActionSection />
       </main>
       <Footer />
     </div>
