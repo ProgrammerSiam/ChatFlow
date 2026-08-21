@@ -59,7 +59,8 @@ export default function Sidebar() {
       // Tab filter
       if (activeFilter === 'direct' && c.type !== 'direct') return false;
       if (activeFilter === 'groups' && c.type !== 'group') return false;
-      if (activeFilter === 'unread' && (!c.unreadCount || c.unreadCount === 0)) return false;
+      if (activeFilter === 'unread' && (!c.unreadCount || c.unreadCount === 0))
+        return false;
 
       // Text filter
       if (!filterQuery.trim()) return true;
@@ -97,7 +98,10 @@ export default function Sidebar() {
         date.getFullYear() === now.getFullYear();
 
       if (isToday) {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        });
       }
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     } catch {
@@ -162,7 +166,9 @@ export default function Sidebar() {
               {filteredConversations.map((conv) => {
                 const isGroup = conv.type === 'group';
                 const isActive = activeId === conv._id;
-                const title = isGroup ? conv.name || 'Group' : conv.participant?.name || 'User';
+                const title = isGroup
+                  ? conv.name || 'Group'
+                  : conv.participant?.name || 'User';
 
                 return (
                   <Link
@@ -173,11 +179,15 @@ export default function Sidebar() {
                       isActive
                         ? 'ring-2 ring-purple-600 bg-gradient-to-tr from-[#8E7CFF] to-[#B6A8FF] text-white scale-105 shadow-xs'
                         : isGroup
-                        ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 hover:scale-105'
-                        : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:scale-105'
+                          ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 hover:scale-105'
+                          : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:scale-105'
                     }`}
                   >
-                    {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
+                    {isGroup ? (
+                      <Users className="h-4.5 w-4.5" />
+                    ) : (
+                      title.charAt(0).toUpperCase()
+                    )}
                     {conv.unreadCount && conv.unreadCount > 0 ? (
                       <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-purple-600 text-white text-[9px] font-bold ring-2 ring-white">
                         {conv.unreadCount}
@@ -210,7 +220,6 @@ export default function Sidebar() {
   // Expanded Sidebar View (Full Layout)
   return (
     <aside className="w-full md:w-80 lg:w-84 h-full rounded-[24px] bg-[#FAFAFA] dark:bg-card border border-slate-200/80 dark:border-border/70 p-3.5 sm:p-4 flex flex-col justify-between shadow-xs select-none shrink-0 transition-all duration-300 relative z-20">
-      
       {/* Top Section */}
       <div className="flex flex-col gap-3.5">
         {/* Brand Header */}
@@ -222,7 +231,12 @@ export default function Sidebar() {
           </CoolTooltip>
 
           {/* Larger Collapse Toggle Button */}
-          <CoolTooltip content="Collapse sidebar" side="bottom" align="end" shortcut="⌘[">
+          <CoolTooltip
+            content="Collapse sidebar"
+            side="bottom"
+            align="end"
+            shortcut="⌘["
+          >
             <button
               onClick={toggleSidebarCollapsed}
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border/70 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-2xs"
@@ -355,7 +369,10 @@ export default function Sidebar() {
           {isLoading ? (
             <div className="space-y-2 py-2">
               {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl animate-pulse">
+                <div
+                  key={i}
+                  className="flex items-center gap-3 p-2.5 rounded-xl animate-pulse"
+                >
                   <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-muted shrink-0" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-3/4 rounded bg-slate-100 dark:bg-muted" />
@@ -381,10 +398,14 @@ export default function Sidebar() {
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
-                  {filterQuery ? 'No matching chats found' : 'No conversations yet'}
+                  {filterQuery
+                    ? 'No matching chats found'
+                    : 'No conversations yet'}
                 </p>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  {filterQuery ? 'Try another search query' : 'Start your first direct or group chat'}
+                  {filterQuery
+                    ? 'Try another search query'
+                    : 'Start your first direct or group chat'}
                 </p>
               </div>
               {!filterQuery && (
@@ -431,8 +452,8 @@ export default function Sidebar() {
                         isActive
                           ? 'bg-gradient-to-tr from-[#8E7CFF] via-[#725CFF] to-[#6366F1] text-white shadow-xs'
                           : isGroup
-                          ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
-                          : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
+                            ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
+                            : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
                       }`}
                     >
                       {isGroup ? (
@@ -441,7 +462,7 @@ export default function Sidebar() {
                         title.charAt(0).toUpperCase()
                       )}
                     </div>
-                    
+
                     {/* Online Indicator Badge for Direct Chats */}
                     {!isGroup && (
                       <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
@@ -454,7 +475,9 @@ export default function Sidebar() {
                       <span className="text-sm font-medium text-slate-900 dark:text-white truncate">
                         {title}
                       </span>
-                      <span className="text-xs text-slate-400 shrink-0">{time}</span>
+                      <span className="text-xs text-slate-400 shrink-0">
+                        {time}
+                      </span>
                     </div>
                     <p className="text-xs text-slate-400 dark:text-slate-500 truncate leading-snug mt-0.5">
                       {subtitle}
@@ -524,7 +547,6 @@ export default function Sidebar() {
         variant="danger"
         icon="logout"
       />
-
     </aside>
   );
 }

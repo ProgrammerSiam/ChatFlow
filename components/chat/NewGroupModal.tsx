@@ -18,7 +18,7 @@ export default function NewGroupModal() {
 
   const [groupName, setGroupName] = useState('');
   const [selectedParticipants, setSelectedParticipants] = useState<SearchUser[]>([]);
-  const [filterMode, setFilterMode] = useState<'all' | 'direct_only' | 'shared_groups_only' | 'new_only'>('all');
+  const [filterMode, setFilterMode] = useState<'all' | 'shared_groups_only' | 'new_only'>('all');
 
   // Close on Escape key
   useEffect(() => {
@@ -64,9 +64,6 @@ export default function NewGroupModal() {
   }, [users, conversations]);
 
   const displayedUsers = useMemo(() => {
-    if (filterMode === 'direct_only') {
-      return users.filter((u) => !!getExistingConversation(u._id));
-    }
     if (filterMode === 'shared_groups_only') {
       return users.filter((u) => getSharedGroups(u._id).length > 0);
     }
@@ -226,19 +223,6 @@ export default function NewGroupModal() {
               >
                 <Users className="h-3 w-3" />
                 <span>All Users ({users.length})</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setFilterMode('direct_only')}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  filterMode === 'direct_only'
-                    ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
-                    : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
-                }`}
-              >
-                <MessageSquare className="h-3 w-3" />
-                <span>Direct Contacts ({directUsersCount})</span>
               </button>
 
               {sharedGroupsUsersCount > 0 && (
