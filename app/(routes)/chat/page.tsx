@@ -152,54 +152,93 @@ export default function ChatIndexPage() {
             </div>
           </div>
 
-          {/* Meaningful Quick Action Cards */}
-          <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-3 w-full text-left pt-1">
-            {/* Action 1: Direct Chat */}
+          {/* Feature Bento-Style Quick Action Cards (Matches Homepage Features) */}
+          <div className="grid gap-5 grid-cols-1 sm:grid-cols-3 w-full text-left pt-2">
+            {/* Card 1: Direct Message */}
             <div
               onClick={() => setNewChatOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-800 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+              className="group relative rounded-3xl border border-slate-200/80 dark:border-border/80 bg-gradient-to-b from-purple-50/50 via-card to-card dark:from-purple-950/20 dark:via-card dark:to-card p-5 sm:p-6 shadow-xs hover:shadow-xl hover:border-purple-300 dark:hover:border-purple-700/80 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 group-hover:scale-110 transition-transform mb-3">
-                <MessageSquarePlus className="h-5 w-5" />
+              {/* Visual Top Preview */}
+              <div className="relative h-28 w-full rounded-2xl bg-gradient-to-tr from-purple-100 via-indigo-50 to-pink-100 dark:from-purple-950/50 dark:via-indigo-950/40 dark:to-purple-900/30 flex items-center justify-center overflow-hidden border border-purple-200/40 dark:border-border/40 mb-4">
+                {/* Organic Ambient Glow */}
+                <div className="absolute h-20 w-20 rounded-full bg-gradient-to-tr from-purple-400 to-indigo-400 blur-lg opacity-50 group-hover:scale-125 transition-transform duration-500" />
+
+                <div className="relative z-0 h-13 w-13 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-md flex items-center justify-center text-purple-600 dark:text-purple-300 shadow-xs group-hover:scale-110 transition-transform">
+                  <MessageSquarePlus className="h-6 w-6" />
+                </div>
               </div>
-              <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-purple-600 transition-colors">
-                Direct Message
-              </h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Search teammates by phone or name to start an instant 1-on-1 private chat.
-              </p>
+
+              <div className="space-y-1.5">
+                <h4 className="text-base font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                  Direct Message
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Search teammates by phone or name to start an instant private chat.
+                </p>
+                <div className="pt-2 flex items-center gap-1 text-xs font-semibold text-purple-600 dark:text-purple-400 group-hover:translate-x-1 transition-transform">
+                  <span>Start Chat</span>
+                  <span className="text-sm leading-none">→</span>
+                </div>
+              </div>
             </div>
 
-            {/* Action 2: Group Workspace */}
+            {/* Card 2: Team Channel */}
             <div
               onClick={() => setNewGroupOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-800 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+              className="group relative rounded-3xl border border-slate-200/80 dark:border-border/80 bg-gradient-to-b from-indigo-50/50 via-card to-card dark:from-indigo-950/20 dark:via-card dark:to-card p-5 sm:p-6 shadow-xs hover:shadow-xl hover:border-indigo-300 dark:hover:border-indigo-700/80 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 group-hover:scale-110 transition-transform mb-3">
-                <Users className="h-5 w-5" />
+              {/* Visual Top Preview */}
+              <div className="relative h-28 w-full rounded-2xl bg-gradient-to-tr from-indigo-100 via-purple-50 to-blue-100 dark:from-indigo-950/50 dark:via-purple-950/40 dark:to-indigo-900/30 flex items-center justify-center overflow-hidden border border-indigo-200/40 dark:border-border/40 mb-4">
+                {/* Organic Ambient Glow */}
+                <div className="absolute h-20 w-20 rounded-full bg-gradient-to-tr from-indigo-400 to-purple-400 blur-lg opacity-50 group-hover:scale-125 transition-transform duration-500" />
+
+                <div className="relative z-0 h-13 w-13 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-md flex items-center justify-center text-indigo-600 dark:text-indigo-300 shadow-xs group-hover:scale-110 transition-transform">
+                  <Users className="h-6 w-6" />
+                </div>
               </div>
-              <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-purple-600 transition-colors">
-                Team Channel
-              </h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                Create a group channel with member invitations and co-admin governance.
-              </p>
+
+              <div className="space-y-1.5">
+                <h4 className="text-base font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  Team Channel
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Create a collaborative workspace with member invites and admin roles.
+                </p>
+                <div className="pt-2 flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform">
+                  <span>Create Channel</span>
+                  <span className="text-sm leading-none">→</span>
+                </div>
+              </div>
             </div>
 
-            {/* Action 3: User Profile */}
+            {/* Card 3: Account & Settings */}
             <div
               onClick={() => setProfileOpen(true)}
-              className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-800 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+              className="group relative rounded-3xl border border-slate-200/80 dark:border-border/80 bg-gradient-to-b from-blue-50/50 via-card to-card dark:from-blue-950/20 dark:via-card dark:to-card p-5 sm:p-6 shadow-xs hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-700/80 transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-muted text-slate-700 dark:text-slate-300 group-hover:scale-110 transition-transform mb-3">
-                <UserIcon className="h-5 w-5" />
+              {/* Visual Top Preview */}
+              <div className="relative h-28 w-full rounded-2xl bg-gradient-to-tr from-blue-100 via-indigo-50 to-purple-100 dark:from-blue-950/50 dark:via-indigo-950/40 dark:to-blue-900/30 flex items-center justify-center overflow-hidden border border-blue-200/40 dark:border-border/40 mb-4">
+                {/* Organic Ambient Glow */}
+                <div className="absolute h-20 w-20 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-400 blur-lg opacity-50 group-hover:scale-125 transition-transform duration-500" />
+
+                <div className="relative z-0 h-13 w-13 rounded-2xl bg-white/80 dark:bg-white/10 backdrop-blur-md flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-xs group-hover:scale-110 transition-transform">
+                  <UserIcon className="h-6 w-6" />
+                </div>
               </div>
-              <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-purple-600 transition-colors">
-                Account & Settings
-              </h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                View your verified phone credentials, user ID, and active socket health.
-              </p>
+
+              <div className="space-y-1.5">
+                <h4 className="text-base font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  Account & Settings
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  View your verified phone credentials, unique user ID, and health.
+                </p>
+                <div className="pt-2 flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform">
+                  <span>View Profile</span>
+                  <span className="text-sm leading-none">→</span>
+                </div>
+              </div>
             </div>
           </div>
 
