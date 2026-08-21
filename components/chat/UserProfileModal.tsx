@@ -233,7 +233,18 @@ export default function UserProfileModal() {
             </div>
 
             {/* Action Footer */}
-            <div className="pt-2 flex items-center gap-3">
+            <div className="pt-2 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setProfileOpen(false);
+                  router.push('/');
+                }}
+                className="w-full flex items-center justify-center gap-2 rounded-xl border border-input bg-card py-2.5 text-xs font-semibold text-card-foreground hover:bg-muted transition-colors"
+              >
+                <Home className="h-4 w-4 text-primary" />
+                <span>Visit ChatFlow Homepage</span>
+              </button>
+
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center justify-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 py-2.5 text-xs font-semibold text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors"

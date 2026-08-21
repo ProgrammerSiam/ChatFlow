@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageSquarePlus, Users, MessageCircle, LogOut } from 'lucide-react';
+import { MessageSquarePlus, Users, MessageCircle, LogOut, Home } from 'lucide-react';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useQueryClient } from '@tanstack/react-query';
@@ -50,6 +50,13 @@ export default function ChatIndexPage() {
           >
             <Users className="h-4 w-4" />
             New Group
+          </button>
+          <button
+            onClick={() => router.push('/')}
+            className="inline-flex items-center gap-2 rounded-xl border border-input bg-card px-4 py-2.5 text-sm font-medium text-card-foreground shadow-sm hover:bg-accent transition-colors"
+          >
+            <Home className="h-4 w-4 text-primary" />
+            Homepage
           </button>
           <button
             onClick={handleLogout}

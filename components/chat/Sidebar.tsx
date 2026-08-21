@@ -10,6 +10,7 @@ import {
   LogOut,
   User as UserIcon,
   MessageCircle,
+  Home,
 } from 'lucide-react';
 import { useConversations } from '@/hooks/useConversations';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -83,14 +84,30 @@ export default function Sidebar() {
       {/* Sidebar Header */}
       <div className="p-4 border-b space-y-3">
         <div className="flex items-center justify-between">
-          <Link href="/chat" className="flex items-center gap-2 font-bold text-xl tracking-tight">
+          <Link
+            href="/"
+            title="Go to Homepage"
+            className="flex items-center gap-2 font-bold text-xl tracking-tight group hover:opacity-85 transition-opacity"
+          >
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow">
               <MessageCircle className="h-5 w-5" />
             </div>
-            <span>ChatFlow</span>
+            <span className="flex items-center gap-1.5">
+              <span>ChatFlow</span>
+              <span className="text-[10px] uppercase tracking-wider font-semibold px-1.5 py-0.5 rounded-md bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                Home
+              </span>
+            </span>
           </Link>
 
           <div className="flex items-center gap-1">
+            <Link
+              href="/"
+              title="Return to Landing Page"
+              className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <Home className="h-5 w-5" />
+            </Link>
             <button
               onClick={() => setNewChatOpen(true)}
               title="New Direct Message"
