@@ -33,7 +33,15 @@ export default function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <AuthInitializer>
         {children}
-        <Toaster position="top-center" richColors closeButton />
+        <Toaster
+          position="top-center"
+          theme="system"
+          toastOptions={{
+            className:
+              '!rounded-2xl !border !border-slate-200/80 dark:!border-border/80 !bg-white/95 dark:!bg-card/95 !text-slate-900 dark:!text-white !backdrop-blur-md !shadow-xl !px-4 !py-3 !text-xs !font-medium',
+            duration: 2500,
+          }}
+        />
       </AuthInitializer>
     </QueryClientProvider>
   );

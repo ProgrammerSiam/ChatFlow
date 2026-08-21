@@ -8,6 +8,7 @@ import { useConversations } from '@/hooks/useConversations';
 import { useUserSearch } from '@/hooks/useUserSearch';
 import { toast } from 'sonner';
 import { SearchUser } from '@/types';
+import { triggerCelebration } from '@/lib/confetti';
 
 export default function NewChatModal() {
   const router = useRouter();
@@ -68,6 +69,7 @@ export default function NewChatModal() {
 
       // 2. Otherwise create direct conversation via API
       const newConv = await createDirectConversation(targetUser._id);
+      triggerCelebration();
       setNewChatOpen(false);
       setActiveConversationId(newConv._id);
       router.push(`/chat/${newConv._id}`);

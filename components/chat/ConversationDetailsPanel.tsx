@@ -29,6 +29,7 @@ import { useUserSearch } from '@/hooks/useUserSearch';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { triggerCelebration } from '@/lib/confetti';
 import CoolTooltip from '@/shared/CoolTooltip';
 import ConfirmModal from '@/shared/ConfirmModal';
 import AddMembersModal from './AddMembersModal';
@@ -149,6 +150,7 @@ export default function ConversationDetailsPanel({
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
         await navigator.clipboard.writeText(textToCopy);
         setCopiedContact(true);
+        triggerCelebration();
         toast.success(`Copied "${textToCopy}" to clipboard`);
         setTimeout(() => setCopiedContact(false), 2000);
       }
@@ -170,6 +172,7 @@ export default function ConversationDetailsPanel({
       try {
         await navigator.share(shareData);
         setSharedContact(true);
+        triggerCelebration();
         toast.success('Shared successfully');
         setTimeout(() => setSharedContact(false), 2000);
         return;
@@ -183,6 +186,7 @@ export default function ConversationDetailsPanel({
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
         setSharedContact(true);
+        triggerCelebration();
         toast.success('Chat link copied to clipboard');
         setTimeout(() => setSharedContact(false), 2000);
       }
