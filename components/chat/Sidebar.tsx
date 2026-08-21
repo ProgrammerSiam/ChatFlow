@@ -325,33 +325,34 @@ export default function Sidebar() {
       </div>
 
       {/* User Profile Card (GET /auth/me Modal Trigger) */}
-      <div className="pt-2 border-t border-slate-100 dark:border-border/50">
-        <div className="flex items-center justify-between p-2 rounded-xl bg-slate-50/80 dark:bg-muted/40 border border-slate-200/50 dark:border-border/50">
+      <div className="pt-2 border-t border-slate-200/50 dark:border-border/50">
+        <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 shadow-xs">
           <button
             onClick={() => setProfileOpen(true)}
-            className="flex items-center gap-2.5 min-w-0 text-left cursor-pointer hover:opacity-85 transition-opacity flex-1"
+            className="flex items-center gap-3 min-w-0 text-left cursor-pointer hover:opacity-85 transition-opacity flex-1"
           >
-            <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-[11px] shadow-xs">
+            {/* Larger Avatar Circle */}
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-xs shadow-xs">
               {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-slate-900 dark:text-white truncate leading-tight">
+              <p className="text-[13px] font-medium text-slate-900 dark:text-white truncate leading-tight">
                 {user?.name || 'Account'}
               </p>
-              <p className="text-[10px] text-slate-400 truncate">
+              <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">
                 {user?.phone || 'Connected'}
               </p>
             </div>
           </button>
 
-          {/* Action Log Out */}
+          {/* Larger Action Log Out Button */}
           <button
             onClick={handleLogout}
             title="Log Out"
-            className="flex h-6.5 w-6.5 items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer shrink-0 ml-1"
+            className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer shrink-0 ml-1"
           >
-            <LogOut className="h-3.5 w-3.5" />
+            <LogOut className="h-4 w-4" />
           </button>
         </div>
       </div>
