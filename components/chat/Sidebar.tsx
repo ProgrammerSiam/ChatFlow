@@ -465,7 +465,7 @@ export default function Sidebar() {
       </div>
 
       {/* User Profile Card (GET /auth/me Modal Trigger) */}
-      <div className="pt-2 border-t border-slate-200/50 dark:border-border/50">
+      <div className="pt-1.5">
         <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 shadow-xs">
           <CoolTooltip content="View Account Profile" side="top">
             <button

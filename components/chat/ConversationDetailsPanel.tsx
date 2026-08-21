@@ -45,10 +45,49 @@ export default function ConversationDetailsPanel({
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user: currentUser } = useAuthStore();
-  const currentUserId = currentUser?._id;
+
+  // Robust active user detection
+  let activeUser = currentUser;
+  if (!activeUser && typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('chatflow_user');
+      if (stored) activeUser = JSON.parse(stored);
+    } catch {
+      // ignore
+    }
+  }
+
+  const currentUserId = activeUser?._id;
+  const currentPhone = activeUser?.phone?.trim();
+  const currentName = activeUser?.name?.toLowerCase().trim();
+
+  // Find self in participants
+  const selfParticipant = (conversation.participants || []).find(
+    (p) =>
+      (currentUserId && p._id === currentUserId) ||
+      (currentPhone && p.phone?.trim() === currentPhone) ||
+      (currentName && p.name?.toLowerCase().trim() === currentName)
+  );
+
+  const resolvedSelfId = selfParticipant?._id || currentUserId;
 
   const isGroup = conversation.type === 'group';
-  const isAdmin = isGroup && currentUserId && (conversation.admins || []).includes(currentUserId);
+  const isAdmin =
+    isGroup &&
+    Boolean(
+      (conversation.admins || []).some((a) => {
+        const adminId =
+          typeof a === 'string'
+            ? a
+            : (a as unknown as { _id?: string; id?: string })?._id ||
+              (a as unknown as { _id?: string; id?: string })?.id;
+        return (
+          (resolvedSelfId && adminId === resolvedSelfId) ||
+          (currentUserId && adminId === currentUserId) ||
+          (selfParticipant && adminId === selfParticipant._id)
+        );
+      })
+    );
 
   // Group Edit & Admin States
   const [isEditingName, setIsEditingName] = useState(false);
@@ -64,6 +103,7 @@ export default function ConversationDetailsPanel({
   // Confirmation Modals State
   const [isLeaveGroupConfirmOpen, setIsLeaveGroupConfirmOpen] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState<{ id: string; name: string } | null>(null);
+  const [memberToPromote, setMemberToPromote] = useState<{ id: string; name: string } | null>(null);
 
   const { query, setQuery, users, isLoading: isSearchingUsers } = useUserSearch();
 
@@ -247,42 +287,18 @@ export default function ConversationDetailsPanel({
           {/* Details Section */}
           <div className="space-y-3 pt-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-              Details
+              Contact Details
             </span>
 
             {/* Phone Item */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/70 dark:bg-muted/30 border border-slate-200/60 dark:border-border/50">
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50/70 dark:bg-muted/30 border border-slate-200/60 dark:border-border/50">
               <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600">
-                  <Phone className="h-4 w-4" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600">
+                  <Phone className="h-4.5 w-4.5" />
                 </div>
                 <div>
-                  <p className="text-[11px] text-slate-400">Phone</p>
-                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 font-mono">{phone || 'N/A'}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Encryption & Security Card */}
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/40">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-purple-600 text-white shadow-2xs">
-                <Lock className="h-4 w-4" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-purple-900 dark:text-purple-200">End-to-End Delivery</p>
-                <p className="text-[11px] text-purple-600 dark:text-purple-400">JWT Handshake & 0ms Latency</p>
-              </div>
-            </div>
-
-            {/* Status Notifications */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50/70 dark:bg-muted/30 border border-slate-200/60 dark:border-border/50">
-              <div className="flex items-center gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-200/60 dark:bg-muted text-slate-600 dark:text-slate-300">
-                  <Bell className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Notifications</p>
-                  <p className="text-[11px] text-emerald-600">Muted for this chat: No</p>
+                  <p className="text-[11px] text-slate-400">Phone Number</p>
+                  <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 font-mono">{phone || 'N/A'}</p>
                 </div>
               </div>
             </div>
@@ -354,15 +370,17 @@ export default function ConversationDetailsPanel({
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-1.5">
-              <h2 className="text-base font-bold text-slate-900 dark:text-white">{conversation.name}</h2>
+            <div className="flex items-center justify-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white truncate max-w-[220px]">
+                {conversation.name}
+              </h2>
               {isAdmin && (
                 <button
                   onClick={() => setIsEditingName(true)}
-                  className="p-1 text-slate-400 hover:text-purple-600 rounded-lg hover:bg-purple-50 transition-colors"
+                  className="p-1.5 text-slate-400 hover:text-purple-600 rounded-xl hover:bg-purple-50 transition-colors cursor-pointer"
                   title="Rename Group"
                 >
-                  <Edit2 className="h-3.5 w-3.5" />
+                  <Edit2 className="h-4 w-4" />
                 </button>
               )}
             </div>
@@ -378,7 +396,7 @@ export default function ConversationDetailsPanel({
           <div className="pt-1">
             <button
               onClick={() => setIsAddingMembers(true)}
-              className="w-full h-10.5 flex items-center justify-center gap-2 rounded-xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/40 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+              className="w-full h-10.5 flex items-center justify-center gap-2 rounded-xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/40 text-xs font-semibold transition-all cursor-pointer"
             >
               <UserPlus className="h-4 w-4" />
               <span>Add Members</span>
@@ -394,13 +412,24 @@ export default function ConversationDetailsPanel({
 
           <div className="space-y-1.5">
             {(conversation.participants || []).map((p) => {
-              const isParticipantAdmin = (conversation.admins || []).includes(p._id);
-              const isSelf = p._id === currentUserId;
+              const isParticipantAdmin = (conversation.admins || []).some((a) => {
+                const adminId =
+                  typeof a === 'string'
+                    ? a
+                    : (a as unknown as { _id?: string; id?: string })?._id ||
+                      (a as unknown as { _id?: string; id?: string })?.id;
+                return adminId === p._id;
+              });
+              const isSelf =
+                (resolvedSelfId && p._id === resolvedSelfId) ||
+                (currentUserId && p._id === currentUserId) ||
+                (currentPhone && p.phone?.trim() === currentPhone) ||
+                (currentName && p.name?.toLowerCase().trim() === currentName);
 
               return (
                 <div
                   key={p._id}
-                  className="flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 shadow-2xs"
+                  className="flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:bg-slate-50/60 dark:hover:bg-muted/40 transition-colors"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-100 to-indigo-100 text-purple-700 font-bold text-xs">
@@ -428,9 +457,9 @@ export default function ConversationDetailsPanel({
                       {!isParticipantAdmin && (
                         <CoolTooltip content="Promote to Admin" side="left">
                           <button
-                            onClick={() => handlePromoteAdmin(p._id, p.name)}
+                            onClick={() => setMemberToPromote({ id: p._id, name: p.name })}
                             disabled={loadingActionUserId === p._id}
-                            className="p-1 text-slate-400 hover:text-amber-600 rounded-lg hover:bg-amber-50"
+                            className="p-1 text-slate-400 hover:text-amber-600 rounded-lg hover:bg-amber-50 cursor-pointer"
                           >
                             <Crown className="h-3.5 w-3.5" />
                           </button>
@@ -467,6 +496,23 @@ export default function ConversationDetailsPanel({
         </button>
       </div>
 
+      {/* Promote to Admin Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={!!memberToPromote}
+        onClose={() => setMemberToPromote(null)}
+        onConfirm={async () => {
+          if (!memberToPromote) return;
+          const { id, name } = memberToPromote;
+          setMemberToPromote(null);
+          await handlePromoteAdmin(id, name);
+        }}
+        title={`Promote ${memberToPromote?.name || 'Member'} to Admin?`}
+        description={`${memberToPromote?.name || 'This member'} will have administrative permissions to rename the group, manage members, and promote other teammates.`}
+        confirmText="Promote to Admin"
+        variant="primary"
+        icon="crown"
+      />
+
       {/* Leave Group Confirmation Dialog */}
       <ConfirmModal
         isOpen={isLeaveGroupConfirmOpen}
@@ -497,6 +543,8 @@ export default function ConversationDetailsPanel({
         confirmText="Remove Member"
         variant="danger"
         icon="trash"
+      />
+
       {/* Add Members Popup Modal */}
       {isGroup && (
         <AddMembersModal

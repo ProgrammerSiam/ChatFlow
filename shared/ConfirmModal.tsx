@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { AlertTriangle, LogOut, Trash2, X, Loader2 } from 'lucide-react';
+import { AlertTriangle, LogOut, Trash2, X, Loader2, Crown } from 'lucide-react';
 
 export interface ConfirmModalProps {
   isOpen: boolean;
@@ -13,7 +13,7 @@ export interface ConfirmModalProps {
   cancelText?: string;
   variant?: 'danger' | 'warning' | 'primary';
   isLoading?: boolean;
-  icon?: 'logout' | 'trash' | 'warning';
+  icon?: 'logout' | 'trash' | 'warning' | 'crown';
 }
 
 export default function ConfirmModal({
@@ -45,6 +45,7 @@ export default function ConfirmModal({
   const renderIcon = () => {
     if (icon === 'logout') return <LogOut className="h-5 w-5" />;
     if (icon === 'trash') return <Trash2 className="h-5 w-5" />;
+    if (icon === 'crown') return <Crown className="h-5 w-5" />;
     return <AlertTriangle className="h-5 w-5" />;
   };
 

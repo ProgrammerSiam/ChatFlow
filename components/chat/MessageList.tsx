@@ -183,7 +183,7 @@ export default function MessageList({
               typeof message.sender === 'object' ? message.sender : null;
             const senderId = senderObj ? senderObj._id : message.sender;
 
-            // Robust self check matching _id, id, name, or phone
+            // Robust active user detection from store or localStorage
             let activeUser = currentUser;
             if (!activeUser && typeof window !== 'undefined') {
               try {
@@ -198,15 +198,25 @@ export default function MessageList({
             const currentName = activeUser?.name?.toLowerCase().trim();
             const currentPhone = activeUser?.phone?.trim();
 
+            const participantMatch = participants?.find(
+              (p) =>
+                (senderId && p._id === senderId) ||
+                (senderObj?.phone && p.phone === senderObj.phone) ||
+                (senderObj?.name && p.name?.toLowerCase().trim() === senderObj.name.toLowerCase().trim())
+            );
+            const senderName = senderObj?.name || participantMatch?.name || (typeof message.sender === 'string' && message.sender.length < 20 ? message.sender : 'Teammate');
+
+            // Comprehensive self check across ID, phone, name, and participant match
             const isSelf =
               message.sender === 'me' ||
-              (currentId && senderId === currentId) ||
-              (currentPhone && senderObj?.phone && senderObj.phone.trim() === currentPhone) ||
-              (currentName && senderObj?.name && senderObj.name.toLowerCase().trim() === currentName) ||
-              (currentName && typeof message.sender === 'string' && message.sender.toLowerCase().trim() === currentName);
-
-            const participantMatch = participants?.find((p) => p._id === senderId);
-            const senderName = senderObj?.name || participantMatch?.name || 'Teammate';
+              message.status === 'sending' ||
+              (currentId && (senderId === currentId || participantMatch?._id === currentId || senderObj?._id === currentId)) ||
+              (currentPhone && (senderObj?.phone?.trim() === currentPhone || participantMatch?.phone?.trim() === currentPhone)) ||
+              (currentName && (
+                senderObj?.name?.toLowerCase().trim() === currentName ||
+                participantMatch?.name?.toLowerCase().trim() === currentName ||
+                (typeof message.sender === 'string' && message.sender.toLowerCase().trim() === currentName)
+              ));
 
             return (
               <div

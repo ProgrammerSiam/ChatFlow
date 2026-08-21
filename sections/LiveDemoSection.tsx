@@ -24,10 +24,18 @@ export default function LiveDemoSection() {
   const [messages, setMessages] = useState<DemoMessage[]>(INITIAL_DEMO_MESSAGES);
   const [input, setInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
-  const endRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isFirstMount = useRef(true);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    const el = containerRef.current;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    }
   }, [messages, isBotTyping]);
 
   const handleSend = (e: React.FormEvent) => {
@@ -103,7 +111,7 @@ export default function LiveDemoSection() {
           </div>
 
           {/* Messages */}
-          <div className="h-64 sm:h-72 overflow-y-auto p-4 space-y-3 bg-background/50">
+          <div ref={containerRef} className="h-64 sm:h-72 overflow-y-auto p-4 space-y-3 bg-background/50">
             {messages.map((m) => {
               const isUser = m.sender === 'user';
               return (
@@ -148,7 +156,6 @@ export default function LiveDemoSection() {
                 <span>Bot is formulating reply...</span>
               </div>
             )}
-            <div ref={endRef} />
           </div>
 
           {/* Input form */}

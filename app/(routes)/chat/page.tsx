@@ -1,278 +1,274 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
+  MessageSquarePlus,
+  Users,
+  User as UserIcon,
+  ShieldCheck,
+  Zap,
+  ArrowRight,
+  Sun,
+  Moon,
+  Sunset,
+  Sunrise,
+  Clock,
   Sparkles,
   Search,
-  Paperclip,
-  Mic,
-  ArrowUp,
-  SlidersHorizontal,
-  Share2,
-  Download,
-  MoreHorizontal,
-  ChevronDown,
-  Globe2,
-  HelpCircle,
-  Clock,
-  Lightbulb,
-  ShieldCheck,
-  FolderOpen,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
-import { toast } from 'sonner';
-
+import { useConversations } from '@/hooks/useConversations';
 import CoolTooltip from '@/shared/CoolTooltip';
 
 export default function ChatIndexPage() {
-  const router = useRouter();
   const { user } = useAuthStore();
-  const { setNewChatOpen, setNewGroupOpen } = useChatUIStore();
-  const [promptText, setPromptText] = useState('');
+  const { setNewChatOpen, setNewGroupOpen, setProfileOpen, isSocketConnected } = useChatUIStore();
+  const { conversations, isLoading } = useConversations();
 
-  const firstName = user?.name ? user.name.split(' ')[0] : 'Jackson';
+  // Dynamic Time-of-Day Greeting
+  const [greeting, setGreeting] = useState<{ text: string; icon: typeof Sun; timeStr: string }>({
+    text: 'Good day',
+    icon: Sun,
+    timeStr: '',
+  });
 
-  const handlePromptSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!promptText.trim()) {
-      setNewChatOpen(true);
-      return;
+  useEffect(() => {
+    const updateGreeting = () => {
+      const now = new Date();
+      const hour = now.getHours();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      if (hour >= 5 && hour < 12) {
+        setGreeting({ text: 'Good morning', icon: Sunrise, timeStr });
+      } else if (hour >= 12 && hour < 17) {
+        setGreeting({ text: 'Good afternoon', icon: Sun, timeStr });
+      } else if (hour >= 17 && hour < 21) {
+        setGreeting({ text: 'Good evening', icon: Sunset, timeStr });
+      } else {
+        setGreeting({ text: 'Good night', icon: Moon, timeStr });
+      }
+    };
+
+    updateGreeting();
+    const interval = setInterval(updateGreeting, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fallback user resolution
+  let activeUser = user;
+  if (!activeUser && typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('chatflow_user');
+      if (stored) activeUser = JSON.parse(stored);
+    } catch {
+      // ignore
     }
-    setNewChatOpen(true);
-  };
+  }
 
-  const starterCards = [
-    {
-      icon: Clock,
-      title: 'Synthesize Data',
-      description: 'Turn meeting notes and sprint updates into synchronized channel messages.',
-      action: () => setNewChatOpen(true),
-    },
-    {
-      icon: Lightbulb,
-      title: 'Creative Brainstorm',
-      description: 'Launch an instant group channel with admin governance for collaboration.',
-      action: () => setNewGroupOpen(true),
-    },
-    {
-      icon: ShieldCheck,
-      title: 'Check Facts',
-      description: 'Sub-10ms WebSocket zero-latency delivery and JWT Bearer security.',
-      action: () => {
-        toast.info('WebSocket connection active with 0ms delivery latency.');
-      },
-    },
-  ];
+  const displayName = activeUser?.name ? activeUser.name.split(' ')[0] : 'Teammate';
+  const fullName = activeUser?.name || 'User Profile';
+  const phone = activeUser?.phone || '';
+  const initial = displayName.charAt(0).toUpperCase();
+
+  const GreetingIcon = greeting.icon;
+
+  const recentConversations = (conversations || []).slice(0, 3);
 
   return (
     <div className="flex-1 h-full rounded-[24px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 shadow-xs flex flex-col justify-between overflow-hidden relative select-none">
       
       {/* Top Header Bar */}
       <header className="h-14 px-5 border-b border-slate-100 dark:border-border/50 flex items-center justify-between shrink-0 bg-white/80 dark:bg-card/80 backdrop-blur-sm z-10">
-        {/* Left Dropdown Pill */}
-        <div className="flex items-center gap-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-border bg-slate-50/80 dark:bg-muted text-slate-800 dark:text-slate-200 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-muted/80 transition-colors">
-            <div className="flex h-4 w-4 items-center justify-center rounded-md bg-purple-600 text-white font-bold text-[9px]">
-              ⚡
-            </div>
-            <span>ChatFlow</span>
-            <ChevronDown className="h-3 w-3 opacity-60 ml-0.5" />
+        {/* Real-time Status Badge */}
+        <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-muted/40 border border-slate-200/70 dark:border-border/60 text-xs font-medium text-slate-700 dark:text-slate-200">
+            <span
+              className={`h-2 w-2 rounded-full ${
+                isSocketConnected ? 'bg-emerald-500 shadow-xs shadow-emerald-500/50 animate-pulse' : 'bg-amber-500'
+              }`}
+            />
+            <span>{isSocketConnected ? 'Live Real-Time Engine' : 'Reconnecting...'}</span>
           </div>
+          {greeting.timeStr && (
+            <span className="hidden sm:inline-flex text-xs text-slate-400 font-mono">
+              {greeting.timeStr}
+            </span>
+          )}
         </div>
 
-        {/* Right Actions */}
+        {/* Header Action Buttons */}
         <div className="flex items-center gap-2">
-          <CoolTooltip content="More Options" side="bottom">
-            <button
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/70 dark:border-border/70 text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-muted transition-colors cursor-pointer"
-            >
-              <MoreHorizontal className="h-4 w-4" />
-            </button>
-          </CoolTooltip>
-
-          <CoolTooltip content="Share Channel Link" side="bottom">
-            <button
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/70 dark:border-border/70 text-slate-500 hover:text-slate-800 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-muted transition-colors cursor-pointer"
-            >
-              <Share2 className="h-3.5 w-3.5" />
-            </button>
-          </CoolTooltip>
-
-          <CoolTooltip content="Export conversation transcript" side="bottom">
-            <button
-              onClick={() => {
-                toast.success('Chat transcript ready for export');
-              }}
-              className="hidden sm:inline-flex items-center gap-1.5 h-8 px-3 rounded-xl border border-slate-200/70 dark:border-border/70 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-muted text-xs font-medium transition-colors cursor-pointer"
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span>Export chat</span>
-            </button>
-          </CoolTooltip>
-
-          <CoolTooltip content="Start a new direct chat" side="bottom" shortcut="⌘N">
+          <CoolTooltip content="Search teammates" side="bottom">
             <button
               onClick={() => setNewChatOpen(true)}
-              className="h-8 px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-medium shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all cursor-pointer"
+              className="h-8.5 px-3 rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              New Chat
+              <Search className="h-3.5 w-3.5" />
+              <span>Search</span>
+            </button>
+          </CoolTooltip>
+
+          <CoolTooltip content="Start a new chat" side="bottom">
+            <button
+              onClick={() => setNewChatOpen(true)}
+              className="h-8.5 px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-semibold shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              <MessageSquarePlus className="h-3.5 w-3.5" />
+              <span>New Chat</span>
             </button>
           </CoolTooltip>
         </div>
       </header>
 
-      {/* Main Center Body */}
-      <div className="flex-1 overflow-y-auto px-4 py-8 sm:py-10 flex flex-col items-center justify-center text-center">
-        <div className="w-full max-w-2xl space-y-6 flex flex-col items-center">
+      {/* Main Center Content View */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar px-4 py-8 sm:py-12 flex flex-col items-center justify-center text-center">
+        <div className="w-full max-w-2xl space-y-7 flex flex-col items-center">
           
-          {/* Ethereal Floating Violet 3D Sphere */}
-          <div className="relative flex items-center justify-center">
-            {/* Ambient Violet Glow underlay */}
-            <div className="absolute w-36 h-36 rounded-full bg-purple-400/25 blur-3xl pointer-events-none" />
-            
-            {/* Sphere container */}
-            <div className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gradient-to-tr from-[#8E7CFF] via-[#B8ABFF] to-[#F1EEFF] shadow-xl shadow-purple-500/20 flex items-center justify-center">
-              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br from-white/70 via-purple-100/40 to-transparent blur-[1px]" />
+          {/* Hero Avatar & Dynamic Status Card */}
+          <div className="flex flex-col items-center space-y-3.5">
+            <div className="relative group cursor-pointer" onClick={() => setProfileOpen(true)}>
+              <div className="relative flex h-20 w-20 sm:h-22 sm:w-22 items-center justify-center rounded-full bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-extrabold text-3xl sm:text-4xl shadow-lg shadow-purple-500/20 group-hover:scale-105 transition-transform">
+                {initial}
+              </div>
+              <span
+                className={`absolute bottom-0.5 right-0.5 h-5 w-5 rounded-full border-3 border-white dark:border-card ${
+                  isSocketConnected ? 'bg-emerald-500' : 'bg-amber-500'
+                }`}
+                title={isSocketConnected ? 'Socket Connected' : 'Connecting'}
+              />
+            </div>
+
+            {/* Dynamic Greeting & User Name */}
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900/40 text-purple-700 dark:text-purple-300 text-xs font-semibold">
+                <GreetingIcon className="h-3.5 w-3.5" />
+                <span>{greeting.text}, {displayName}!</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white pt-1">
+                Your Real-Time Workspace
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
+                Connect instantly with zero latency. Select a conversation from the sidebar or start a new direct or group workspace below.
+              </p>
             </div>
           </div>
 
-          {/* Welcome Headline */}
-          <div className="space-y-1.5">
-            <h3 className="text-lg sm:text-xl font-normal text-purple-600 dark:text-purple-400 tracking-tight">
-              Hello, {firstName}
-            </h3>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium tracking-tight text-slate-900 dark:text-white leading-tight">
-              How can I assist you today?
-            </h1>
+          {/* Meaningful Quick Action Cards */}
+          <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-3 w-full text-left pt-1">
+            {/* Action 1: Direct Chat */}
+            <div
+              onClick={() => setNewChatOpen(true)}
+              className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-800 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 group-hover:scale-110 transition-transform mb-3">
+                <MessageSquarePlus className="h-5 w-5" />
+              </div>
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-purple-600 transition-colors">
+                Direct Message
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Search teammates by phone or name to start an instant 1-on-1 private chat.
+              </p>
+            </div>
+
+            {/* Action 2: Group Workspace */}
+            <div
+              onClick={() => setNewGroupOpen(true)}
+              className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-800 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 group-hover:scale-110 transition-transform mb-3">
+                <Users className="h-5 w-5" />
+              </div>
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-purple-600 transition-colors">
+                Team Channel
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Create a group channel with member invitations and co-admin governance.
+              </p>
+            </div>
+
+            {/* Action 3: User Profile */}
+            <div
+              onClick={() => setProfileOpen(true)}
+              className="p-4 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-800 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-muted text-slate-700 dark:text-slate-300 group-hover:scale-110 transition-transform mb-3">
+                <UserIcon className="h-5 w-5" />
+              </div>
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-purple-600 transition-colors">
+                Account & Settings
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                View your verified phone credentials, user ID, and active socket health.
+              </p>
+            </div>
           </div>
 
-          {/* Central Floating Composer Box */}
-          <form
-            onSubmit={handlePromptSubmit}
-            className="w-full rounded-2xl bg-white dark:bg-card border border-slate-200/90 dark:border-border p-4 shadow-sm space-y-3.5 text-left"
-          >
-            {/* Text Input */}
-            <input
-              type="text"
-              value={promptText}
-              onChange={(e) => setPromptText(e.target.value)}
-              placeholder="Ask me anything or search teammates..."
-              className="w-full bg-transparent text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none"
-            />
-
-            {/* Action Row */}
-            <div className="flex items-center justify-between pt-1">
-              <div className="flex items-center gap-2">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-purple-200/80 dark:border-purple-800/60 bg-purple-50/80 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 text-xs font-medium">
-                  <Sparkles className="h-3.5 w-3.5 text-purple-600" />
-                  <span>Deeper Research</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setNewGroupOpen(true)}
-                  title="Group Workspace"
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                >
-                  <FolderOpen className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNewChatOpen(true)}
-                  title="Search User"
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                >
-                  <Search className="h-4 w-4" />
-                </button>
+          {/* Quick Jump to Recent Conversations (if available) */}
+          {recentConversations.length > 0 && (
+            <div className="w-full space-y-2.5 pt-2 text-left">
+              <div className="flex items-center justify-between px-1">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Recent Conversations
+                </span>
+                <span className="text-xs text-slate-400">
+                  {(conversations || []).length} total
+                </span>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  title="Voice Input"
-                  className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                >
-                  <Mic className="h-4 w-4" />
-                </button>
-                <button
-                  type="submit"
-                  title="Send"
-                  className="flex h-7 w-7 items-center justify-center rounded-full bg-purple-600 text-white shadow-xs hover:bg-purple-700 transition-colors"
-                >
-                  <ArrowUp className="h-4 w-4" />
-                </button>
+              <div className="grid gap-2 grid-cols-1 sm:grid-cols-3">
+                {recentConversations.map((conv) => {
+                  const isGroup = conv.type === 'group';
+                  const title = isGroup ? conv.name || 'Group' : conv.participant?.name || 'User';
+                  const lastText = conv.lastMessage?.text || 'No messages yet';
+
+                  return (
+                    <Link
+                      key={conv._id}
+                      href={`/chat/${conv._id}`}
+                      className="p-3 rounded-2xl bg-slate-50/70 dark:bg-muted/30 border border-slate-200/60 dark:border-border/50 hover:bg-purple-50/50 hover:border-purple-200 transition-all flex items-center justify-between gap-2 group"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div
+                          className={`flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl font-bold text-xs ${
+                            isGroup
+                              ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
+                              : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
+                          }`}
+                        >
+                          {isGroup ? <Users className="h-4 w-4" /> : title.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">
+                            {title}
+                          </p>
+                          <p className="text-[11px] text-slate-400 truncate">
+                            {lastText}
+                          </p>
+                        </div>
+                      </div>
+                      <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+                    </Link>
+                  );
+                })}
               </div>
             </div>
-
-            {/* Sub-actions */}
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-border/50 text-[11px] text-slate-500">
-              <button
-                type="button"
-                onClick={() => setNewChatOpen(true)}
-                className="inline-flex items-center gap-1 hover:text-purple-600 transition-colors cursor-pointer"
-              >
-                <Sparkles className="h-3 w-3 text-purple-500" />
-                <span>Saved prompts</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  toast.info('Attach files in active direct or group conversations.');
-                }}
-                className="inline-flex items-center gap-1 hover:text-purple-600 transition-colors cursor-pointer"
-              >
-                <Paperclip className="h-3 w-3" />
-                <span>Attach file</span>
-              </button>
-            </div>
-          </form>
-
-          {/* 3 Starter Action Cards */}
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-3 w-full text-left">
-            {starterCards.map((card, i) => {
-              const Icon = card.icon;
-              return (
-                <div
-                  key={i}
-                  onClick={card.action}
-                  className="p-3.5 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-800 shadow-2xs hover:shadow-sm transition-all cursor-pointer group"
-                >
-                  <Icon className="h-4 w-4 text-slate-500 dark:text-slate-400 group-hover:text-purple-600 transition-colors mb-2.5" />
-                  <h4 className="text-xs font-medium text-slate-900 dark:text-white mb-1">
-                    {card.title}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                    {card.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+          )}
 
         </div>
       </div>
 
-      {/* Bottom Footer Note */}
+      {/* Bottom Footer Info Bar */}
       <footer className="px-5 py-3 border-t border-slate-100 dark:border-border/50 flex items-center justify-between text-[11px] text-slate-400 shrink-0">
-        <p className="mx-auto text-center">
-          Join the ChatFlow community for real-time updates.{' '}
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noreferrer"
-            className="text-purple-600 dark:text-purple-400 hover:underline font-medium"
-          >
-            Join Discord
-          </a>
-        </p>
         <div className="flex items-center gap-2">
-          <button className="hover:text-slate-600 dark:hover:text-slate-300">
-            <Globe2 className="h-3.5 w-3.5" />
-          </button>
-          <button className="hover:text-slate-600 dark:hover:text-slate-300">
-            <HelpCircle className="h-3.5 w-3.5" />
-          </button>
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+          <span>JWT Handshake & WebSocket 0ms Delivery</span>
+        </div>
+        <div className="flex items-center gap-2 font-medium">
+          <Zap className="h-3 w-3 text-amber-500" />
+          <span>ChatFlow Workspace v1.0</span>
         </div>
       </footer>
 

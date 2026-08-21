@@ -33,7 +33,10 @@ export function useSocket() {
     const handleNewMessage = (msg: Message) => {
       const activeId = activeIdRef.current;
       const currentUserId = currentUserIdRef.current;
-      const convId = msg.conversation;
+      const convId =
+        typeof msg.conversation === 'object'
+          ? (msg.conversation as { _id?: string })._id
+          : msg.conversation || (msg as unknown as { conversationId?: string }).conversationId;
 
       // 1. If message belongs to active chat, update active messages cache with deduplication
       if (activeId && convId === activeId) {

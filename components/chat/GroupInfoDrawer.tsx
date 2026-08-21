@@ -22,6 +22,7 @@ import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import ConfirmModal from '@/shared/ConfirmModal';
+import AddMembersModal from './AddMembersModal';
 
 export default function GroupInfoDrawer({
   conversation,
@@ -47,6 +48,7 @@ export default function GroupInfoDrawer({
   // Confirmation States
   const [isLeaveGroupConfirmOpen, setIsLeaveGroupConfirmOpen] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState<{ id: string; name: string } | null>(null);
+  const [memberToPromote, setMemberToPromote] = useState<{ id: string; name: string } | null>(null);
 
   // Close on Escape key
   useEffect(() => {
@@ -248,96 +250,16 @@ export default function GroupInfoDrawer({
           </div>
         </div>
 
-        {/* Admin Section: Add Members */}
+        {/* Admin Section: Add Members Button */}
         {isAdmin && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Admin Controls
-              </span>
-              <button
-                onClick={() => setIsAddingMembers(!isAddingMembers)}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-purple-600 hover:underline"
-              >
-                <UserPlus className="h-3.5 w-3.5" />
-                {isAddingMembers ? 'Close Add Form' : 'Add Members'}
-              </button>
-            </div>
-
-            {isAddingMembers && (
-              <div className="p-3 bg-slate-50 dark:bg-muted/40 rounded-xl border border-slate-200 dark:border-border space-y-3">
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search user to add..."
-                  className="w-full h-10.5 rounded-xl border border-slate-200 dark:border-border bg-background px-3.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400"
-                />
-
-                {selectedToAdd.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {selectedToAdd.map((u) => (
-                      <span
-                        key={u._id}
-                        className="inline-flex items-center gap-1 rounded bg-primary/10 text-primary px-2 py-0.5 text-xs"
-                      >
-                        {u.name}
-                        <button
-                          onClick={() =>
-                            setSelectedToAdd((prev) => prev.filter((p) => p._id !== u._id))
-                          }
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
-
-                <div className="max-h-32 overflow-y-auto space-y-1">
-                  {isSearching ? (
-                    <div className="py-2 text-center text-xs text-muted-foreground">
-                      Searching...
-                    </div>
-                  ) : addableUsers.length === 0 ? (
-                    <div className="py-2 text-center text-xs text-muted-foreground">
-                      {query ? 'No matching users.' : 'Type to search users.'}
-                    </div>
-                  ) : (
-                    addableUsers.map((u) => {
-                      const isSel = selectedToAdd.some((p) => p._id === u._id);
-                      return (
-                        <button
-                          key={u._id}
-                          onClick={() => {
-                            if (isSel) {
-                              setSelectedToAdd((prev) => prev.filter((p) => p._id !== u._id));
-                            } else {
-                              setSelectedToAdd((prev) => [...prev, u]);
-                            }
-                          }}
-                          className={`flex w-full items-center justify-between p-2 rounded-lg text-xs ${
-                            isSel ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
-                          }`}
-                        >
-                          <span>{u.name} ({u.phone})</span>
-                          {isSel && <Check className="h-3 w-3 text-primary" />}
-                        </button>
-                      );
-                    })
-                  )}
-                </div>
-
-                <button
-                  onClick={handleAddMembers}
-                  disabled={isSubmittingMembers || selectedToAdd.length === 0}
-                  className="w-full rounded-lg bg-primary py-1.5 text-xs font-medium text-primary-foreground shadow hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {isSubmittingMembers && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-                  Confirm Add ({selectedToAdd.length})
-                </button>
-              </div>
-            )}
+          <div className="pt-1">
+            <button
+              onClick={() => setIsAddingMembers(true)}
+              className="w-full h-11 flex items-center justify-center gap-2 rounded-xl bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100 text-purple-700 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/40 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+            >
+              <UserPlus className="h-4 w-4" />
+              <span>Add Members</span>
+            </button>
           </div>
         )}
 
@@ -389,9 +311,9 @@ export default function GroupInfoDrawer({
                         <>
                           {!isMemberAdmin && (
                             <button
-                              onClick={() => handlePromoteAdmin(participant._id, participant.name)}
+                              onClick={() => setMemberToPromote({ id: participant._id, name: participant.name })}
                               title="Promote to Admin"
-                              className="rounded-md p-1.5 text-muted-foreground hover:text-amber-600 hover:bg-amber-500/10 transition-colors"
+                              className="rounded-md p-1.5 text-muted-foreground hover:text-amber-600 hover:bg-amber-500/10 transition-colors cursor-pointer"
                             >
                               <ShieldCheck className="h-4 w-4" />
                             </button>
@@ -425,6 +347,23 @@ export default function GroupInfoDrawer({
         </button>
       </div>
 
+      {/* Promote to Admin Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={!!memberToPromote}
+        onClose={() => setMemberToPromote(null)}
+        onConfirm={async () => {
+          if (!memberToPromote) return;
+          const { id, name } = memberToPromote;
+          setMemberToPromote(null);
+          await handlePromoteAdmin(id, name);
+        }}
+        title={`Promote ${memberToPromote?.name || 'Member'} to Admin?`}
+        description={`${memberToPromote?.name || 'This member'} will have administrative permissions to rename the group, manage members, and promote other teammates.`}
+        confirmText="Promote to Admin"
+        variant="primary"
+        icon="crown"
+      />
+
       {/* Leave Group Confirmation Dialog */}
       <ConfirmModal
         isOpen={isLeaveGroupConfirmOpen}
@@ -455,6 +394,13 @@ export default function GroupInfoDrawer({
         confirmText="Remove Member"
         variant="danger"
         icon="trash"
+      />
+
+      {/* Add Members Popup Modal */}
+      <AddMembersModal
+        isOpen={isAddingMembers}
+        onClose={() => setIsAddingMembers(false)}
+        conversation={conversation}
       />
 
     </div>
