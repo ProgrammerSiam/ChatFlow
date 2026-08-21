@@ -1,8 +1,4 @@
-'use client';
-
-import Link from 'next/link';
-import { ArrowUpRight, Sparkles } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import BrandLogo from '@/shared/BrandLogo';
 
 export default function Navbar() {
   const { isAuthenticated } = useAuthStore();
@@ -10,63 +6,59 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full pt-4 pb-2 px-4">
       <div className="container mx-auto flex items-center justify-between max-w-6xl">
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2.5 font-extrabold text-xl tracking-tight text-foreground">
-          <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-purple-500/20">
-            <Sparkles className="h-5 w-5" />
-          </div>
-          <span>ChatFlow</span>
+        {/* Brand Logo (Matches User Screenshot) */}
+        <Link href="/" className="inline-flex">
+          <BrandLogo name="Aymo" suffix=".AI" />
         </Link>
 
-        {/* Centered Segmented Pill Menu */}
-        <nav className="hidden md:flex items-center gap-1 rounded-full border border-purple-200/50 dark:border-purple-800/40 bg-white/70 dark:bg-card/70 px-2 py-1.5 shadow-sm backdrop-blur-xl">
+        {/* Centered Segmented Pill Menu (No Harsh Shadow, Clean Border Only) */}
+        <nav className="hidden md:flex items-center gap-1 rounded-full border border-slate-200/90 dark:border-border/80 bg-white/95 dark:bg-card/90 px-1.5 py-1 backdrop-blur-md">
           <Link
             href="/"
-            className="rounded-full bg-white dark:bg-muted px-4 py-1.5 text-xs font-semibold text-foreground shadow-xs transition"
+            className="rounded-full bg-white dark:bg-muted/80 px-4 py-1.5 text-xs font-semibold text-slate-900 dark:text-white border border-slate-200/80 dark:border-border transition-all"
           >
             Home
           </Link>
           <a
             href="#features"
-            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Features
           </a>
           <a
             href="#demo"
-            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Sandbox
           </a>
           <a
             href="#how-it-works"
-            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Process
           </a>
           <a
             href="#faq"
-            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             FAQ
           </a>
         </nav>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Link
             href="/login"
-            className="hidden sm:inline-block text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors"
           >
             Log In
           </Link>
 
           <Link
             href={isAuthenticated ? '/chat' : '/login'}
-            className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-5 py-2 text-xs font-semibold text-white shadow-md shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/35 active:scale-95"
+            className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 px-5 py-2 text-xs sm:text-sm font-medium shadow-md shadow-slate-900/10 dark:shadow-white/5 active:scale-98"
           >
-            <span>{isAuthenticated ? 'Open Chat' : 'Try for Free'}</span>
-            <ArrowUpRight className="h-3.5 w-3.5" />
+            <span>{isAuthenticated ? 'Open App' : 'Try Free'}</span>
           </Link>
         </div>
       </div>
