@@ -81,21 +81,8 @@ export default function ChatIndexPage() {
       
       {/* Top Header Bar */}
       <header className="h-14 px-5 border-b border-slate-100 dark:border-border/50 flex items-center justify-between shrink-0 bg-white/80 dark:bg-card/80 backdrop-blur-sm z-10">
-        {/* Real-time Status Badge */}
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-muted/40 border border-slate-200/70 dark:border-border/60 text-xs font-medium text-slate-700 dark:text-slate-200">
-            <span
-              className={`h-2 w-2 rounded-full ${
-                isSocketConnected ? 'bg-emerald-500 shadow-xs shadow-emerald-500/50 animate-pulse' : 'bg-amber-500'
-              }`}
-            />
-            <span>{isSocketConnected ? 'Live Real-Time Engine' : 'Reconnecting...'}</span>
-          </div>
-          {greeting.timeStr && (
-            <span className="hidden sm:inline-flex text-xs text-slate-400 font-mono">
-              {greeting.timeStr}
-            </span>
-          )}
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-slate-900 dark:text-white">Workspace</span>
         </div>
 
         {/* Header Action Buttons */}
@@ -259,18 +246,6 @@ export default function ChatIndexPage() {
 
         </div>
       </div>
-
-      {/* Bottom Footer Info Bar */}
-      <footer className="px-5 py-3 border-t border-slate-100 dark:border-border/50 flex items-center justify-between text-[11px] text-slate-400 shrink-0">
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-          <span>JWT Handshake & WebSocket 0ms Delivery</span>
-        </div>
-        <div className="flex items-center gap-2 font-medium">
-          <Zap className="h-3 w-3 text-amber-500" />
-          <span>ChatFlow Workspace v1.0</span>
-        </div>
-      </footer>
 
     </div>
   );
