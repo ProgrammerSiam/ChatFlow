@@ -86,23 +86,32 @@ export default function ChatIndexPage() {
         </div>
 
         {/* Header Action Buttons */}
-        <div className="flex items-center gap-2">
-          <CoolTooltip content="Search teammates" side="bottom">
-            <button
+        <div className="flex items-center gap-2.5">
+          <div
+            onClick={() => setNewChatOpen(true)}
+            className="relative flex items-center w-52 sm:w-64 md:w-72 cursor-pointer group"
+          >
+            <Search className="absolute left-3.5 h-4 w-4 text-slate-400 group-hover:text-purple-600 transition-colors pointer-events-none" />
+            <input
+              type="text"
+              readOnly
               onClick={() => setNewChatOpen(true)}
-              className="h-8.5 px-3 rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted hover:bg-slate-50 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <Search className="h-3.5 w-3.5" />
-              <span>Search</span>
-            </button>
-          </CoolTooltip>
+              placeholder="Search teammates..."
+              className="w-full h-9.5 rounded-2xl border border-slate-200/90 dark:border-border/80 bg-slate-50/80 hover:bg-white dark:bg-muted/40 dark:hover:bg-muted/70 pl-9.5 pr-11 text-xs sm:text-[13px] text-slate-900 dark:text-white placeholder:text-slate-400 group-hover:border-purple-300 dark:group-hover:border-purple-700/60 group-hover:shadow-xs cursor-pointer transition-all focus:outline-none"
+            />
+            <div className="absolute right-2.5 flex items-center gap-0.5 pointer-events-none">
+              <span className="flex items-center justify-center h-5 px-1.5 rounded-md bg-white dark:bg-card border border-slate-200/80 dark:border-border text-[10px] font-semibold text-slate-400 dark:text-slate-400 shadow-2xs">
+                ⌘K
+              </span>
+            </div>
+          </div>
 
-          <CoolTooltip content="Start a new chat" side="bottom">
+          <CoolTooltip content="Start a new direct chat" side="bottom">
             <button
               onClick={() => setNewChatOpen(true)}
-              className="h-8.5 px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-semibold shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-1.5"
+              className="h-10 px-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs sm:text-[13px] font-semibold shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-2 shrink-0"
             >
-              <MessageSquarePlus className="h-3.5 w-3.5" />
+              <MessageSquarePlus className="h-4 w-4" />
               <span>New Chat</span>
             </button>
           </CoolTooltip>
