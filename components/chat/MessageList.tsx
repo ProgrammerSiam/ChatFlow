@@ -146,28 +146,57 @@ export default function MessageList({
       >
         {/* Loading older messages indicator */}
         {isFetchingNextPage && (
-          <div className="flex justify-center py-2">
-            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-muted text-muted-foreground text-xs shadow-sm">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              <span>Loading older messages...</span>
+          <div className="flex justify-center py-2 animate-pulse">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-muted text-slate-500 dark:text-slate-400 text-xs font-medium border border-slate-200/60 dark:border-border/50 shadow-2xs">
+              <span className="h-2 w-2 rounded-full bg-purple-500 animate-ping" />
+              <span>Fetching earlier history...</span>
             </div>
           </div>
         )}
 
         {isLoading ? (
-          <div className="space-y-4 py-8">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className={`flex ${i % 2 === 0 ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`h-12 rounded-2xl animate-pulse bg-muted ${
-                    i % 2 === 0 ? 'w-48' : 'w-64'
-                  }`}
-                />
+          <div className="space-y-4 py-4 animate-pulse">
+            {/* Incoming message skeleton with avatar */}
+            <div className="flex items-start gap-2.5 max-w-[80%]">
+              <div className="h-9 w-9 rounded-xl bg-slate-200 dark:bg-muted/70 shrink-0" />
+              <div className="space-y-1.5 w-64 sm:w-80">
+                <div className="h-3 w-20 rounded bg-slate-200 dark:bg-muted/70" />
+                <div className="p-3.5 rounded-2xl rounded-bl-xs bg-slate-100 dark:bg-muted/50 border border-slate-200/50 dark:border-border/40 space-y-2">
+                  <div className="h-3.5 w-full rounded bg-slate-200 dark:bg-muted/70" />
+                  <div className="h-3.5 w-3/4 rounded bg-slate-200 dark:bg-muted/70" />
+                  <div className="h-2.5 w-12 rounded bg-slate-200 dark:bg-muted/60 ml-auto mt-1" />
+                </div>
               </div>
-            ))}
+            </div>
+
+            {/* Outgoing message skeleton */}
+            <div className="flex flex-col items-end gap-1 ml-auto max-w-[75%] sm:max-w-[65%]">
+              <div className="p-3.5 rounded-2xl rounded-br-xs bg-purple-100/70 dark:bg-purple-950/40 border border-purple-200/50 dark:border-purple-900/40 space-y-2 w-56 sm:w-72">
+                <div className="h-3.5 w-full rounded bg-purple-200/80 dark:bg-purple-900/60" />
+                <div className="h-3.5 w-1/2 rounded bg-purple-200/80 dark:bg-purple-900/60" />
+                <div className="h-2.5 w-14 rounded bg-purple-200/60 dark:bg-purple-900/40 ml-auto mt-1" />
+              </div>
+            </div>
+
+            {/* Incoming short message skeleton */}
+            <div className="flex items-start gap-2.5 max-w-[80%]">
+              <div className="h-9 w-9 rounded-xl bg-slate-200 dark:bg-muted/70 shrink-0" />
+              <div className="space-y-1.5 w-48 sm:w-60">
+                <div className="h-3 w-16 rounded bg-slate-200 dark:bg-muted/70" />
+                <div className="p-3.5 rounded-2xl rounded-bl-xs bg-slate-100 dark:bg-muted/50 border border-slate-200/50 dark:border-border/40 space-y-2">
+                  <div className="h-3.5 w-full rounded bg-slate-200 dark:bg-muted/70" />
+                  <div className="h-2.5 w-12 rounded bg-slate-200 dark:bg-muted/60 ml-auto mt-1" />
+                </div>
+              </div>
+            </div>
+
+            {/* Outgoing short message skeleton */}
+            <div className="flex flex-col items-end gap-1 ml-auto max-w-[75%] sm:max-w-[65%]">
+              <div className="p-3.5 rounded-2xl rounded-br-xs bg-purple-100/70 dark:bg-purple-950/40 border border-purple-200/50 dark:border-purple-900/40 space-y-2 w-44 sm:w-52">
+                <div className="h-3.5 w-full rounded bg-purple-200/80 dark:bg-purple-900/60" />
+                <div className="h-2.5 w-14 rounded bg-purple-200/60 dark:bg-purple-900/40 ml-auto mt-1" />
+              </div>
+            </div>
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full py-16 text-center space-y-2">
