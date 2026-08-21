@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import SectionHeader from '@/shared/SectionHeader';
 import {
   MessageSquare,
@@ -12,63 +13,101 @@ import {
 
 interface FeatureCard {
   title: string;
-  description: string;
+  description: React.ReactNode;
   icon: typeof MessageSquare;
   colSpan: string;
-  accent: string;
+  iconBg: string;
+  iconColor: string;
+  initialGlow?: boolean;
 }
+
+const Highlight = ({ children }: { children: React.ReactNode }) => (
+  <span className="font-medium text-slate-900 dark:text-white underline decoration-purple-400/60 dark:decoration-purple-400/80 decoration-[1.5px] underline-offset-4 transition-colors">
+    {children}
+  </span>
+);
 
 const FEATURE_CARDS: FeatureCard[] = [
   /* Row 1: 3 cards (Card 1 expanded to 6 cols, Card 2 & 3 are 3 cols each) */
   {
     title: 'Multi-Model & Socket Access',
-    description:
-      'Access persistent WebSocket channels, direct messages, and group channels — all in one unified workspace without tab fatigue.',
+    description: (
+      <>
+        Access persistent <Highlight>WebSocket channels</Highlight>, direct messages, and group channels — all in one unified workspace without tab fatigue.
+      </>
+    ),
     icon: MessageSquare,
     colSpan: 'lg:col-span-6',
-    accent: 'from-purple-500/15 via-indigo-500/10 to-transparent',
+    iconBg: 'from-purple-100/90 via-indigo-50/70 to-purple-50/50 dark:from-purple-950/60 dark:to-indigo-950/40',
+    iconColor: 'text-purple-600 dark:text-purple-300',
+    initialGlow: true,
   },
   {
     title: 'Analyze Any File Instantly',
-    description:
-      'Upload PDFs, Docs, Sheets, or code and get accurate, context-aware answers and summaries in seconds.',
+    description: (
+      <>
+        Upload PDFs, Docs, Sheets, or code and get <Highlight>accurate, context-aware answers</Highlight> and summaries in seconds.
+      </>
+    ),
     icon: FileText,
     colSpan: 'lg:col-span-3',
-    accent: 'from-indigo-500/15 via-blue-500/10 to-transparent',
+    iconBg: 'from-indigo-100/90 via-blue-50/70 to-indigo-50/50 dark:from-indigo-950/60 dark:to-blue-950/40',
+    iconColor: 'text-indigo-600 dark:text-indigo-300',
+    initialGlow: false,
   },
   {
     title: 'Compare Model & Speed',
-    description:
-      'Experience zero-latency optimistic delivery with sub-10ms network dispatch and instant status transitions.',
+    description: (
+      <>
+        Experience <Highlight>zero-latency optimistic delivery</Highlight> with sub-10ms network dispatch and instant status transitions.
+      </>
+    ),
     icon: Zap,
     colSpan: 'lg:col-span-3',
-    accent: 'from-amber-500/15 via-purple-500/10 to-transparent',
+    iconBg: 'from-amber-100/90 via-orange-50/70 to-amber-50/50 dark:from-amber-950/60 dark:to-orange-950/40',
+    iconColor: 'text-amber-600 dark:text-amber-300',
+    initialGlow: true,
   },
 
   /* Row 2: 3 cards (4 cols each) */
   {
     title: 'Built-In Team Collaboration',
-    description:
-      'Share chats, assign admin roles, and work together in real time — collaboration is included at no extra cost.',
+    description: (
+      <>
+        Share chats, <Highlight>assign admin roles</Highlight>, and work together in real time — collaboration is included at no extra cost.
+      </>
+    ),
     icon: Users,
     colSpan: 'lg:col-span-4',
-    accent: 'from-emerald-500/15 via-teal-500/10 to-transparent',
+    iconBg: 'from-emerald-100/90 via-teal-50/70 to-emerald-50/50 dark:from-emerald-950/60 dark:to-teal-950/40',
+    iconColor: 'text-emerald-600 dark:text-emerald-300',
+    initialGlow: true,
   },
   {
     title: 'Live User & Message Search',
-    description:
-      'Real-time 300ms debounced search built in. Instant sidebar cache lookup with client-side self-exclusion.',
+    description: (
+      <>
+        Real-time <Highlight>300ms debounced search</Highlight> built in. Instant sidebar cache lookup with client-side self-exclusion.
+      </>
+    ),
     icon: Search,
     colSpan: 'lg:col-span-4',
-    accent: 'from-pink-500/15 via-purple-500/10 to-transparent',
+    iconBg: 'from-pink-100/90 via-rose-50/70 to-pink-50/50 dark:from-pink-950/60 dark:to-rose-950/40',
+    iconColor: 'text-pink-600 dark:text-pink-300',
+    initialGlow: false,
   },
   {
     title: 'Bring Your Own Token & API',
-    description:
-      'JWT Bearer tokens authenticated on every REST request and WebSocket handshake with automated session recovery.',
+    description: (
+      <>
+        <Highlight>JWT Bearer tokens</Highlight> authenticated on every REST request and WebSocket handshake with automated session recovery.
+      </>
+    ),
     icon: Key,
     colSpan: 'lg:col-span-4',
-    accent: 'from-purple-500/15 via-indigo-500/10 to-transparent',
+    iconBg: 'from-purple-100/90 via-fuchsia-50/70 to-purple-50/50 dark:from-purple-950/60 dark:to-fuchsia-950/40',
+    iconColor: 'text-purple-600 dark:text-purple-300',
+    initialGlow: false,
   },
 ];
 
@@ -93,18 +132,24 @@ export default function IntuitiveChatFeatures() {
                   key={card.title}
                   className={`rounded-[24px] bg-white dark:bg-card group/feature relative overflow-hidden p-6 sm:p-8 border border-slate-200/60 dark:border-border/60 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] ${card.colSpan} flex flex-col justify-between min-h-[220px]`}
                 >
-                  {/* Glowing Hover Gradient Orb */}
+                  {/* Glowing Ambient Gradient Orb (Active by default on select cards, enhanced on hover) */}
                   <div
-                    className="invisible absolute -top-12 -right-12 h-36 w-36 rounded-full opacity-0 blur-2xl transition-all duration-300 group-hover/feature:visible group-hover/feature:opacity-30 pointer-events-none"
+                    className={`absolute -top-12 -right-12 h-40 w-40 rounded-full blur-2xl transition-all duration-300 pointer-events-none ${
+                      card.initialGlow
+                        ? 'opacity-25 group-hover/feature:opacity-45'
+                        : 'opacity-0 group-hover/feature:opacity-30'
+                    }`}
                     style={{
                       background: 'linear-gradient(169deg, #C9C1FF 29.61%, #725CFF 93.52%)',
                     }}
                   />
 
-                  {/* Header & Icon */}
+                  {/* Header & Modern Icon */}
                   <div className="relative z-10">
                     <div className="flex items-center mb-5">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-100/80 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 shadow-inner group-hover/feature:scale-105 transition-transform">
+                      <div
+                        className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr ${card.iconBg} ${card.iconColor} border border-slate-200/60 dark:border-border/60 shadow-xs group-hover/feature:scale-110 group-hover/feature:shadow-md transition-all duration-300`}
+                      >
                         <Icon className="h-5 w-5" />
                       </div>
                     </div>
