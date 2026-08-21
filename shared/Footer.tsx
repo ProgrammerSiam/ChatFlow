@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="xl:w-1/3">
             <div className="xl:w-86 xl:shrink-0 space-y-5">
               <Link href="/" className="inline-flex">
-                <BrandLogo name="ChatFlow" suffix=".AI" />
+                <BrandLogo prefix="Chat" suffix="Flow" />
               </Link>
 
               <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base leading-relaxed">

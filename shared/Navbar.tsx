@@ -12,11 +12,11 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between max-w-6xl">
         {/* Brand Logo (Matches UI Design System) */}
         <Link href="/" className="inline-flex">
-          <BrandLogo name="Chat" suffix="Flow" />
+          <BrandLogo prefix="Chat" suffix="Flow" />
         </Link>
 
         {/* Centered Segmented Pill Menu */}
-        <nav className="hidden md:flex items-center gap-1.5 rounded-full border border-slate-200/90 dark:border-border/80 bg-white/95 dark:bg-card/90 px-2 py-1.5 backdrop-blur-md">
+        <nav className="hidden md:flex items-center gap-1.5 rounded-full  px-2 py-1.5 backdrop-blur-md">
           <Link
             href="/"
             className="rounded-full px-4 py-1.5 text-sm font-semibold text-slate-900 dark:text-white transition-all"
