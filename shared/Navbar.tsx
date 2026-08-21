@@ -1,3 +1,7 @@
+'use client';
+
+import Link from 'next/link';
+import { useAuthStore } from '@/store/useAuthStore';
 import BrandLogo from '@/shared/BrandLogo';
 
 export default function Navbar() {
@@ -6,40 +10,40 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full pt-4 pb-2 px-4">
       <div className="container mx-auto flex items-center justify-between max-w-6xl">
-        {/* Brand Logo (Matches User Screenshot) */}
+        {/* Brand Logo (Matches UI Design System) */}
         <Link href="/" className="inline-flex">
-          <BrandLogo name="Aymo" suffix=".AI" />
+          <BrandLogo name="ChatFlow" suffix=".AI" />
         </Link>
 
-        {/* Centered Segmented Pill Menu (No Harsh Shadow, Clean Border Only) */}
-        <nav className="hidden md:flex items-center gap-1 rounded-full border border-slate-200/90 dark:border-border/80 bg-white/95 dark:bg-card/90 px-1.5 py-1 backdrop-blur-md">
+        {/* Centered Segmented Pill Menu */}
+        <nav className="hidden md:flex items-center gap-1.5 rounded-full border border-slate-200/90 dark:border-border/80 bg-white/95 dark:bg-card/90 px-2 py-1.5 backdrop-blur-md">
           <Link
             href="/"
-            className="rounded-full bg-white dark:bg-muted/80 px-4 py-1.5 text-xs font-semibold text-slate-900 dark:text-white border border-slate-200/80 dark:border-border transition-all"
+            className="rounded-full px-4 py-1.5 text-sm font-semibold text-slate-900 dark:text-white transition-all"
           >
             Home
           </Link>
           <a
             href="#features"
-            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Features
           </a>
           <a
             href="#demo"
-            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Sandbox
           </a>
           <a
             href="#how-it-works"
-            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Process
           </a>
           <a
             href="#faq"
-            className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             FAQ
           </a>

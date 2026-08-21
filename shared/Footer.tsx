@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import BrandLogo from '@/shared/BrandLogo';
 
 export default function Footer() {
   return (
@@ -12,11 +12,8 @@ export default function Footer() {
           {/* Brand & Mission Column */}
           <div className="xl:w-1/3">
             <div className="xl:w-86 xl:shrink-0 space-y-5">
-              <Link href="/" className="inline-flex items-center gap-2.5 font-extrabold text-xl tracking-tight text-foreground">
-                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-purple-500/20">
-                  <Sparkles className="h-5 w-5" />
-                </div>
-                <span>ChatFlow</span>
+              <Link href="/" className="inline-flex">
+                <BrandLogo name="ChatFlow" suffix=".AI" />
               </Link>
 
               <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base leading-relaxed">

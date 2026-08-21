@@ -10,7 +10,7 @@ interface BrandLogoProps {
 }
 
 export default function BrandLogo({
-  name = 'Aymo',
+  name = 'ChatFlow',
   suffix = '.AI',
   className = '',
   size = 'md',
