@@ -1,112 +1,133 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Minus, Sparkles, HelpCircle } from 'lucide-react';
+import SectionHeader from '@/shared/SectionHeader';
 
 interface FaqItem {
+  id: string;
   question: string;
   answer: string;
 }
 
 const FAQS: FaqItem[] = [
   {
-    question: 'How does authentication & user auto-registration work?',
+    id: 'what-is-chatflow',
+    question: 'What is ChatFlow?',
     answer:
-      'Logging in requires only your phone number and name via POST /auth/login. If your phone number is new, ChatFlow automatically registers your account on the fly with no passwords or verification delays. On app reload, sessions are seamlessly restored via GET /auth/me.',
+      'ChatFlow is a real-time communication platform and collaborative workspace that connects teammates with zero-latency Socket.IO channels, TanStack Query caching, and role-gated group administration without tool switching or complicated setup.',
   },
   {
-    question: 'How does real-time communication work under the hood?',
+    id: 'how-socket-works',
+    question: 'How does ChatFlow handle real-time communication?',
     answer:
       'ChatFlow connects directly to the root origin WebSocket server via Socket.IO using JWT authentication in the handshake ({ auth: { token } }). It listens to message:new and conversation:updated events in real-time, with automatic gap-filling queries executed whenever the connection recovers from a disconnect.',
   },
   {
+    id: 'what-is-optimistic',
     question: 'What makes optimistic message delivery zero-latency?',
     answer:
-      "When you send a message, it is instantly appended to the UI in <1ms with a 'sending' status while POST /messages runs in the background. On success, it seamlessly switches to 'sent' and replaces the temporary ID. If the request fails, it transitions to 'failed' with a one-tap retry button.",
+      "When you send a message, it is instantly appended to the UI in <1ms with a 'sending' status while POST /messages runs in the background. On success, it seamlessly switches to 'sent' and replaces the temporary ID. If the network drops, it marks as 'failed' with a one-tap retry button.",
   },
   {
-    question: 'How do group permissions and admin roles work?',
+    id: 'group-collaboration',
+    question: 'How do team collaboration and group admin roles work?',
     answer:
-      'When you create a group (POST /conversations/group), you are automatically made an admin. Group admins can rename the group, add new members, remove participants, and promote other members to admins. Non-admin participants can view group details and leave the group at any time.',
+      'ChatFlow includes built-in team collaboration at no extra cost. When creating a group, creators automatically become admins with the ability to rename channels, add new members, remove participants, and promote other teammates to co-admins.',
   },
   {
+    id: 'reverse-pagination',
     question: 'How does reverse pagination and smart auto-scroll work?',
     answer:
-      'Chat history is fetched in 20-message chunks using GET /conversations/{id}/messages?limit=20&before=<cursor>. When you scroll to the top, older messages are prepended while preserving exact scroll height without jumping. When new messages arrive, the viewport auto-scrolls if you are at the bottom, or displays a floating "↓ New message" pill if you have scrolled up.',
+      'Chat history is fetched in 20-message chunks using GET /conversations/{id}/messages?limit=20&before=<cursor>. Older messages are prepended smoothly without jumping scroll height. If you scroll up to read history, incoming messages trigger a floating "↓ New message" badge without interrupting your reading position.',
   },
   {
-    question: 'What happens if a token expires or returns a 401 error?',
+    id: 'security-and-auth',
+    question: 'Is ChatFlow secure for teams and businesses?',
     answer:
-      "ChatFlow's global HTTP interceptor catches 401 Unauthorized responses, cleanly disconnects the Socket.IO client, clears the Zustand store and TanStack Query cache, displays a 'Session expired' toast notification, and redirects you safely to /login.",
+      'Yes. ChatFlow uses stateless JWT Bearer token authentication verified on every REST request and WebSocket handshake. If a token expires, a centralized 401 interceptor cleanly purges all memory caches and redirects safely to login.',
+  },
+  {
+    id: 'free-access',
+    question: 'Can I start using ChatFlow for free?',
+    answer:
+      'Yes. ChatFlow offers instant auto-registration. Simply enter your phone number and name to begin chatting immediately with teammates with zero password hassle or verification delays.',
   },
 ];
 
 export default function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openId, setOpenId] = useState<string | null>('what-is-chatflow');
 
-  const toggleFaq = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+  const toggleFaq = (id: string) => {
+    setOpenId(openId === id ? null : id);
   };
 
   return (
-    <section id="faq" className="py-20 md:py-32 bg-white dark:bg-background border-t">
-      <div className="container mx-auto px-4 max-w-4xl space-y-12">
-        {/* Section Header */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-purple-200/70 dark:border-purple-800/50 bg-purple-50/70 dark:bg-purple-950/40 px-3.5 py-1 text-xs font-semibold text-purple-700 dark:text-purple-300 shadow-xs">
-            <HelpCircle className="h-3.5 w-3.5" />
-            <span>Frequently Asked Questions</span>
-          </div>
+    <section id="faq" className="bg-white dark:bg-background pt-12 pb-16 sm:pt-20 sm:pb-24 border-t">
+      <div className="container mx-auto px-4 max-w-4xl">
+        {/* Reusable Section Header */}
+        <SectionHeader
+          badge="FAQ"
+          title="Frequently Asked Questions"
+          description="Everything you need to know about ChatFlow, from real-time WebSockets and state architecture to collaboration and security."
+        />
 
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            Got questions? We’ve got answers.
-          </h2>
-
-          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-normal">
-            Everything you need to know about ChatFlow’s real-time WebSockets, state architecture, and group permissions.
-          </p>
-        </div>
-
-        {/* FAQ Accordion List */}
-        <div className="space-y-4">
-          {FAQS.map((faq, index) => {
-            const isOpen = openIndex === index;
-            return (
-              <div
-                key={faq.question}
-                className={`rounded-3xl border transition-all duration-200 overflow-hidden ${
-                  isOpen
-                    ? 'border-purple-300/80 dark:border-purple-800/60 bg-purple-50/30 dark:bg-purple-950/20 shadow-sm'
-                    : 'border-slate-200/80 dark:border-border/60 bg-slate-50/50 dark:bg-card/50 hover:bg-slate-50 dark:hover:bg-card'
-                }`}
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleFaq(index)}
-                  className="w-full p-6 sm:p-7 flex items-center justify-between text-left gap-4"
+        {/* Minimalist Accordion List (Matches User HTML Spec) */}
+        <div className="mx-auto mt-10 max-w-3xl sm:mt-14">
+          <div className="flex flex-col gap-6">
+            {FAQS.map((faq) => {
+              const isOpen = openId === faq.id;
+              return (
+                <div
+                  key={faq.id}
+                  className="flex flex-col gap-3 pb-6 border-b border-slate-200/80 dark:border-border/60 transition-colors"
                 >
-                  <span className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
-                    {faq.question}
-                  </span>
-                  <div
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
-                      isOpen
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-slate-200/70 dark:bg-muted text-slate-700 dark:text-slate-300'
-                    }`}
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(faq.id)}
+                    aria-expanded={isOpen}
+                    className="flex w-full items-center justify-between py-1 text-left group cursor-pointer"
                   >
-                    {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  </div>
-                </button>
+                    <span className="text-slate-900 dark:text-white pr-6 text-base sm:text-lg leading-snug font-medium group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                      {faq.question}
+                    </span>
+                    <span className="shrink-0 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`size-5 transform transition-transform duration-200 ${
+                          isOpen ? 'rotate-180 text-purple-600 dark:text-purple-400' : ''
+                        }`}
+                      >
+                        <path
+                          d="M6 9L12 15L18 9"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                  </button>
 
-                {isOpen && (
-                  <div className="px-6 pb-6 sm:px-7 sm:pb-7 pt-0 text-sm text-slate-600 dark:text-slate-400 leading-relaxed animate-in fade-in duration-200">
-                    <p>{faq.answer}</p>
+                  <div
+                    className="grid overflow-hidden transition-all duration-300 ease-in-out"
+                    style={{
+                      gridTemplateRows: isOpen ? '1fr' : '0fr',
+                    }}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed pt-1">
+                        {faq.answer}
+                      </p>
+                    </div>
                   </div>
-                )}
-              </div>
-            );
-          })}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

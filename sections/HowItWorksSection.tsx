@@ -60,28 +60,20 @@ const PROCESS_STEPS: ProcessStep[] = [
   },
 ];
 
+import SectionHeader from '@/shared/SectionHeader';
+
 export default function HowItWorksSection() {
   const [activeStep, setActiveStep] = useState('01');
 
   return (
     <section id="how-it-works" className="py-20 md:py-32 bg-white dark:bg-background overflow-hidden">
       <div className="container mx-auto px-4 max-w-5xl space-y-16">
-        {/* Top Header (Matches Reference Screenshot) */}
-        <div className="text-center space-y-4 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-border bg-slate-50 dark:bg-card px-3.5 py-1 text-[11px] font-bold text-slate-700 dark:text-slate-300 shadow-xs">
-            <span>004</span>
-            <span className="h-1.5 w-1.5 rounded-full bg-slate-900 dark:bg-white" />
-            <span className="tracking-widest uppercase">PROCESS</span>
-          </div>
-
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-            How We Work
-          </h2>
-
-          <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-            A proven process designed to transform complex workflows into scalable real-time systems — efficiently and strategically.
-          </p>
-        </div>
+        {/* Reusable Section Header */}
+        <SectionHeader
+          badge="Process"
+          title="How We Work"
+          description="A proven process designed to transform complex workflows into scalable real-time systems — efficiently and strategically."
+        />
 
         {/* Vertical Timeline Stepped Process (Matches Reference Screenshot) */}
         <div className="relative pt-6">

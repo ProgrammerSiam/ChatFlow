@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, RotateCcw, CheckCheck, Sparkles } from 'lucide-react';
+import SectionHeader from '@/shared/SectionHeader';
 
 interface DemoMessage {
   id: string;
@@ -48,47 +49,38 @@ export default function LiveDemoSection() {
     setTimeout(() => {
       setIsBotTyping(false);
       const botReplies = [
-        `Received: "${text}" with 0ms optimistic render time! ⚡`,
-        'TanStack Query cached that payload smoothly in client memory! 📦',
-        'Socket.IO gap-filling guarantees you will never miss a packet! 🚀',
-        'Smart auto-scroll preserved your reading position! 🎯',
+        '🚀 Instant optimistic delivery simulated with 0ms perceived latency!',
+        '⚡ WebSocket socket:new event received and cached into TanStack Query.',
+        '🔒 Bearer token verified. Your message stream remains strictly encrypted.',
+        '✨ Smart auto-scroll triggered: Viewport smoothly transitioned to bottom.',
       ];
       const randomReply = botReplies[Math.floor(Math.random() * botReplies.length)];
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `bot-${Date.now()}`,
-          sender: 'bot',
-          text: randomReply,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-      ]);
-    }, 1200);
+      const botMsg: DemoMessage = {
+        id: `bot-${Date.now()}`,
+        sender: 'bot',
+        text: randomReply,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages((prev) => [...prev, botMsg]);
+    }, 600);
   };
 
   const handleReset = () => {
     setMessages(INITIAL_DEMO_MESSAGES);
-    setInput('');
   };
 
   return (
-    <section id="demo" className="py-16 md:py-24 bg-muted/30 border-y">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="text-center space-y-3 mb-10">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Interactive Sandbox</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            Try the Real-Time Chat Engine
-          </h2>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto">
-            Type anything into the sandbox below to feel the instant optimistic delivery and automated feedback.
-          </p>
-        </div>
+    <section id="demo" className="py-20 md:py-28 bg-white dark:bg-background">
+      <div className="container mx-auto px-4 max-w-4xl space-y-12">
+        {/* Reusable Section Header */}
+        <SectionHeader
+          badge="Sandbox"
+          title="Try the Real-Time Chat Engine"
+          description="Type anything into the sandbox below to feel the instant optimistic delivery and automated feedback."
+        />
 
-        <div className="rounded-3xl border bg-card shadow-2xl overflow-hidden text-card-foreground">
+        <div className="rounded-[32px] border border-border/80 bg-white/90 dark:bg-card/90 shadow-2xl backdrop-blur-xl overflow-hidden text-card-foreground">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b bg-card/60 backdrop-blur">
             <div className="flex items-center gap-3">
