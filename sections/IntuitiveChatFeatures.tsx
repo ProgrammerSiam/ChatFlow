@@ -8,7 +8,6 @@ import {
   Users,
   Search,
   Key,
-  Sparkles,
 } from 'lucide-react';
 
 interface FeatureCard {
@@ -20,12 +19,13 @@ interface FeatureCard {
 }
 
 const FEATURE_CARDS: FeatureCard[] = [
+  /* Row 1: 3 cards (Card 1 expanded to 6 cols, Card 2 & 3 are 3 cols each) */
   {
     title: 'Multi-Model & Socket Access',
     description:
       'Access persistent WebSocket channels, direct messages, and group channels — all in one unified workspace without tab fatigue.',
     icon: MessageSquare,
-    colSpan: 'lg:col-span-7',
+    colSpan: 'lg:col-span-6',
     accent: 'from-purple-500/15 via-indigo-500/10 to-transparent',
   },
   {
@@ -33,7 +33,7 @@ const FEATURE_CARDS: FeatureCard[] = [
     description:
       'Upload PDFs, Docs, Sheets, or code and get accurate, context-aware answers and summaries in seconds.',
     icon: FileText,
-    colSpan: 'lg:col-span-5',
+    colSpan: 'lg:col-span-3',
     accent: 'from-indigo-500/15 via-blue-500/10 to-transparent',
   },
   {
@@ -41,15 +41,17 @@ const FEATURE_CARDS: FeatureCard[] = [
     description:
       'Experience zero-latency optimistic delivery with sub-10ms network dispatch and instant status transitions.',
     icon: Zap,
-    colSpan: 'lg:col-span-5',
+    colSpan: 'lg:col-span-3',
     accent: 'from-amber-500/15 via-purple-500/10 to-transparent',
   },
+
+  /* Row 2: 3 cards (4 cols each) */
   {
     title: 'Built-In Team Collaboration',
     description:
       'Share chats, assign admin roles, and work together in real time — collaboration is included at no extra cost.',
     icon: Users,
-    colSpan: 'lg:col-span-7',
+    colSpan: 'lg:col-span-4',
     accent: 'from-emerald-500/15 via-teal-500/10 to-transparent',
   },
   {
@@ -57,7 +59,7 @@ const FEATURE_CARDS: FeatureCard[] = [
     description:
       'Real-time 300ms debounced search built in. Instant sidebar cache lookup with client-side self-exclusion.',
     icon: Search,
-    colSpan: 'lg:col-span-6',
+    colSpan: 'lg:col-span-4',
     accent: 'from-pink-500/15 via-purple-500/10 to-transparent',
   },
   {
@@ -65,7 +67,7 @@ const FEATURE_CARDS: FeatureCard[] = [
     description:
       'JWT Bearer tokens authenticated on every REST request and WebSocket handshake with automated session recovery.',
     icon: Key,
-    colSpan: 'lg:col-span-6',
+    colSpan: 'lg:col-span-4',
     accent: 'from-purple-500/15 via-indigo-500/10 to-transparent',
   },
 ];
@@ -101,25 +103,18 @@ export default function IntuitiveChatFeatures() {
 
                   {/* Header & Icon */}
                   <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center mb-5">
                       <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-100/80 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 shadow-inner group-hover/feature:scale-105 transition-transform">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <Sparkles className="h-4 w-4 text-purple-400/40 group-hover/feature:text-purple-500 transition-colors" />
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
+                    <h3 className="text-lg sm:text-xl font-medium tracking-tight text-slate-900 dark:text-white leading-tight">
                       {card.title}
                     </h3>
                     <p className="mt-2.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
                       {card.description}
                     </p>
-                  </div>
-
-                  {/* Subtle Bottom Accent Indicator */}
-                  <div className="relative z-10 pt-4 mt-auto flex items-center gap-1.5 text-[11px] font-semibold text-purple-600 dark:text-purple-400 opacity-80 group-hover/feature:opacity-100 transition-opacity">
-                    <span>Learn capability</span>
-                    <span>→</span>
                   </div>
                 </div>
               );
