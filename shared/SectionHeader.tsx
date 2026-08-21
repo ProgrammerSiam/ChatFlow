@@ -22,13 +22,15 @@ export default function SectionHeader({
   return (
     <div
       className={`mx-auto mb-12 max-w-2xl ${
-        isCenter ? 'text-center flex flex-col items-center' : 'text-left flex flex-col items-start'
+        isCenter
+          ? 'text-center flex flex-col items-center'
+          : 'text-left flex flex-col items-start'
       } ${className}`}
     >
       {/* Reusable Glowing Pill Badge */}
       {badge && (
-        <div className="relative z-10 inline-flex items-center gap-2.5 overflow-hidden rounded-xl border border-slate-200/80 dark:border-border/80 bg-white/90 dark:bg-card/90 p-1 pe-3.5 shadow-sm backdrop-blur-md">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-purple-200/60 dark:border-purple-800/40 bg-white dark:bg-muted shadow-xs">
+        <div className="relative z-10 inline-flex items-center gap-2.5 overflow-hidden rounded-lg border border-slate-200/80 dark:border-border/80 bg-white/90 dark:bg-card/90 p-1 pe-3.5 shadow-sm backdrop-blur-md">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md border border-purple-200/60 dark:border-purple-800/40 bg-white dark:bg-muted shadow-xs">
             <svg
               width="15"
               height="16"
@@ -67,7 +69,8 @@ export default function SectionHeader({
           <div
             className="absolute -bottom-4 -left-5 -z-10 h-10 w-10 -rotate-12 rounded-2xl blur-[10px]"
             style={{
-              background: 'linear-gradient(347deg, #725CFF 1.7%, #C9C1FF 46.45%, #F8F7FF 90.62%)',
+              background:
+                'linear-gradient(347deg, #725CFF 1.7%, #C9C1FF 46.45%, #F8F7FF 90.62%)',
             }}
           />
         </div>
