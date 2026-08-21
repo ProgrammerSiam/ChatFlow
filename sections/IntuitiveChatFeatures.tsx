@@ -130,14 +130,14 @@ export default function IntuitiveChatFeatures() {
               return (
                 <div
                   key={card.title}
-                  className={`rounded-[24px] bg-white dark:bg-card group/feature relative overflow-hidden p-6 sm:p-8 border border-slate-200/60 dark:border-border/60 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] ${card.colSpan} flex flex-col justify-between min-h-[220px]`}
+                  className={`rounded-[24px] bg-white dark:bg-card group/feature relative overflow-hidden p-6 sm:p-8 border border-slate-200/60 dark:border-border/60 transition-all duration-300 shadow-xs hover:shadow-sm hover:border-purple-200/80 dark:hover:border-purple-800/60 ${card.colSpan} flex flex-col justify-between min-h-[220px]`}
                 >
-                  {/* Glowing Ambient Gradient Orb (Active by default on select cards, enhanced on hover) */}
+                  {/* Glowing Ambient Gradient Orb (Active by default on select cards, glowing on hover) */}
                   <div
-                    className={`absolute -top-12 -right-12 h-40 w-40 rounded-full blur-2xl transition-all duration-300 pointer-events-none ${
+                    className={`absolute -top-12 -right-12 h-44 w-44 rounded-full blur-2xl transition-opacity duration-300 pointer-events-none ${
                       card.initialGlow
-                        ? 'opacity-25 group-hover/feature:opacity-45'
-                        : 'opacity-0 group-hover/feature:opacity-30'
+                        ? 'opacity-25 group-hover/feature:opacity-50'
+                        : 'opacity-0 group-hover/feature:opacity-40'
                     }`}
                     style={{
                       background: 'linear-gradient(169deg, #C9C1FF 29.61%, #725CFF 93.52%)',
