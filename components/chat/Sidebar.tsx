@@ -202,7 +202,7 @@ export default function Sidebar() {
 
   // Expanded Sidebar View (Full Layout)
   return (
-    <aside className="w-full md:w-80 lg:w-84 h-full rounded-[24px] bg-[#FAFAFA] dark:bg-card border border-slate-200/80 dark:border-border/70 p-3.5 sm:p-4 flex flex-col justify-between shadow-xs select-none shrink-0 overflow-hidden transition-all duration-300">
+    <aside className="w-full md:w-80 lg:w-84 h-full rounded-[24px] bg-[#FAFAFA] dark:bg-card border border-slate-200/80 dark:border-border/70 p-3.5 sm:p-4 flex flex-col justify-between shadow-xs select-none shrink-0 transition-all duration-300 relative z-20">
       
       {/* Top Section */}
       <div className="flex flex-col gap-3.5">
@@ -215,7 +215,7 @@ export default function Sidebar() {
           </CoolTooltip>
 
           {/* Larger Collapse Toggle Button */}
-          <CoolTooltip content="Collapse sidebar" side="bottom" shortcut="⌘[">
+          <CoolTooltip content="Collapse sidebar" side="bottom" align="end" shortcut="⌘[">
             <button
               onClick={toggleSidebarCollapsed}
               className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border/70 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-2xs"
@@ -265,8 +265,23 @@ export default function Sidebar() {
             value={filterQuery}
             onChange={(e) => setFilterQuery(e.target.value)}
             placeholder="Search conversations..."
-            className="w-full h-10 rounded-xl bg-white dark:bg-muted/50 border border-slate-200/70 dark:border-border/50 pl-10 pr-4 text-xs sm:text-[13px] text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-purple-400 shadow-2xs"
+            className="w-full h-10 rounded-xl bg-white dark:bg-muted/50 border border-slate-200/70 dark:border-border/50 pl-10 pr-10 text-xs sm:text-[13px] text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-purple-400 shadow-2xs"
           />
+          {/* Right Command Key Icon */}
+          <div className="absolute right-3 flex items-center justify-center text-purple-600/80 dark:text-purple-400/80 pointer-events-none">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
+            </svg>
+          </div>
         </div>
 
         {/* Category Filter Chips */}
