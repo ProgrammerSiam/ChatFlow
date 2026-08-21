@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, UserPlus, X, Loader2, User as UserIcon, MessageSquare, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { Search, UserPlus, Users, X, Loader2, User as UserIcon, MessageSquare, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useConversations } from '@/hooks/useConversations';
 import { useUserSearch } from '@/hooks/useUserSearch';

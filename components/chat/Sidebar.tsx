@@ -153,35 +153,43 @@ export default function Sidebar() {
 
           <div className="w-8 border-t border-slate-200/60 dark:border-border/60 my-0.5" />
 
-          {/* Conversations Avatars Feed */}
-          <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2.5 w-full flex flex-col items-center max-h-[calc(100vh-250px)]">
-            {filteredConversations.map((conv) => {
-              const isGroup = conv.type === 'group';
-              const isActive = activeId === conv._id;
-              const title = isGroup ? conv.name || 'Group' : conv.participant?.name || 'User';
+          {/* Conversations Avatars Feed with Top & Bottom Shadow Vignettes */}
+          <div className="relative flex-1 w-full min-h-0 flex flex-col my-1">
+            {/* Top Fade Vignette */}
+            <div className="pointer-events-none absolute top-0 left-0 right-0 h-3 bg-gradient-to-b from-[#FAFAFA] dark:from-card to-transparent z-10" />
 
-              return (
-                <Link
-                  key={conv._id}
-                  href={`/chat/${conv._id}`}
-                  title={title}
-                  className={`relative flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer ${
-                    isActive
-                      ? 'ring-2 ring-purple-600 bg-gradient-to-tr from-[#8E7CFF] to-[#B6A8FF] text-white scale-105 shadow-xs'
-                      : isGroup
-                      ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 hover:scale-105'
-                      : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:scale-105'
-                  }`}
-                >
-                  {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
-                  {conv.unreadCount && conv.unreadCount > 0 ? (
-                    <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-purple-600 text-white text-[9px] font-bold ring-2 ring-white">
-                      {conv.unreadCount}
-                    </span>
-                  ) : null}
-                </Link>
-              );
-            })}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2.5 w-full flex flex-col items-center py-1 max-h-[calc(100vh-250px)]">
+              {filteredConversations.map((conv) => {
+                const isGroup = conv.type === 'group';
+                const isActive = activeId === conv._id;
+                const title = isGroup ? conv.name || 'Group' : conv.participant?.name || 'User';
+
+                return (
+                  <Link
+                    key={conv._id}
+                    href={`/chat/${conv._id}`}
+                    title={title}
+                    className={`relative flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs shadow-2xs transition-all cursor-pointer ${
+                      isActive
+                        ? 'ring-2 ring-purple-600 bg-gradient-to-tr from-[#8E7CFF] to-[#B6A8FF] text-white scale-105 shadow-xs'
+                        : isGroup
+                        ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 hover:scale-105'
+                        : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 hover:scale-105'
+                    }`}
+                  >
+                    {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
+                    {conv.unreadCount && conv.unreadCount > 0 ? (
+                      <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-purple-600 text-white text-[9px] font-bold ring-2 ring-white">
+                        {conv.unreadCount}
+                      </span>
+                    ) : null}
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Bottom Fade Vignette */}
+            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-[#FAFAFA] dark:from-card to-transparent z-10" />
           </div>
         </div>
 
@@ -337,127 +345,136 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Real Conversations List */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar my-2 pr-1 -mr-1 space-y-1.5">
-        {isLoading ? (
-          <div className="space-y-2 py-2">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl animate-pulse">
-                <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-muted shrink-0" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 w-3/4 rounded bg-slate-100 dark:bg-muted" />
-                  <div className="h-3 w-1/2 rounded bg-slate-100 dark:bg-muted" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="py-6 text-center text-xs text-rose-500 space-y-1.5">
-            <p>Failed to load conversations</p>
-            <button
-              onClick={() => refetch()}
-              className="text-xs font-semibold text-purple-600 underline"
-            >
-              Retry
-            </button>
-          </div>
-        ) : filteredConversations.length === 0 ? (
-          <div className="py-10 px-2 text-center space-y-3">
-            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
-                {filterQuery ? 'No matching chats found' : 'No conversations yet'}
-              </p>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {filterQuery ? 'Try another search query' : 'Start your first direct or group chat'}
-              </p>
-            </div>
-            {!filterQuery && (
-              <div className="flex justify-center gap-2 pt-1">
-                <button
-                  onClick={() => setNewChatOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 transition-colors shadow-xs"
-                >
-                  Start Chat
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          filteredConversations.map((conv) => {
-            const isGroup = conv.type === 'group';
-            const isActive = activeId === conv._id;
-            const title = isGroup
-              ? conv.name || 'Group Chat'
-              : conv.participant?.name || 'User';
-            const subtitle =
-              conv.lastMessage?.text ||
-              (isGroup
-                ? `${conv.participants?.length || 0} participants`
-                : conv.participant?.phone || 'No messages yet');
-            const time = formatConversationTime(
-              conv.lastMessage?.createdAt || conv.updatedAt || conv.createdAt
-            );
+      {/* Real Conversations List Container with Top & Bottom Shadow Fades */}
+      <div className="relative flex-1 min-h-0 flex flex-col my-1">
+        {/* Top Fade Vignette */}
+        <div className="pointer-events-none absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-[#FAFAFA] dark:from-card to-transparent z-10 rounded-t-xl" />
 
-            return (
-              <Link
-                key={conv._id}
-                href={`/chat/${conv._id}`}
-                className={`group flex items-center gap-3 p-2.5 rounded-2xl transition-all ${
-                  isActive
-                    ? 'bg-slate-100 dark:bg-muted text-slate-900 dark:text-white shadow-2xs font-medium'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-muted/40'
-                }`}
+        {/* Scrollable Feed */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar py-1 pr-1 -mr-1 space-y-1.5">
+          {isLoading ? (
+            <div className="space-y-2 py-2">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl animate-pulse">
+                  <div className="h-10 w-10 rounded-xl bg-slate-100 dark:bg-muted shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-3/4 rounded bg-slate-100 dark:bg-muted" />
+                    <div className="h-3 w-1/2 rounded bg-slate-100 dark:bg-muted" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="py-6 text-center text-xs text-rose-500 space-y-1.5">
+              <p>Failed to load conversations</p>
+              <button
+                onClick={() => refetch()}
+                className="text-xs font-semibold text-purple-600 underline"
               >
-                {/* Avatar */}
-                <div className="relative shrink-0">
-                  <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs shadow-2xs group-hover:scale-105 transition-transform ${
-                      isActive
-                        ? 'bg-gradient-to-tr from-[#8E7CFF] via-[#725CFF] to-[#6366F1] text-white shadow-xs'
-                        : isGroup
-                        ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
-                        : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
-                    }`}
+                Retry
+              </button>
+            </div>
+          ) : filteredConversations.length === 0 ? (
+            <div className="py-10 px-2 text-center space-y-3">
+              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                  {filterQuery ? 'No matching chats found' : 'No conversations yet'}
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  {filterQuery ? 'Try another search query' : 'Start your first direct or group chat'}
+                </p>
+              </div>
+              {!filterQuery && (
+                <div className="flex justify-center gap-2 pt-1">
+                  <button
+                    onClick={() => setNewChatOpen(true)}
+                    className="px-3.5 py-2 rounded-xl bg-purple-600 text-white text-xs font-medium hover:bg-purple-700 transition-colors shadow-xs"
                   >
-                    {isGroup ? (
-                      <Users className="h-4.5 w-4.5" />
-                    ) : (
-                      title.charAt(0).toUpperCase()
+                    Start Chat
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            filteredConversations.map((conv) => {
+              const isGroup = conv.type === 'group';
+              const isActive = activeId === conv._id;
+              const title = isGroup
+                ? conv.name || 'Group Chat'
+                : conv.participant?.name || 'User';
+              const subtitle =
+                conv.lastMessage?.text ||
+                (isGroup
+                  ? `${conv.participants?.length || 0} participants`
+                  : conv.participant?.phone || 'No messages yet');
+              const time = formatConversationTime(
+                conv.lastMessage?.createdAt || conv.updatedAt || conv.createdAt
+              );
+
+              return (
+                <Link
+                  key={conv._id}
+                  href={`/chat/${conv._id}`}
+                  className={`group flex items-center gap-3 p-2.5 rounded-2xl transition-all ${
+                    isActive
+                      ? 'bg-slate-100 dark:bg-muted text-slate-900 dark:text-white shadow-2xs font-medium'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-muted/40'
+                  }`}
+                >
+                  {/* Avatar */}
+                  <div className="relative shrink-0">
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs shadow-2xs group-hover:scale-105 transition-transform ${
+                        isActive
+                          ? 'bg-gradient-to-tr from-[#8E7CFF] via-[#725CFF] to-[#6366F1] text-white shadow-xs'
+                          : isGroup
+                          ? 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300'
+                          : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
+                      }`}
+                    >
+                      {isGroup ? (
+                        <Users className="h-4.5 w-4.5" />
+                      ) : (
+                        title.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                    
+                    {/* Online Indicator Badge for Direct Chats */}
+                    {!isGroup && (
+                      <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
                     )}
                   </div>
-                  
-                  {/* Online Indicator Badge for Direct Chats */}
-                  {!isGroup && (
-                    <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
-                  )}
-                </div>
 
-                {/* Details */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                      {title}
-                    </span>
-                    <span className="text-xs text-slate-400 shrink-0">{time}</span>
+                  {/* Details */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                        {title}
+                      </span>
+                      <span className="text-xs text-slate-400 shrink-0">{time}</span>
+                    </div>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 truncate leading-snug mt-0.5">
+                      {subtitle}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 truncate leading-snug mt-0.5">
-                    {subtitle}
-                  </p>
-                </div>
 
-                {/* Unread Counter Badge */}
-                {conv.unreadCount && conv.unreadCount > 0 ? (
-                  <span className="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-purple-600 text-white text-[10px] font-bold px-1.5 shrink-0 shadow-xs">
-                    {conv.unreadCount}
-                  </span>
-                ) : null}
-              </Link>
-            );
-          })
-        )}
+                  {/* Unread Counter Badge */}
+                  {conv.unreadCount && conv.unreadCount > 0 ? (
+                    <span className="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-purple-600 text-white text-[10px] font-bold px-1.5 shrink-0 shadow-xs">
+                      {conv.unreadCount}
+                    </span>
+                  ) : null}
+                </Link>
+              );
+            })
+          )}
+        </div>
+
+        {/* Bottom Fade Vignette */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-5 bg-gradient-to-t from-[#FAFAFA] dark:from-card to-transparent z-10 rounded-b-xl" />
       </div>
 
       {/* User Profile Card (GET /auth/me Modal Trigger) */}
