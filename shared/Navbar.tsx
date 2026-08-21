@@ -16,48 +16,41 @@ export default function Navbar() {
         </Link>
 
         {/* Centered Segmented Pill Menu */}
-        <nav className="hidden md:flex items-center gap-1.5 rounded-full  px-2 py-1.5 backdrop-blur-md">
+        <nav className="hidden md:flex items-center gap-1 rounded-full px-1.5 py-1 backdrop-blur-md">
           <Link
             href="/"
-            className="rounded-full px-4 py-1.5 text-sm font-semibold text-slate-900 dark:text-white transition-all"
+            className="rounded-full px-3 py-1 text-[13px] font-semibold text-slate-900 dark:text-white transition-all"
           >
             Home
           </Link>
           <a
             href="#features"
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Features
           </a>
           <a
             href="#demo"
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Sandbox
           </a>
           <a
             href="#how-it-works"
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Process
           </a>
           <a
             href="#faq"
-            className="rounded-full px-4 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             FAQ
           </a>
         </nav>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-3 sm:gap-4">
-          <Link
-            href="/login"
-            className="text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition-colors"
-          >
-            Log In
-          </Link>
-
+        {/* Action Button (Single Button) */}
+        <div className="flex items-center">
           <Link
             href={isAuthenticated ? '/chat' : '/login'}
             className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 px-5 py-2 text-xs sm:text-sm font-medium shadow-md shadow-slate-900/10 dark:shadow-white/5 active:scale-98"
