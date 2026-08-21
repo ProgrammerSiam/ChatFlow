@@ -150,9 +150,9 @@ export default function ChatIndexPage() {
             </div>
           </div>
 
-          {/* 3-Column Feature Cards (With Expanded Middle Card Width) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full text-left pt-2">
-            {/* Card 1: Direct Message (3 cols) */}
+          {/* 3-Column Feature Cards (With Subtly Balanced Expanded Center Card) */}
+          <div className="grid grid-cols-1 lg:grid-cols-10 gap-5 w-full text-left pt-2">
+            {/* Card 1: Direct Message (3 of 10 cols) */}
             <div
               onClick={() => setNewChatOpen(true)}
               className="lg:col-span-3 rounded-[24px] bg-white dark:bg-card group/feature relative overflow-hidden p-6 border border-slate-200/60 dark:border-border/60 transition-all duration-300 shadow-xs hover:shadow-md hover:border-purple-200/80 dark:hover:border-purple-800/60 flex flex-col justify-between cursor-pointer min-h-[210px]"
@@ -185,10 +185,10 @@ export default function ChatIndexPage() {
               </div>
             </div>
 
-            {/* Card 2: Team Channel (Expanded Middle Card: 6 cols) */}
+            {/* Card 2: Team Channel (Subtly Expanded Center Card: 4 of 10 cols) */}
             <div
               onClick={() => setNewGroupOpen(true)}
-              className="lg:col-span-6 rounded-[24px] bg-white dark:bg-card group/feature relative overflow-hidden p-6 sm:p-7 border border-slate-200/60 dark:border-border/60 transition-all duration-300 shadow-xs hover:shadow-md hover:border-purple-200/80 dark:hover:border-purple-800/60 flex flex-col justify-between cursor-pointer min-h-[210px]"
+              className="lg:col-span-4 rounded-[24px] bg-white dark:bg-card group/feature relative overflow-hidden p-6 sm:p-7 border border-slate-200/60 dark:border-border/60 transition-all duration-300 shadow-xs hover:shadow-md hover:border-purple-200/80 dark:hover:border-purple-800/60 flex flex-col justify-between cursor-pointer min-h-[210px]"
             >
               {/* Glowing Ambient Gradient Orb in Top-Right */}
               <div
@@ -205,10 +205,10 @@ export default function ChatIndexPage() {
                   </div>
                 </div>
 
-                <h3 className="text-base sm:text-xl font-medium tracking-tight text-slate-900 dark:text-white leading-tight">
+                <h3 className="text-base sm:text-lg font-medium tracking-tight text-slate-900 dark:text-white leading-tight">
                   Team Channel
                 </h3>
-                <p className="mt-2 text-xs sm:text-[13px] sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                <p className="mt-2 text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
                   Create collaborative multi-member group channels with{' '}
                   <span className="font-medium text-slate-900 dark:text-white underline decoration-indigo-400/60 dark:decoration-indigo-400/80 decoration-[1.5px] underline-offset-4">
                     member invitations
@@ -220,7 +220,7 @@ export default function ChatIndexPage() {
               </div>
             </div>
 
-            {/* Card 3: Account & Settings (3 cols) */}
+            {/* Card 3: Account & Settings (3 of 10 cols) */}
             <div
               onClick={() => setProfileOpen(true)}
               className="lg:col-span-3 rounded-[24px] bg-white dark:bg-card group/feature relative overflow-hidden p-6 border border-slate-200/60 dark:border-border/60 transition-all duration-300 shadow-xs hover:shadow-md hover:border-purple-200/80 dark:hover:border-purple-800/60 flex flex-col justify-between cursor-pointer min-h-[210px]"
