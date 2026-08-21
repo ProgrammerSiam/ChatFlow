@@ -12,7 +12,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between max-w-6xl">
         {/* Brand Logo (Matches UI Design System) */}
         <Link href="/" className="inline-flex">
-          <BrandLogo name="ChatFlow" suffix=".AI" />
+          <BrandLogo name="Chat" suffix="Flow" />
         </Link>
 
         {/* Centered Segmented Pill Menu */}

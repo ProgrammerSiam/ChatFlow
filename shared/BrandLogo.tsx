@@ -16,46 +16,50 @@ export default function BrandLogo({
   size = 'md',
 }: BrandLogoProps) {
   const sizeClasses = {
-    sm: { box: 'h-7 w-7 rounded-[9px]', svg: 18, text: 'text-lg' },
-    md: { box: 'h-8.5 w-8.5 rounded-[11px]', svg: 22, text: 'text-xl' },
-    lg: { box: 'h-10 w-10 rounded-[13px]', svg: 26, text: 'text-2xl' },
+    sm: { box: 'h-9 w-9 rounded-[11px]', svg: 24, text: 'text-xl' },
+    md: { box: 'h-12 w-12 rounded-[15px]', svg: 30, text: 'text-[26px] sm:text-[28px]' },
+    lg: { box: 'h-14 w-14 rounded-[18px]', svg: 36, text: 'text-3xl' },
   }[size];
 
   return (
-    <div className={`flex items-center gap-2.5 group cursor-pointer border-0 outline-none ${className}`}>
-      {/* Purple Gradient Squircle Icon with Chat Bubble */}
+    <div className={`flex items-center gap-3 group cursor-pointer border-0 outline-none select-none ${className}`}>
+      {/* Purple Gradient Squircle Mascot Icon (Matches Screenshot Exactly) */}
       <div
-        className={`relative flex items-center justify-center bg-gradient-to-tr from-[#725CFF] via-[#8C76FF] to-[#B8AAFF] text-white shadow-xs group-hover:scale-105 transition-transform ${sizeClasses.box}`}
+        className={`relative flex shrink-0 items-center justify-center bg-gradient-to-tr from-[#725CFF] via-[#856FFE] to-[#B5A6FF] text-white shadow-xs group-hover:scale-105 transition-transform duration-200 ${sizeClasses.box}`}
       >
         <svg
           width={sizeClasses.svg}
           height={sizeClasses.svg}
-          viewBox="0 0 24 24"
+          viewBox="0 0 28 28"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Rounded Chat Speech Bubble */}
+          {/* Distinct Chat Speech Bubble */}
           <path
-            d="M4.5 12C4.5 7.85786 7.85786 4.5 12 4.5C16.1421 4.5 19.5 7.85786 19.5 12C19.5 16.1421 16.1421 19.5 12 19.5C10.55 19.5 9.2 19.08 8.08 18.35L4.5 19.5L5.65 15.92C4.92 14.8 4.5 13.45 4.5 12Z"
+            d="M5 13.5C5 8.80558 8.80558 5 13.5 5C18.1944 5 22 8.80558 22 13.5C22 18.1944 18.1944 22 13.5 22C11.75 22 10.15 21.48 8.8 20.6L5 21.8L6.25 18.15C5.45 16.78 5 15.2 5 13.5Z"
             fill="white"
           />
-          {/* Left Chat Eye */}
-          <circle cx="10" cy="12" r="1.15" fill="#725CFF" />
-          {/* Right Chat Eye */}
-          <circle cx="14" cy="12" r="1.15" fill="#725CFF" />
+          {/* 3 Conversation Dots */}
+          <circle cx="9.75" cy="13.5" r="1.3" fill="#725CFF" />
+          <circle cx="13.5" cy="13.5" r="1.3" fill="#725CFF" />
+          <circle cx="17.25" cy="13.5" r="1.3" fill="#725CFF" />
           {/* Top-Right Sparkle Diamond */}
           <path
-            d="M18.5 2.5L19.2 4.5L21.2 5.2L19.2 5.9L18.5 7.9L17.8 5.9L15.8 5.2L17.8 4.5L18.5 2.5Z"
+            d="M21.5 2.5L22.2 4.6L24.3 5.3L22.2 6.0L21.5 8.1L20.8 6.0L18.7 5.3L20.8 4.6L21.5 2.5Z"
             fill="white"
           />
         </svg>
       </div>
 
-      {/* Typography: Bold Name + Muted Suffix */}
-      <span className={`font-bold tracking-tight text-slate-900 dark:text-white leading-none ${sizeClasses.text}`}>
-        {name}
-        <span className="font-normal text-slate-400 dark:text-slate-500">{suffix}</span>
-      </span>
+      {/* Typography: Bold Width + Muted Gray Suffix */}
+      <div className="flex items-baseline tracking-[-0.6px] leading-none">
+        <span className={`font-bold text-slate-900 dark:text-white ${sizeClasses.text}`}>
+          {name}
+        </span>
+        <span className={`font-normal text-slate-400 dark:text-slate-500 ml-0.5 ${sizeClasses.text}`}>
+          {suffix}
+        </span>
+      </div>
     </div>
   );
 }
