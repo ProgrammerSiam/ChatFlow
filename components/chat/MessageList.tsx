@@ -222,10 +222,10 @@ export default function MessageList({
 
                 {/* Message Bubble */}
                 <div
-                  className={`group relative max-w-[82%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-sm text-sm transition-all ${
+                  className={`group relative max-w-[82%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-xs text-sm transition-all ${
                     isSelf
-                      ? 'bg-primary text-primary-foreground rounded-br-xs'
-                      : 'bg-card text-card-foreground border border-border rounded-bl-xs'
+                      ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
+                      : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
                   }`}
                 >
                   <p className="whitespace-pre-wrap break-words leading-relaxed">
@@ -235,7 +235,7 @@ export default function MessageList({
                   {/* Message Meta: Timestamp & Status */}
                   <div
                     className={`flex items-center justify-end gap-1.5 mt-1 text-[10px] ${
-                      isSelf ? 'text-primary-foreground/75' : 'text-muted-foreground'
+                      isSelf ? 'text-white/80' : 'text-muted-foreground'
                     }`}
                   >
                     <span>{formatMessageTime(message.createdAt)}</span>
@@ -253,7 +253,7 @@ export default function MessageList({
                                 message.text
                               )
                             }
-                            className="inline-flex items-center gap-0.5 text-destructive font-medium underline"
+                            className="inline-flex items-center gap-0.5 text-rose-200 font-bold underline"
                             title="Failed to send. Click to retry"
                           >
                             <RotateCcw className="h-3 w-3" />
@@ -269,7 +269,7 @@ export default function MessageList({
 
                 {/* Failed message banner */}
                 {isSelf && message.status === 'failed' && (
-                  <div className="flex items-center gap-1 mt-1 text-[11px] text-destructive mr-1">
+                  <div className="flex items-center gap-1 mt-1 text-[11px] text-destructive mr-1 font-medium">
                     <AlertCircle className="h-3 w-3" />
                     <span>Failed to deliver message</span>
                   </div>
@@ -286,7 +286,7 @@ export default function MessageList({
       {showScrollDownPill && (
         <button
           onClick={scrollToBottom}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-lg hover:opacity-90 active:scale-95 transition-all z-20 animate-bounce"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-5 py-2.5 text-xs font-bold text-white shadow-xl shadow-purple-500/30 hover:opacity-95 active:scale-95 transition-all z-20 animate-bounce cursor-pointer"
         >
           <ArrowDown className="h-3.5 w-3.5" />
           <span>New message</span>

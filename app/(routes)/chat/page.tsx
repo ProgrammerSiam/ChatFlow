@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageSquarePlus, Users, MessageCircle, LogOut, Home } from 'lucide-react';
+import { MessageSquarePlus, Users, Sparkles, LogOut, Home } from 'lucide-react';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useQueryClient } from '@tanstack/react-query';
@@ -21,49 +21,49 @@ export default function ChatIndexPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-muted/10 h-full">
-      <div className="max-w-md space-y-6">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 text-primary shadow-inner">
-          <MessageCircle className="h-10 w-10" />
+    <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-gradient-to-b from-purple-50/30 via-background to-background dark:from-purple-950/10 dark:via-background dark:to-background h-full">
+      <div className="max-w-md space-y-6 rounded-[32px] border border-border/70 bg-white/85 dark:bg-card/85 p-8 sm:p-10 shadow-2xl backdrop-blur-2xl">
+        <div className="mx-auto flex h-18 w-18 items-center justify-center rounded-3xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 shadow-inner">
+          <Sparkles className="h-9 w-9" />
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight">
+          <h2 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
             {user?.name ? `Welcome, ${user.name}!` : 'Your Conversations'}
           </h2>
-          <p className="text-sm text-muted-foreground">
-            Select an existing conversation from the sidebar or start a new direct or group chat.
+          <p className="text-xs text-muted-foreground sm:text-sm leading-relaxed">
+            Select an existing conversation from the sidebar or start a new direct or group chat with your teammates.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
           <button
             onClick={() => setNewChatOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-5 py-2.5 text-xs font-semibold text-white shadow-md shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/35 active:scale-95 cursor-pointer"
           >
             <MessageSquarePlus className="h-4 w-4" />
-            New Chat
+            <span>New Chat</span>
           </button>
           <button
             onClick={() => setNewGroupOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-input bg-card px-5 py-2.5 text-sm font-medium text-card-foreground shadow-sm hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-white dark:bg-muted px-5 py-2.5 text-xs font-semibold text-foreground shadow-xs hover:bg-muted transition-colors active:scale-95 cursor-pointer"
           >
-            <Users className="h-4 w-4" />
-            New Group
+            <Users className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <span>New Group</span>
           </button>
           <button
             onClick={() => router.push('/')}
-            className="inline-flex items-center gap-2 rounded-xl border border-input bg-card px-4 py-2.5 text-sm font-medium text-card-foreground shadow-sm hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-white dark:bg-muted px-4 py-2.5 text-xs font-semibold text-foreground shadow-xs hover:bg-muted transition-colors active:scale-95 cursor-pointer"
           >
-            <Home className="h-4 w-4 text-primary" />
-            Homepage
+            <Home className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+            <span>Homepage</span>
           </button>
           <button
             onClick={handleLogout}
-            className="inline-flex items-center gap-2 rounded-xl border border-destructive/20 bg-destructive/10 px-4 py-2.5 text-sm font-medium text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors"
+            className="inline-flex items-center gap-2 rounded-full border border-destructive/20 bg-destructive/10 px-4 py-2.5 text-xs font-semibold text-destructive hover:bg-destructive hover:text-white transition-colors active:scale-95 cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
-            Log Out
+            <span>Log Out</span>
           </button>
         </div>
       </div>

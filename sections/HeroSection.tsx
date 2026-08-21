@@ -24,55 +24,64 @@ export default function HeroSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[650px] w-full max-w-7xl bg-gradient-to-b from-purple-200/40 via-indigo-100/30 to-transparent dark:from-purple-900/15 dark:via-indigo-950/10 dark:to-transparent blur-[140px] pointer-events-none" />
 
       <div className="container mx-auto px-4 max-w-5xl">
-        {/* Top Tag Pill */}
+        {/* Top Tag Pill (Matches Design System Spec) */}
         <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 rounded-full border border-purple-300/60 dark:border-purple-700/50 bg-purple-50/80 dark:bg-purple-950/50 px-4 py-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300 shadow-xs backdrop-blur-md">
-            <Sparkles className="h-3.5 w-3.5 text-purple-500 fill-purple-400" />
-            <span>Your Smart Real-Time Chat Engine</span>
+          <div className="relative z-10 inline-flex items-center gap-2.5 overflow-hidden rounded-xl border border-slate-200/80 dark:border-border/80 bg-white/90 dark:bg-card/90 p-1 pe-3.5 shadow-sm backdrop-blur-md">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-purple-200/60 dark:border-purple-800/40 bg-white dark:bg-muted shadow-xs">
+              <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M8.12058 1L2 9.54014H6.87942V15L13 6.45986H8.12058V1Z"
+                  fill="url(#hero_bolt_grad)"
+                  stroke="url(#hero_bolt_grad)"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <defs>
+                  <linearGradient id="hero_bolt_grad" x1="9.5634" y1="15.7486" x2="5.81146" y2="0.704719" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#725CFF" />
+                    <stop offset="0.5" stopColor="#C9C1FF" />
+                    <stop offset="1" stopColor="#F8F7FF" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <p className="text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">With Powerful Team Features</p>
+            <div
+              className="absolute -bottom-4 -left-5 -z-10 h-10 w-10 -rotate-12 rounded-2xl blur-[10px]"
+              style={{ background: 'linear-gradient(347deg, #725CFF 1.7%, #C9C1FF 46.45%, #F8F7FF 90.62%)' }}
+            />
           </div>
         </div>
 
-        {/* Main Headline with Inline Avatar Stack */}
-        <div className="text-center space-y-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-foreground leading-[1.12]">
-            Your Pocket Assistant for{' '}
-            <span className="inline-flex items-center align-middle mx-1">
-              Idea
-              <span className="inline-flex items-center -space-x-2.5 mx-2.5 px-2 py-1 rounded-full bg-white/80 dark:bg-muted/80 border border-border shadow-xs align-middle">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-slate-900 border-2 border-white dark:border-card">
-                  🧑‍💼
-                </span>
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white border-2 border-white dark:border-card">
-                  👩‍💻
-                </span>
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-slate-900 text-[10px] font-extrabold text-white border-2 border-white dark:border-card">
-                  1+
-                </span>
-              </span>
-            </span>
-            Transformation.
+        {/* Main Headline & Subtitle */}
+        <div className="flex flex-col items-center gap-4 text-center max-w-4xl mx-auto">
+          <h1
+            id="hero-heading"
+            className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-[-2px] text-foreground max-w-3xl leading-[1.12]"
+          >
+            All-in-One Real-Time Chat Platform for Modern Teams
           </h1>
 
-          {/* Subtitle */}
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed pt-2">
-            Maximize your productivity with advanced WebSockets & state caching. Simple chat interface, powerful real-time collaboration.
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Instant bi-directional WebSocket communication, TanStack Query caching, and role-gated group channels — all in a private, secure workspace built for high-performance team collaboration.
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-3">
             <Link
               href={isAuthenticated ? '/chat' : '/login'}
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/40 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/40 active:scale-95 cursor-pointer"
             >
-              <span>{isAuthenticated ? 'Open App' : 'Get App'}</span>
+              <span>{isAuthenticated ? 'Open App' : 'Get Started'}</span>
               <ArrowUpRight className="h-4 w-4" />
             </Link>
 
             <a
               href="#demo"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 dark:bg-card/80 px-8 py-3.5 text-sm font-semibold text-card-foreground shadow-xs hover:bg-muted transition-colors backdrop-blur-md"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 dark:bg-card/80 px-8 py-3.5 text-sm font-semibold text-card-foreground shadow-xs hover:bg-muted transition-colors backdrop-blur-md cursor-pointer"
             >
-              <span>Learn More</span>
+              <span>Try Live Sandbox</span>
             </a>
           </div>
         </div>

@@ -50,9 +50,9 @@ export default function MessageInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-3 bg-card border-t flex items-end gap-2 text-card-foreground"
+      className="p-3 bg-white dark:bg-card border-t border-border/80 flex items-end gap-2 text-card-foreground"
     >
-      <div className="relative flex-1 flex items-center bg-background border border-input rounded-2xl focus-within:ring-2 focus-within:ring-ring focus-within:border-transparent transition-all shadow-sm">
+      <div className="relative flex-1 flex items-center bg-background border border-input rounded-2xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-all shadow-xs">
         <textarea
           ref={textareaRef}
           value={text}
@@ -68,7 +68,7 @@ export default function MessageInput({
       <button
         type="submit"
         disabled={isSendDisabled}
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow transition-all hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:pointer-events-none"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white shadow-md shadow-purple-500/25 transition-all hover:opacity-95 active:scale-95 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
         title="Send Message"
       >
         <SendHorizonal className="h-5 w-5" />

@@ -74,52 +74,57 @@ export default function NewGroupModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-lg rounded-2xl border bg-card p-6 shadow-2xl text-card-foreground">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
+      <div className="w-full max-w-lg rounded-[32px] border border-border/80 bg-white/95 dark:bg-card/95 p-7 shadow-2xl backdrop-blur-2xl text-card-foreground">
         <div className="flex items-center justify-between pb-4 border-b">
-          <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-semibold tracking-tight">Create Group Chat</h2>
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 font-bold">
+              <Users className="h-4 w-4" />
+            </div>
+            <h2 className="text-base font-bold tracking-tight">Create Group Chat</h2>
           </div>
           <button
             onClick={() => setNewGroupOpen(false)}
-            className="rounded-full p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        <form onSubmit={handleCreateGroup} className="mt-4 space-y-4">
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        <form onSubmit={handleCreateGroup} className="space-y-4 mt-4">
+          {/* Group Name Input */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Group Name
             </label>
             <input
               type="text"
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
-              placeholder="e.g. Design Team, Project Phoenix"
-              className="mt-1 w-full rounded-xl border border-input bg-background px-3.5 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              placeholder="e.g. Design & Engineering Flow"
+              required
+              autoFocus
+              className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 shadow-xs"
             />
           </div>
 
-          {/* Selected participants chips */}
+          {/* Selected Chips */}
           {selectedParticipants.length > 0 && (
-            <div>
-              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Selected Members ({selectedParticipants.length})
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Selected Teammates ({selectedParticipants.length})
               </label>
-              <div className="mt-1.5 flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1 bg-muted/40 rounded-xl border">
-                {selectedParticipants.map((p) => (
+              <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-2 rounded-2xl bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/40">
+                {selectedParticipants.map((u) => (
                   <span
-                    key={p._id}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 text-primary px-2.5 py-1 text-xs font-medium"
+                    key={u._id}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white dark:bg-card border border-purple-200 dark:border-purple-800/40 px-3 py-1 text-xs font-semibold text-foreground shadow-xs"
                   >
-                    {p.name}
+                    <span>{u.name}</span>
                     <button
                       type="button"
-                      onClick={() => toggleSelectUser(p)}
-                      className="rounded-full hover:bg-primary/20 p-0.5"
+                      onClick={() => toggleSelectUser(u)}
+                      className="rounded-full p-0.5 hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -129,63 +134,67 @@ export default function NewGroupModal() {
             </div>
           )}
 
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Add Participants (Select at least 2)
+          {/* Search Participants */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Add Members (Select at least 2)
             </label>
-            <div className="relative mt-1">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+            <div className="relative">
+              <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search people to add..."
-                className="w-full rounded-xl border border-input bg-background pl-9 pr-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                placeholder="Search teammates by name or phone..."
+                className="w-full rounded-2xl border border-input bg-background pl-10 pr-4 py-2.5 text-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 shadow-xs"
               />
             </div>
           </div>
 
-          <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1 rounded-lg">
+          {/* Search Results List */}
+          <div className="max-h-48 overflow-y-auto space-y-1 pr-1 border rounded-2xl p-1 bg-background/50">
             {isLoading ? (
-              <div className="flex items-center justify-center py-6 text-muted-foreground gap-2">
-                <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                <span className="text-xs">Searching users...</span>
-              </div>
-            ) : query.trim().length === 0 ? (
-              <div className="py-4 text-center text-xs text-muted-foreground">
-                Type name or number to search for participants.
+              <div className="py-6 flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin text-purple-600" />
+                <span className="text-xs">Searching teammates...</span>
               </div>
             ) : users.length === 0 ? (
-              <div className="py-4 text-center text-xs text-muted-foreground">
-                No users found.
+              <div className="py-6 text-center text-muted-foreground space-y-1">
+                <UserIcon className="h-6 w-6 mx-auto opacity-30" />
+                <p className="text-xs">No teammates found</p>
               </div>
             ) : (
-              users.map((u) => {
-                const isSelected = selectedParticipants.some((p) => p._id === u._id);
+              users.map((targetUser) => {
+                const isSelected = selectedParticipants.some((p) => p._id === targetUser._id);
                 return (
                   <button
-                    key={u._id}
+                    key={targetUser._id}
                     type="button"
-                    onClick={() => toggleSelectUser(u)}
-                    className={`flex w-full items-center justify-between rounded-xl p-2.5 text-left transition-colors border ${
+                    onClick={() => toggleSelectUser(targetUser)}
+                    className={`w-full flex items-center justify-between p-2.5 rounded-xl text-left transition-colors cursor-pointer ${
                       isSelected
-                        ? 'bg-primary/5 border-primary/30'
-                        : 'hover:bg-muted/70 border-transparent'
+                        ? 'bg-purple-100/70 dark:bg-purple-950/60 border border-purple-300 dark:border-purple-800/60'
+                        : 'hover:bg-muted/60'
                     }`}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-foreground font-semibold text-xs">
-                        {u.name ? u.name.charAt(0).toUpperCase() : <UserIcon className="h-3.5 w-3.5" />}
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-bold text-xs shadow-inner">
+                        {targetUser.name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm font-medium leading-tight">{u.name}</p>
-                        <p className="text-xs text-muted-foreground">{u.phone}</p>
+                        <p className="font-bold text-xs leading-tight text-foreground">
+                          {targetUser.name}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground font-mono">
+                          {targetUser.phone}
+                        </p>
                       </div>
                     </div>
+
                     <div
-                      className={`flex h-5 w-5 items-center justify-center rounded-md border transition-colors ${
+                      className={`flex h-5 w-5 items-center justify-center rounded-md border ${
                         isSelected
-                          ? 'bg-primary text-primary-foreground border-primary'
+                          ? 'bg-purple-600 border-purple-600 text-white'
                           : 'border-muted-foreground/40'
                       }`}
                     >
@@ -197,21 +206,24 @@ export default function NewGroupModal() {
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t">
-            <button
-              type="button"
-              onClick={() => setNewGroupOpen(false)}
-              className="rounded-xl px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-            >
-              Cancel
-            </button>
+          {/* Submit Action */}
+          <div className="pt-2">
             <button
               type="submit"
-              disabled={isCreatingGroup || !groupName.trim() || selectedParticipants.length < 2}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow transition-opacity hover:opacity-90 disabled:opacity-50"
+              disabled={isCreatingGroup || selectedParticipants.length < 2 || !groupName.trim()}
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 py-3 text-xs font-semibold text-white shadow-lg shadow-purple-500/25 transition-all hover:opacity-95 hover:shadow-purple-500/40 active:scale-98 disabled:opacity-50 cursor-pointer"
             >
-              {isCreatingGroup && <Loader2 className="h-4 w-4 animate-spin" />}
-              Create Group ({selectedParticipants.length + 1} members)
+              {isCreatingGroup ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Creating Group Channel...</span>
+                </>
+              ) : (
+                <>
+                  <Users className="h-4 w-4" />
+                  <span>Create Group ({selectedParticipants.length + 1} Members)</span>
+                </>
+              )}
             </button>
           </div>
         </form>
