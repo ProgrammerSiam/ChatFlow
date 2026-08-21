@@ -1,11 +1,9 @@
 import Navbar from '@/shared/Navbar';
 import Footer from '@/shared/Footer';
 import HeroSection from '@/sections/HeroSection';
-import AboutSection from '@/sections/AboutSection';
 import IntuitiveChatFeatures from '@/sections/IntuitiveChatFeatures';
 import LiveDemoSection from '@/sections/LiveDemoSection';
 import HowItWorksSection from '@/sections/HowItWorksSection';
-import TestimonialsSection from '@/sections/TestimonialsSection';
 import FaqSection from '@/sections/FaqSection';
 import CallToActionSection from '@/sections/CallToActionSection';
 
@@ -15,11 +13,9 @@ export default function HomePage() {
       <Navbar />
       <main className="flex-1">
         <HeroSection />
-        <AboutSection />
         <IntuitiveChatFeatures />
         <LiveDemoSection />
         <HowItWorksSection />
-        <TestimonialsSection />
         <FaqSection />
         <CallToActionSection />
       </main>

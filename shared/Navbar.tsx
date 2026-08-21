@@ -27,12 +27,6 @@ export default function Navbar() {
             Home
           </Link>
           <a
-            href="#about"
-            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            About
-          </a>
-          <a
             href="#features"
             className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -49,12 +43,6 @@ export default function Navbar() {
             className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Process
-          </a>
-          <a
-            href="#testimonials"
-            className="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Reviews
           </a>
           <a
             href="#faq"
