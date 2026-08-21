@@ -142,11 +142,32 @@ export default function UserProfileModal() {
 
         {/* Profile Card Body */}
         {meQuery.isLoading && !currentUser ? (
-          <div className="py-12 flex flex-col items-center justify-center gap-3">
-            <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
-            <p className="text-xs text-muted-foreground">
-              Loading account profile...
-            </p>
+          <div className="mt-5 space-y-4 animate-pulse">
+            {/* Hero Card Skeleton */}
+            <div className="flex flex-col items-center text-center space-y-3 p-6 bg-slate-50/80 dark:bg-muted/30 rounded-[28px] border border-slate-100 dark:border-border/50">
+              <div className="h-18 w-18 rounded-full bg-slate-200 dark:bg-muted/70" />
+              <div className="h-5 w-32 rounded-lg bg-slate-200 dark:bg-muted/70" />
+              <div className="h-3.5 w-24 rounded-lg bg-slate-200 dark:bg-muted/70" />
+            </div>
+
+            {/* Rows Skeleton */}
+            <div className="space-y-2.5">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-slate-50/60 dark:bg-muted/20 border border-slate-100 dark:border-border/40"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-8.5 w-8.5 rounded-xl bg-slate-200 dark:bg-muted/70" />
+                    <div className="space-y-1.5">
+                      <div className="h-3 w-16 rounded bg-slate-200 dark:bg-muted/70" />
+                      <div className="h-3.5 w-28 rounded bg-slate-200 dark:bg-muted/70" />
+                    </div>
+                  </div>
+                  <div className="h-7 w-14 rounded-xl bg-slate-200 dark:bg-muted/70" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="mt-5 space-y-4">

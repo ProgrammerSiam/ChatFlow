@@ -119,9 +119,22 @@ export default function NewChatModal() {
           {/* Scrollable List */}
           <div className="max-h-64 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2 py-1 pb-3 pr-0.5">
             {isLoading ? (
-              <div className="py-8 flex flex-col items-center justify-center gap-2 text-slate-400">
-                <Loader2 className="h-6 w-6 animate-spin text-purple-600" />
-                <span className="text-xs">Searching users...</span>
+              <div className="space-y-2 py-1 animate-pulse">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="w-full flex items-center justify-between p-3 rounded-2xl bg-slate-50/70 dark:bg-muted/30 border border-slate-200/50 dark:border-border/40"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-slate-200 dark:bg-muted/70 shrink-0" />
+                      <div className="space-y-1.5">
+                        <div className="h-4 w-28 rounded bg-slate-200 dark:bg-muted/70" />
+                        <div className="h-3 w-20 rounded bg-slate-200 dark:bg-muted/70" />
+                      </div>
+                    </div>
+                    <div className="h-7 w-16 rounded-xl bg-slate-200 dark:bg-muted/70" />
+                  </div>
+                ))}
               </div>
             ) : error ? (
               <div className="py-8 text-center text-xs text-rose-500">
