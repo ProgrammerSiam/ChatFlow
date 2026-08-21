@@ -11,10 +11,10 @@ import {
   LogOut,
   Sparkles,
   User as UserIcon,
-  Home,
   MessageSquarePlus,
 } from 'lucide-react';
 import BrandLogo from '@/shared/BrandLogo';
+import CoolTooltip from '@/shared/CoolTooltip';
 import { useConversations } from '@/hooks/useConversations';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
@@ -108,43 +108,47 @@ export default function Sidebar() {
       <aside className="w-18 h-full rounded-[24px] bg-[#FAFAFA] dark:bg-card border border-slate-200/80 dark:border-border/70 p-2.5 flex flex-col justify-between items-center shadow-xs select-none shrink-0 transition-all duration-300">
         {/* Top: Brand Squircle & Expand Button */}
         <div className="flex flex-col items-center gap-3 w-full">
-          <button
-            onClick={toggleSidebarCollapsed}
-            title="Expand Sidebar"
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-muted border border-slate-200/70 dark:border-border/70 text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:border-purple-300 shadow-2xs transition-all cursor-pointer"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          <CoolTooltip content="Expand sidebar" side="right">
+            <button
+              onClick={toggleSidebarCollapsed}
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-muted border border-slate-200/70 dark:border-border/70 text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:border-purple-300 shadow-2xs transition-all cursor-pointer"
             >
-              <rect width="18" height="18" x="3" y="3" rx="4" />
-              <path d="M9 3v18" />
-              <path d="m11 9 3 3-3 3" />
-            </svg>
-          </button>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="4" />
+                <path d="M9 3v18" />
+                <path d="m11 9 3 3-3 3" />
+              </svg>
+            </button>
+          </CoolTooltip>
 
           {/* New Chat & New Group Compact Icons */}
           <div className="flex flex-col gap-2 pt-1">
-            <button
-              onClick={() => setNewChatOpen(true)}
-              title="New Direct Chat"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer"
-            >
-              <Plus className="h-4.5 w-4.5" />
-            </button>
-            <button
-              onClick={() => setNewGroupOpen(true)}
-              title="New Group Workspace"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted text-purple-600 dark:text-purple-400 hover:bg-purple-50 shadow-2xs transition-colors cursor-pointer"
-            >
-              <Users className="h-4.5 w-4.5" />
-            </button>
+            <CoolTooltip content="New Direct Chat" side="right">
+              <button
+                onClick={() => setNewChatOpen(true)}
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer"
+              >
+                <Plus className="h-4.5 w-4.5" />
+              </button>
+            </CoolTooltip>
+
+            <CoolTooltip content="New Group Workspace" side="right">
+              <button
+                onClick={() => setNewGroupOpen(true)}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted text-purple-600 dark:text-purple-400 hover:bg-purple-50 shadow-2xs transition-colors cursor-pointer"
+              >
+                <Users className="h-4.5 w-4.5" />
+              </button>
+            </CoolTooltip>
           </div>
 
           <div className="w-8 border-t border-slate-200/60 dark:border-border/60 my-1" />
@@ -157,25 +161,25 @@ export default function Sidebar() {
               const title = isGroup ? conv.name || 'Group' : conv.participant?.name || 'User';
 
               return (
-                <Link
-                  key={conv._id}
-                  href={`/chat/${conv._id}`}
-                  title={title}
-                  className={`relative flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs transition-all ${
-                    isActive
-                      ? 'ring-2 ring-purple-600 bg-purple-600 text-white shadow-xs'
-                      : isGroup
-                      ? 'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 hover:scale-105'
-                      : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 hover:scale-105'
-                  }`}
-                >
-                  {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
-                  {conv.unreadCount && conv.unreadCount > 0 ? (
-                    <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-purple-600 text-white text-[9px] font-bold ring-2 ring-white">
-                      {conv.unreadCount}
-                    </span>
-                  ) : null}
-                </Link>
+                <CoolTooltip key={conv._id} content={title} side="right">
+                  <Link
+                    href={`/chat/${conv._id}`}
+                    className={`relative flex h-10 w-10 items-center justify-center rounded-xl font-bold text-xs transition-all ${
+                      isActive
+                        ? 'ring-2 ring-purple-600 bg-purple-600 text-white shadow-xs'
+                        : isGroup
+                        ? 'bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 hover:scale-105'
+                        : 'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 hover:scale-105'
+                    }`}
+                  >
+                    {isGroup ? <Users className="h-4.5 w-4.5" /> : title.charAt(0).toUpperCase()}
+                    {conv.unreadCount && conv.unreadCount > 0 ? (
+                      <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-purple-600 text-white text-[9px] font-bold ring-2 ring-white">
+                        {conv.unreadCount}
+                      </span>
+                    ) : null}
+                  </Link>
+                </CoolTooltip>
               );
             })}
           </div>
@@ -183,13 +187,14 @@ export default function Sidebar() {
 
         {/* Bottom Profile Mini Circle */}
         <div className="pt-2 border-t border-slate-200/50 dark:border-border/50 flex flex-col items-center gap-2">
-          <button
-            onClick={() => setProfileOpen(true)}
-            title="My Profile"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-xs shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
-          >
-            {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
-          </button>
+          <CoolTooltip content="My Profile & Settings" side="right">
+            <button
+              onClick={() => setProfileOpen(true)}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-xs shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
+            >
+              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
+            </button>
+          </CoolTooltip>
         </div>
       </aside>
     );
@@ -203,31 +208,34 @@ export default function Sidebar() {
       <div className="flex flex-col gap-3.5">
         {/* Brand Header */}
         <div className="flex items-center justify-between px-1">
-          <Link href="/" title="ChatFlow Home">
-            <BrandLogo size="md" prefix="Chat" suffix="Flow" />
-          </Link>
+          <CoolTooltip content="ChatFlow Home" side="bottom">
+            <Link href="/">
+              <BrandLogo size="md" prefix="Chat" suffix="Flow" />
+            </Link>
+          </CoolTooltip>
 
           {/* Larger Collapse Toggle Button */}
-          <button
-            onClick={toggleSidebarCollapsed}
-            title="Collapse Sidebar"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border/70 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-2xs"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          <CoolTooltip content="Collapse sidebar" side="bottom" shortcut="⌘[">
+            <button
+              onClick={toggleSidebarCollapsed}
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border/70 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-2xs"
             >
-              <rect width="18" height="18" x="3" y="3" rx="4" />
-              <path d="M9 3v18" />
-              <path d="m14 9-3 3 3 3" />
-            </svg>
-          </button>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="4" />
+                <path d="M9 3v18" />
+                <path d="m14 9-3 3 3 3" />
+              </svg>
+            </button>
+          </CoolTooltip>
         </div>
 
         {/* Action Buttons: New Direct Chat & New Group Chat */}
@@ -428,33 +436,36 @@ export default function Sidebar() {
       {/* User Profile Card (GET /auth/me Modal Trigger) */}
       <div className="pt-2 border-t border-slate-200/50 dark:border-border/50">
         <div className="flex items-center justify-between p-2.5 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 shadow-xs">
-          <button
-            onClick={() => setProfileOpen(true)}
-            className="flex items-center gap-3 min-w-0 text-left cursor-pointer hover:opacity-85 transition-opacity flex-1"
-          >
-            {/* Avatar Circle */}
-            <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-xs shadow-xs">
-              {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
-            </div>
+          <CoolTooltip content="View Account Profile" side="top">
+            <button
+              onClick={() => setProfileOpen(true)}
+              className="flex items-center gap-3 min-w-0 text-left cursor-pointer hover:opacity-85 transition-opacity flex-1"
+            >
+              {/* Avatar Circle */}
+              <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-purple-500 to-indigo-600 text-white font-semibold text-xs shadow-xs">
+                {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
+              </div>
 
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-slate-900 dark:text-white truncate leading-tight">
-                {user?.name || 'Account'}
-              </p>
-              <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">
-                {user?.phone || 'Connected'}
-              </p>
-            </div>
-          </button>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-slate-900 dark:text-white truncate leading-tight">
+                  {user?.name || 'Account'}
+                </p>
+                <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">
+                  {user?.phone || 'Connected'}
+                </p>
+              </div>
+            </button>
+          </CoolTooltip>
 
           {/* Action Log Out Button */}
-          <button
-            onClick={handleLogout}
-            title="Log Out"
-            className="flex h-8.5 w-8.5 items-center justify-center rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer shrink-0 ml-1"
-          >
-            <LogOut className="h-4.5 w-4.5" />
-          </button>
+          <CoolTooltip content="Log Out" side="top">
+            <button
+              onClick={handleLogout}
+              className="flex h-8.5 w-8.5 items-center justify-center rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer shrink-0 ml-1"
+            >
+              <LogOut className="h-4.5 w-4.5" />
+            </button>
+          </CoolTooltip>
         </div>
       </div>
 

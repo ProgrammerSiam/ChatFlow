@@ -10,6 +10,7 @@ import { useChatUIStore } from '@/store/useChatUIStore';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import GroupInfoDrawer from './GroupInfoDrawer';
+import CoolTooltip from '@/shared/CoolTooltip';
 
 export default function ChatPanel({ conversationId }: { conversationId: string }) {
   const { conversations } = useConversations();
@@ -53,7 +54,6 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
             className={`flex items-center gap-3 min-w-0 ${
               isGroup ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''
             }`}
-            title={isGroup ? 'Click to view group details and manage members' : undefined}
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary font-bold text-sm shadow-inner">
               {isGroup ? (
@@ -74,17 +74,18 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
 
         {/* Group Details Toggle */}
         {isGroup && (
-          <button
-            onClick={() => setGroupInfoOpen(!isGroupInfoOpen)}
-            className={`p-2 rounded-xl border transition-colors ${
-              isGroupInfoOpen
-                ? 'bg-primary text-primary-foreground border-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted border-border'
-            }`}
-            title="Group Info"
-          >
-            <Info className="h-5 w-5" />
-          </button>
+          <CoolTooltip content="Group Info & Members" side="left">
+            <button
+              onClick={() => setGroupInfoOpen(!isGroupInfoOpen)}
+              className={`p-2 rounded-xl border transition-colors ${
+                isGroupInfoOpen
+                  ? 'bg-primary text-primary-foreground border-primary'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted border-border'
+              }`}
+            >
+              <Info className="h-5 w-5" />
+            </button>
+          </CoolTooltip>
         )}
       </header>
 
