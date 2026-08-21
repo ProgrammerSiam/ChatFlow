@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useSocket } from '@/hooks/useSocket';
 import Sidebar from '@/components/chat/Sidebar';
-import ConnectionBanner from '@/components/chat/ConnectionBanner';
 import NewChatModal from '@/components/chat/NewChatModal';
 import NewGroupModal from '@/components/chat/NewGroupModal';
 import UserProfileModal from '@/components/chat/UserProfileModal';
@@ -121,7 +120,6 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#FAFAFA] dark:bg-background p-2 sm:p-3 gap-2 sm:gap-3 select-none">
-      <ConnectionBanner />
       <div className="flex flex-1 overflow-hidden gap-2 sm:gap-3">
         {/* Left Sidebar */}
         <div
