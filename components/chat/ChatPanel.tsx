@@ -36,9 +36,9 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
     : conversation?.participant?.phone || '';
 
   return (
-    <div className="relative flex-1 flex flex-col h-full bg-background overflow-hidden">
+    <div className="relative flex-1 flex flex-col h-full rounded-[24px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 shadow-xs overflow-hidden">
       {/* Top Header */}
-      <header className="h-16 border-b px-4 flex items-center justify-between bg-card text-card-foreground shadow-xs z-10">
+      <header className="h-14 border-b border-slate-100 dark:border-border/50 px-4 flex items-center justify-between bg-white/80 dark:bg-card/80 backdrop-blur-sm text-card-foreground z-10 shrink-0">
         <div className="flex items-center gap-3 min-w-0">
           {/* Back button for mobile */}
           <Link

@@ -27,10 +27,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="flex min-h-screen items-center justify-center bg-[#F4F4F6] dark:bg-background">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm font-medium text-muted-foreground">
+          <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+          <p className="text-sm font-medium text-slate-500">
             Restoring ChatFlow session...
           </p>
         </div>
@@ -45,10 +45,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   const isDetailView = pathname !== '/chat' && pathname.startsWith('/chat/');
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-background">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#F4F4F6] dark:bg-background/95 p-2 sm:p-3 gap-2 sm:gap-3 select-none">
       <ConnectionBanner />
-      <div className="flex flex-1 overflow-hidden">
-        {/* On mobile: Hide sidebar if viewing conversation details */}
+      <div className="flex flex-1 overflow-hidden gap-2 sm:gap-3">
+        {/* Left Sidebar */}
         <div
           className={`h-full ${
             isDetailView ? 'hidden md:flex' : 'flex w-full md:w-auto'
@@ -57,10 +57,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
           <Sidebar />
         </div>
 
-        {/* Main Content Area */}
+        {/* Main Content Area (Rounded Canvas) */}
         <main
           className={`flex-1 h-full overflow-hidden ${
-            !isDetailView ? 'hidden md:flex flex-col' : 'flex flex-col'
+            isDetailView ? 'flex' : 'hidden md:flex'
           }`}
         >
           {children}
