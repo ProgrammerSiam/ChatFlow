@@ -57,7 +57,7 @@ export default function ConversationDetailsPanel({
     }
   }
 
-  const currentUserId = activeUser?._id;
+  const currentUserId = activeUser?._id || (activeUser as unknown as { id?: string })?.id;
   const currentPhone = activeUser?.phone?.trim();
   const currentName = activeUser?.name?.toLowerCase().trim();
 
@@ -70,24 +70,52 @@ export default function ConversationDetailsPanel({
   );
 
   const resolvedSelfId = selfParticipant?._id || currentUserId;
+  const resolvedSelfName = selfParticipant?.name?.toLowerCase().trim() || currentName;
+  const resolvedSelfPhone = selfParticipant?.phone?.trim() || currentPhone;
 
   const isGroup = conversation.type === 'group';
+
+  // Check if current user is an admin by ID, object ID, or participant admin match
+  const isParticipantSelfAdmin = (conversation.participants || []).some((p) => {
+    const isThisSelf =
+      (resolvedSelfId && p._id === resolvedSelfId) ||
+      (currentUserId && p._id === currentUserId) ||
+      (resolvedSelfPhone && p.phone?.trim() === resolvedSelfPhone) ||
+      (resolvedSelfName && p.name?.toLowerCase().trim() === resolvedSelfName);
+
+    if (!isThisSelf) return false;
+
+    return (conversation.admins || []).some((a) => {
+      const adminId =
+        typeof a === 'string'
+          ? a
+          : (a as unknown as { _id?: string; id?: string })?._id ||
+            (a as unknown as { _id?: string; id?: string })?.id;
+      return (
+        adminId === p._id ||
+        (resolvedSelfId && adminId === resolvedSelfId) ||
+        (currentUserId && adminId === currentUserId)
+      );
+    });
+  });
+
   const isAdmin =
     isGroup &&
-    Boolean(
-      (conversation.admins || []).some((a) => {
-        const adminId =
-          typeof a === 'string'
-            ? a
-            : (a as unknown as { _id?: string; id?: string })?._id ||
-              (a as unknown as { _id?: string; id?: string })?.id;
-        return (
-          (resolvedSelfId && adminId === resolvedSelfId) ||
-          (currentUserId && adminId === currentUserId) ||
-          (selfParticipant && adminId === selfParticipant._id)
-        );
-      })
-    );
+    (isParticipantSelfAdmin ||
+      Boolean(
+        (conversation.admins || []).some((a) => {
+          const adminId =
+            typeof a === 'string'
+              ? a
+              : (a as unknown as { _id?: string; id?: string })?._id ||
+                (a as unknown as { _id?: string; id?: string })?.id;
+          return (
+            (resolvedSelfId && adminId === resolvedSelfId) ||
+            (currentUserId && adminId === currentUserId) ||
+            (selfParticipant && adminId === selfParticipant._id)
+          );
+        })
+      ));
 
   // Group Edit & Admin States
   const [isEditingName, setIsEditingName] = useState(false);
@@ -476,8 +504,8 @@ export default function ConversationDetailsPanel({
               const isSelf =
                 (resolvedSelfId && p._id === resolvedSelfId) ||
                 (currentUserId && p._id === currentUserId) ||
-                (currentPhone && p.phone?.trim() === currentPhone) ||
-                (currentName && p.name?.toLowerCase().trim() === currentName);
+                (resolvedSelfPhone && p.phone?.trim() === resolvedSelfPhone) ||
+                (resolvedSelfName && p.name?.toLowerCase().trim() === resolvedSelfName);
 
               return (
                 <div

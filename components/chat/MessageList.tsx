@@ -198,25 +198,54 @@ export default function MessageList({
             const currentName = activeUser?.name?.toLowerCase().trim();
             const currentPhone = activeUser?.phone?.trim();
 
+            const selfParticipant = participants?.find(
+              (p) =>
+                (currentId && p._id === currentId) ||
+                (currentPhone && p.phone?.trim() === currentPhone) ||
+                (currentName && p.name?.toLowerCase().trim() === currentName)
+            );
+
+            const resolvedMyId = selfParticipant?._id || currentId;
+            const resolvedMyName = selfParticipant?.name?.toLowerCase().trim() || currentName;
+            const resolvedMyPhone = selfParticipant?.phone?.trim() || currentPhone;
+
             const participantMatch = participants?.find(
               (p) =>
                 (senderId && p._id === senderId) ||
-                (senderObj?.phone && p.phone === senderObj.phone) ||
-                (senderObj?.name && p.name?.toLowerCase().trim() === senderObj.name.toLowerCase().trim())
+                (senderObj?.phone && p.phone?.trim() === senderObj.phone.trim()) ||
+                (senderObj?.name && p.name?.toLowerCase().trim() === senderObj.name.toLowerCase().trim()) ||
+                (typeof message.sender === 'string' && p.name?.toLowerCase().trim() === message.sender.toLowerCase().trim())
             );
-            const senderName = senderObj?.name || participantMatch?.name || (typeof message.sender === 'string' && message.sender.length < 20 ? message.sender : 'Teammate');
 
-            // Comprehensive self check across ID, phone, name, and participant match
+            const senderName =
+              senderObj?.name ||
+              participantMatch?.name ||
+              (typeof message.sender === 'string' && message.sender.length < 30 ? message.sender : 'Teammate');
+
+            const isSenderNameMatch = Boolean(
+              (resolvedMyName && senderName.toLowerCase().trim() === resolvedMyName) ||
+              (currentName && senderName.toLowerCase().trim() === currentName) ||
+              (typeof message.sender === 'string' && resolvedMyName && message.sender.toLowerCase().trim() === resolvedMyName) ||
+              (typeof message.sender === 'string' && currentName && message.sender.toLowerCase().trim() === currentName)
+            );
+
+            const isSenderIdMatch = Boolean(
+              (resolvedMyId && (senderId === resolvedMyId || participantMatch?._id === resolvedMyId || senderObj?._id === resolvedMyId)) ||
+              (currentId && (senderId === currentId || participantMatch?._id === currentId || senderObj?._id === currentId))
+            );
+
+            const isSenderPhoneMatch = Boolean(
+              (resolvedMyPhone && (senderObj?.phone?.trim() === resolvedMyPhone || participantMatch?.phone?.trim() === resolvedMyPhone)) ||
+              (currentPhone && (senderObj?.phone?.trim() === currentPhone || participantMatch?.phone?.trim() === currentPhone))
+            );
+
+            // Comprehensive self check
             const isSelf =
               message.sender === 'me' ||
               message.status === 'sending' ||
-              (currentId && (senderId === currentId || participantMatch?._id === currentId || senderObj?._id === currentId)) ||
-              (currentPhone && (senderObj?.phone?.trim() === currentPhone || participantMatch?.phone?.trim() === currentPhone)) ||
-              (currentName && (
-                senderObj?.name?.toLowerCase().trim() === currentName ||
-                participantMatch?.name?.toLowerCase().trim() === currentName ||
-                (typeof message.sender === 'string' && message.sender.toLowerCase().trim() === currentName)
-              ));
+              isSenderIdMatch ||
+              isSenderNameMatch ||
+              isSenderPhoneMatch;
 
             return (
               <div
