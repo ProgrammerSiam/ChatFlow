@@ -1,26 +1,23 @@
-import Link from 'next/link';
 import Navbar from '@/shared/Navbar';
 import Footer from '@/shared/Footer';
+import HeroSection from '@/sections/HeroSection';
+import LiveDemoSection from '@/sections/LiveDemoSection';
+import FeatureBentoGrid from '@/sections/FeatureBentoGrid';
+import HowItWorksSection from '@/sections/HowItWorksSection';
+import TechStackStrip from '@/sections/TechStackStrip';
+import CtaSection from '@/sections/CtaSection';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/20 selection:text-primary">
       <Navbar />
-      <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-          Welcome to <span className="text-blue-600 dark:text-blue-400">ChatFlow</span>
-        </h1>
-        <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-          Real-time messaging platform powered by Zustand, TanStack Query, and Socket.IO.
-        </p>
-        <div className="mt-8 flex gap-4">
-          <Link
-            href="/login"
-            className="rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground shadow hover:opacity-90 transition-opacity"
-          >
-            Get Started
-          </Link>
-        </div>
+      <main className="flex-1">
+        <HeroSection />
+        <LiveDemoSection />
+        <FeatureBentoGrid />
+        <HowItWorksSection />
+        <TechStackStrip />
+        <CtaSection />
       </main>
       <Footer />
     </div>

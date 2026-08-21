@@ -1,7 +1,19 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
+import { Toaster } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
+
+function AuthInitializer({ children }: { children: ReactNode }) {
+  const { initializeAuth } = useAuthStore();
+
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
+
+  return <>{children}</>;
+}
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -11,6 +23,7 @@ export default function Providers({ children }: { children: ReactNode }) {
           queries: {
             staleTime: 60 * 1000,
             refetchOnWindowFocus: false,
+            retry: 1,
           },
         },
       })
@@ -18,7 +31,10 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <AuthInitializer>
+        {children}
+        <Toaster position="top-right" richColors closeButton />
+      </AuthInitializer>
     </QueryClientProvider>
   );
 }
