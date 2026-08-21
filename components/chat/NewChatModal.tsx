@@ -40,6 +40,15 @@ export default function NewChatModal() {
     );
   };
 
+  // Helper to check shared group objects
+  const getSharedGroups = (userId: string) => {
+    return conversations.filter(
+      (c) =>
+        c.type === 'group' &&
+        (c.participants || []).some((p) => p._id === userId)
+    );
+  };
+
   // Filtered users list based on active filter
   const displayedUsers = useMemo(() => {
     if (filterMode === 'new_only') {
@@ -138,8 +147,8 @@ export default function NewChatModal() {
               onClick={() => setFilterMode('all')}
               className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 filterMode === 'all'
-                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
-                  : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                  ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                  : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
               }`}
             >
               <Users className="h-3 w-3" />
@@ -149,8 +158,8 @@ export default function NewChatModal() {
               onClick={() => setFilterMode('new_only')}
               className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 filterMode === 'new_only'
-                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
-                  : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                  ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                  : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
               }`}
             >
               <UserPlus className="h-3 w-3" />
@@ -164,8 +173,8 @@ export default function NewChatModal() {
           {/* Top Shadow Vignette */}
           <div className="pointer-events-none absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-white dark:from-card to-transparent z-10 rounded-t-2xl" />
 
-          {/* Scrollable List */}
-          <div className="max-h-64 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2 py-1 pb-3 pr-0.5">
+          {/* Scrollable User List */}
+          <div className="max-h-60 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2 py-1 pb-3 pr-0.5">
             {isLoading ? (
               <div className="space-y-2 py-1 animate-pulse">
                 {[1, 2, 3].map((i) => (
@@ -227,17 +236,29 @@ export default function NewChatModal() {
                         <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
                       </div>
                       <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white truncate">
-                            {targetUser.name}
-                          </p>
-                          {isAlreadyMessaged && (
-                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 border border-purple-100 dark:border-purple-900/40 px-1.5 py-0.2 rounded-md shrink-0">
-                              <CheckCircle2 className="h-2.5 w-2.5 text-purple-600 dark:text-purple-400" />
-                              <span>Already Messaged</span>
-                            </span>
-                          )}
-                        </div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white truncate">
+                              {targetUser.name}
+                            </p>
+                            {isAlreadyMessaged ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 border border-purple-100 dark:border-purple-900/40 px-1.5 py-0.2 rounded-md shrink-0">
+                                <CheckCircle2 className="h-2.5 w-2.5 text-purple-600 dark:text-purple-400" />
+                                <span>Direct Contact</span>
+                              </span>
+                            ) : getSharedGroups(targetUser._id).length > 0 ? (
+                              <span
+                                title={`In group: ${getSharedGroups(targetUser._id).map((g) => g.name).join(', ')}`}
+                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/40 px-1.5 py-0.2 rounded-md shrink-0 max-w-[150px]"
+                              >
+                                <Users className="h-2.5 w-2.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                                <span className="truncate">
+                                  {getSharedGroups(targetUser._id).length === 1
+                                    ? getSharedGroups(targetUser._id)[0].name
+                                    : `${getSharedGroups(targetUser._id)[0].name} (+${getSharedGroups(targetUser._id).length - 1})`}
+                                </span>
+                              </span>
+                            ) : null}
+                          </div>
                         <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
                           {targetUser.phone}
                         </p>
@@ -245,14 +266,14 @@ export default function NewChatModal() {
                     </div>
 
                     {isStarting ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-purple-600 shrink-0" />
+                      <Loader2 className="h-4 w-4 animate-spin text-slate-900 dark:text-white shrink-0" />
                     ) : isAlreadyMessaged ? (
-                      <div className="flex items-center gap-1 px-3 py-1 rounded-xl bg-slate-100 dark:bg-muted text-slate-700 dark:text-slate-300 text-xs font-semibold group-hover:bg-purple-600 group-hover:text-white transition-colors shrink-0">
+                      <div className="flex items-center gap-1 px-3 py-1 rounded-xl bg-slate-100 dark:bg-muted text-slate-700 dark:text-slate-300 text-xs font-semibold group-hover:bg-slate-950 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950 transition-colors shrink-0">
                         <span>Open</span>
                         <ArrowRight className="h-3.5 w-3.5" />
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 text-xs font-semibold group-hover:bg-purple-600 group-hover:text-white transition-colors shrink-0">
+                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 text-xs font-semibold shadow-2xs transition-colors shrink-0">
                         <MessageSquare className="h-3.5 w-3.5" />
                         <span>Chat</span>
                       </div>

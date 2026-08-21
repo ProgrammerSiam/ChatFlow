@@ -141,7 +141,7 @@ export default function MessageInput({
         <button
           type="submit"
           disabled={isSendDisabled}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white shadow-md shadow-purple-500/25 transition-all hover:opacity-95 active:scale-95 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-950 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-md shadow-slate-950/20 transition-all active:scale-95 disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
           title="Send Message"
         >
           <SendHorizonal className="h-5 w-5" />

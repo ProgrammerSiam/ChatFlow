@@ -21,8 +21,9 @@ import {
   Share2,
   Bell,
   Sparkles,
+  ChevronRight,
 } from 'lucide-react';
-import { Conversation, SearchUser } from '@/types';
+import { Conversation, SearchUser, User } from '@/types';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useUserSearch } from '@/hooks/useUserSearch';
@@ -33,6 +34,7 @@ import { triggerCelebration } from '@/lib/confetti';
 import CoolTooltip from '@/shared/CoolTooltip';
 import ConfirmModal from '@/shared/ConfirmModal';
 import AddMembersModal from './AddMembersModal';
+import MemberProfileModal from './MemberProfileModal';
 
 interface ConversationDetailsPanelProps {
   conversation: Conversation;
@@ -133,6 +135,11 @@ export default function ConversationDetailsPanel({
   const [isLeaveGroupConfirmOpen, setIsLeaveGroupConfirmOpen] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState<{ id: string; name: string } | null>(null);
   const [memberToPromote, setMemberToPromote] = useState<{ id: string; name: string } | null>(null);
+  const [selectedMemberForProfile, setSelectedMemberForProfile] = useState<{
+    member: User;
+    isParticipantAdmin: boolean;
+    isSelf: boolean;
+  } | null>(null);
 
   const { query, setQuery, users, isLoading: isSearchingUsers } = useUserSearch();
 
@@ -593,10 +600,17 @@ export default function ConversationDetailsPanel({
               return (
                 <div
                   key={p._id}
-                  className="flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:bg-slate-50/60 dark:hover:bg-muted/40 transition-colors"
+                  onClick={() =>
+                    setSelectedMemberForProfile({
+                      member: p,
+                      isParticipantAdmin,
+                      isSelf: !!isSelf,
+                    })
+                  }
+                  className="flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:bg-purple-50/40 dark:hover:bg-muted/40 hover:border-purple-200 dark:hover:border-purple-800 transition-all cursor-pointer group shadow-2xs"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-100 to-indigo-100 text-purple-700 font-bold text-sm">
+                    <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-purple-100 to-indigo-100 text-purple-700 font-bold text-sm group-hover:scale-105 transition-transform">
                       {p.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="min-w-0">
@@ -615,32 +629,42 @@ export default function ConversationDetailsPanel({
                     </div>
                   </div>
 
-                  {/* Admin Actions for other members */}
-                  {isAdmin && !isSelf && (
-                    <div className="flex items-center gap-1 shrink-0">
-                      {!isParticipantAdmin && (
-                        <CoolTooltip content="Promote to Admin" side="left">
+                  <div className="flex items-center gap-1 shrink-0">
+                    {/* Admin Actions for other members */}
+                    {isAdmin && !isSelf && (
+                      <div className="flex items-center gap-1">
+                        {!isParticipantAdmin && (
+                          <CoolTooltip content="Promote to Admin" side="left">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setMemberToPromote({ id: p._id, name: p.name });
+                              }}
+                              disabled={loadingActionUserId === p._id}
+                              className="p-1.5 text-slate-400 hover:text-amber-600 rounded-xl hover:bg-amber-50 cursor-pointer transition-colors"
+                            >
+                              <Crown className="h-4 w-4" />
+                            </button>
+                          </CoolTooltip>
+                        )}
+
+                        <CoolTooltip content="Remove Member" side="left">
                           <button
-                            onClick={() => setMemberToPromote({ id: p._id, name: p.name })}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMemberToRemove({ id: p._id, name: p.name });
+                            }}
                             disabled={loadingActionUserId === p._id}
-                            className="p-1.5 text-slate-400 hover:text-amber-600 rounded-xl hover:bg-amber-50 cursor-pointer transition-colors"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 cursor-pointer transition-colors"
                           >
-                            <Crown className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </CoolTooltip>
-                      )}
+                      </div>
+                    )}
 
-                      <CoolTooltip content="Remove Member" side="left">
-                        <button
-                          onClick={() => setMemberToRemove({ id: p._id, name: p.name })}
-                          disabled={loadingActionUserId === p._id}
-                          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 cursor-pointer transition-colors"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </CoolTooltip>
-                    </div>
-                  )}
+                    <ChevronRight className="h-4 w-4 text-slate-300 dark:text-slate-600 group-hover:text-purple-600 dark:group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all" />
+                  </div>
                 </div>
               );
             })}
@@ -715,6 +739,21 @@ export default function ConversationDetailsPanel({
           isOpen={isAddingMembers}
           onClose={() => setIsAddingMembers(false)}
           conversation={conversation}
+        />
+      )}
+
+      {/* Member Profile Modal on Member Click */}
+      {selectedMemberForProfile && (
+        <MemberProfileModal
+          isOpen={!!selectedMemberForProfile}
+          onClose={() => setSelectedMemberForProfile(null)}
+          member={selectedMemberForProfile.member}
+          conversation={conversation}
+          isAdmin={isAdmin}
+          isSelf={selectedMemberForProfile.isSelf}
+          isParticipantAdmin={selectedMemberForProfile.isParticipantAdmin}
+          onPromote={(id, name) => setMemberToPromote({ id, name })}
+          onRemove={(id, name) => setMemberToRemove({ id, name })}
         />
       )}
 

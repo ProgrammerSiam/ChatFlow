@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Users, UserPlus, X, Search, Loader2, Check, User as UserIcon } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Users, UserPlus, X, Search, Loader2, Check, User as UserIcon, CheckCircle2, MessageSquare } from 'lucide-react';
 import { Conversation, SearchUser } from '@/types';
 import { useUserSearch } from '@/hooks/useUserSearch';
+import { useConversations } from '@/hooks/useConversations';
 import { api } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { triggerCelebration } from '@/lib/confetti';
 
 interface AddMembersModalProps {
   isOpen: boolean;
@@ -20,8 +22,10 @@ export default function AddMembersModal({
   conversation,
 }: AddMembersModalProps) {
   const queryClient = useQueryClient();
+  const { conversations } = useConversations();
   const [selectedToAdd, setSelectedToAdd] = useState<SearchUser[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [filterMode, setFilterMode] = useState<'all' | 'available_only' | 'direct_only'>('all');
   const { query, setQuery, users, isLoading } = useUserSearch();
 
   // Close on Escape key
@@ -36,13 +40,44 @@ export default function AddMembersModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose, isSubmitting]);
 
+  // Existing participants in this group
+  const existingIds = useMemo(
+    () => new Set((conversation.participants || []).map((p) => p._id)),
+    [conversation.participants]
+  );
+
+  // Helper to check if direct conversation exists
+  const getExistingDirectConv = (userId: string) => {
+    return conversations.find(
+      (c) =>
+        c.type === 'direct' &&
+        ((c.participant && c.participant._id === userId) ||
+          (c.participants && c.participants.some((p) => p._id === userId)))
+    );
+  };
+
+  const availableUsersCount = useMemo(() => {
+    return users.filter((u) => !existingIds.has(u._id)).length;
+  }, [users, existingIds]);
+
+  const directUsersCount = useMemo(() => {
+    return users.filter((u) => !existingIds.has(u._id) && !!getExistingDirectConv(u._id)).length;
+  }, [users, existingIds, conversations]);
+
+  const displayedUsers = useMemo(() => {
+    if (filterMode === 'available_only') {
+      return users.filter((u) => !existingIds.has(u._id));
+    }
+    if (filterMode === 'direct_only') {
+      return users.filter((u) => !existingIds.has(u._id) && !!getExistingDirectConv(u._id));
+    }
+    return users;
+  }, [users, existingIds, filterMode, conversations]);
+
   if (!isOpen) return null;
 
-  // Filter out existing participants
-  const existingIds = new Set((conversation.participants || []).map((p) => p._id));
-  const availableUsers = users.filter((u) => !existingIds.has(u._id));
-
   const toggleSelectUser = (u: SearchUser) => {
+    if (existingIds.has(u._id)) return; // Already in group
     if (selectedToAdd.some((p) => p._id === u._id)) {
       setSelectedToAdd((prev) => prev.filter((p) => p._id !== u._id));
     } else {
@@ -61,6 +96,7 @@ export default function AddMembersModal({
       queryClient.setQueryData<Conversation[]>(['conversations'], (old = []) =>
         old.map((c) => (c._id === conversation._id ? updated : c))
       );
+      triggerCelebration();
       toast.success(`Added ${selectedToAdd.length} member(s) to "${conversation.name}"`);
       setSelectedToAdd([]);
       onClose();
@@ -150,6 +186,50 @@ export default function AddMembersModal({
             </div>
           </div>
 
+          {/* Filter Tabs */}
+          {!isLoading && users.length > 0 && (
+            <div className="flex items-center gap-2 pt-0.5">
+              <button
+                type="button"
+                onClick={() => setFilterMode('all')}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  filterMode === 'all'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                }`}
+              >
+                <Users className="h-3 w-3" />
+                <span>All Users ({users.length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFilterMode('available_only')}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  filterMode === 'available_only'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                }`}
+              >
+                <UserPlus className="h-3 w-3" />
+                <span>Available to Add ({availableUsersCount})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFilterMode('direct_only')}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  filterMode === 'direct_only'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                }`}
+              >
+                <MessageSquare className="h-3 w-3" />
+                <span>Direct Contacts ({directUsersCount})</span>
+              </button>
+            </div>
+          )}
+
           {/* Results List with Top/Bottom Shadow Fades */}
           <div className="relative">
             <div className="pointer-events-none absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-white dark:from-card to-transparent z-10 rounded-t-2xl" />
@@ -173,49 +253,72 @@ export default function AddMembersModal({
                     </div>
                   ))}
                 </div>
-              ) : availableUsers.length === 0 ? (
+              ) : displayedUsers.length === 0 ? (
                 <div className="py-6 text-center text-slate-400 space-y-1 border border-slate-200/60 rounded-2xl bg-slate-50/40 p-4">
                   <UserIcon className="h-6 w-6 mx-auto opacity-30" />
                   <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    {query ? 'No matching teammates found' : 'All registered teammates are already members'}
+                    {filterMode === 'available_only'
+                      ? 'All registered teammates are already members'
+                      : query
+                      ? 'No matching teammates found'
+                      : 'No registered teammates found'}
                   </p>
                 </div>
               ) : (
-                availableUsers.map((targetUser) => {
+                displayedUsers.map((targetUser) => {
+                  const isAlreadyMember = existingIds.has(targetUser._id);
                   const isSelected = selectedToAdd.some((p) => p._id === targetUser._id);
+
                   return (
                     <button
                       key={targetUser._id}
                       type="button"
+                      disabled={isAlreadyMember}
                       onClick={() => toggleSelectUser(targetUser)}
-                      className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all cursor-pointer border ${
-                        isSelected
-                          ? 'bg-purple-50/80 dark:bg-purple-950/60 border-purple-300 dark:border-purple-800 shadow-2xs'
-                          : 'bg-white dark:bg-card border-slate-200/70 dark:border-border/60 hover:border-purple-200 hover:shadow-xs'
+                      className={`w-full flex items-center justify-between p-3 rounded-2xl transition-all border ${
+                        isAlreadyMember
+                          ? 'bg-slate-50/80 dark:bg-muted/20 border-slate-200/40 dark:border-border/30 opacity-60 cursor-not-allowed'
+                          : isSelected
+                          ? 'bg-purple-50/80 dark:bg-purple-950/60 border-purple-300 dark:border-purple-800 shadow-2xs cursor-pointer'
+                          : 'bg-white dark:bg-card border-slate-200/70 dark:border-border/60 hover:border-purple-200 hover:shadow-xs cursor-pointer'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0 pr-2">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-bold text-xs shadow-2xs">
                           {targetUser.name.charAt(0).toUpperCase()}
                         </div>
-                        <div className="text-left">
-                          <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white">
-                            {targetUser.name}
-                          </p>
-                          <p className="text-xs text-slate-400 font-mono mt-0.5">
+                        <div className="text-left min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white truncate">
+                              {targetUser.name}
+                            </p>
+                            {isAlreadyMember && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/70 dark:border-emerald-800/40 px-1.5 py-0.2 rounded-md shrink-0">
+                                <CheckCircle2 className="h-2.5 w-2.5 text-emerald-600 dark:text-emerald-400" />
+                                <span>Already in Group</span>
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
                             {targetUser.phone}
                           </p>
                         </div>
                       </div>
 
                       <div
-                        className={`flex h-5.5 w-5.5 items-center justify-center rounded-lg border transition-all ${
-                          isSelected
+                        className={`flex h-5.5 w-5.5 items-center justify-center rounded-lg border transition-all shrink-0 ${
+                          isAlreadyMember
+                            ? 'bg-emerald-100 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-800 text-emerald-600'
+                            : isSelected
                             ? 'bg-purple-600 border-purple-600 text-white shadow-xs'
                             : 'border-slate-300 dark:border-border bg-slate-50/80'
                         }`}
                       >
-                        {isSelected && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                        {isAlreadyMember ? (
+                          <Check className="h-3.5 w-3.5 stroke-[3]" />
+                        ) : isSelected ? (
+                          <Check className="h-3.5 w-3.5 stroke-[3]" />
+                        ) : null}
                       </div>
                     </button>
                   );

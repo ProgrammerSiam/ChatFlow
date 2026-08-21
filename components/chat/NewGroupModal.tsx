@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Users, X, Search, Loader2, Check, User as UserIcon } from 'lucide-react';
+import { Users, X, Search, Loader2, Check, User as UserIcon, UserPlus, CheckCircle2, MessageSquare } from 'lucide-react';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useConversations } from '@/hooks/useConversations';
 import { useUserSearch } from '@/hooks/useUserSearch';
@@ -13,11 +13,12 @@ import { triggerMilestoneCelebration } from '@/lib/confetti';
 export default function NewGroupModal() {
   const router = useRouter();
   const { isNewGroupOpen, setNewGroupOpen, setActiveConversationId } = useChatUIStore();
-  const { createGroupConversation, isCreatingGroup } = useConversations();
+  const { conversations, createGroupConversation, isCreatingGroup } = useConversations();
   const { query, setQuery, users, isLoading } = useUserSearch();
 
   const [groupName, setGroupName] = useState('');
   const [selectedParticipants, setSelectedParticipants] = useState<SearchUser[]>([]);
+  const [filterMode, setFilterMode] = useState<'all' | 'direct_only' | 'shared_groups_only' | 'new_only'>('all');
 
   // Close on Escape key
   useEffect(() => {
@@ -30,6 +31,50 @@ export default function NewGroupModal() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isNewGroupOpen, setNewGroupOpen]);
+
+  // Helper to check if direct conversation already exists
+  const getExistingConversation = (userId: string) => {
+    return conversations.find(
+      (c) =>
+        c.type === 'direct' &&
+        ((c.participant && c.participant._id === userId) ||
+          (c.participants && c.participants.some((p) => p._id === userId)))
+    );
+  };
+
+  // Helper to check shared group objects
+  const getSharedGroups = (userId: string) => {
+    return conversations.filter(
+      (c) =>
+        c.type === 'group' &&
+        (c.participants || []).some((p) => p._id === userId)
+    );
+  };
+
+  const directUsersCount = useMemo(() => {
+    return users.filter((u) => !!getExistingConversation(u._id)).length;
+  }, [users, conversations]);
+
+  const sharedGroupsUsersCount = useMemo(() => {
+    return users.filter((u) => getSharedGroups(u._id).length > 0).length;
+  }, [users, conversations]);
+
+  const newUsersCount = useMemo(() => {
+    return users.filter((u) => !getExistingConversation(u._id) && getSharedGroups(u._id).length === 0).length;
+  }, [users, conversations]);
+
+  const displayedUsers = useMemo(() => {
+    if (filterMode === 'direct_only') {
+      return users.filter((u) => !!getExistingConversation(u._id));
+    }
+    if (filterMode === 'shared_groups_only') {
+      return users.filter((u) => getSharedGroups(u._id).length > 0);
+    }
+    if (filterMode === 'new_only') {
+      return users.filter((u) => !getExistingConversation(u._id) && getSharedGroups(u._id).length === 0);
+    }
+    return users;
+  }, [users, conversations, filterMode]);
 
   if (!isNewGroupOpen) return null;
 
@@ -166,6 +211,66 @@ export default function NewGroupModal() {
             </div>
           </div>
 
+          {/* Filter Tabs */}
+          {/* Filter Tabs */}
+          {!isLoading && users.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+              <button
+                type="button"
+                onClick={() => setFilterMode('all')}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  filterMode === 'all'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                }`}
+              >
+                <Users className="h-3 w-3" />
+                <span>All Users ({users.length})</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setFilterMode('direct_only')}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  filterMode === 'direct_only'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                }`}
+              >
+                <MessageSquare className="h-3 w-3" />
+                <span>Direct Contacts ({directUsersCount})</span>
+              </button>
+
+              {sharedGroupsUsersCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setFilterMode('shared_groups_only')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                    filterMode === 'shared_groups_only'
+                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/60 shadow-2xs'
+                      : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                  }`}
+                >
+                  <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+                  <span>In Your Groups ({sharedGroupsUsersCount})</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setFilterMode('new_only')}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  filterMode === 'new_only'
+                    ? 'bg-purple-100 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 border border-purple-200/70 dark:border-purple-800/60 shadow-2xs'
+                    : 'bg-slate-100/70 text-slate-500 hover:bg-slate-100 dark:bg-muted/40 dark:text-slate-400'
+                }`}
+              >
+                <UserPlus className="h-3 w-3" />
+                <span>New Contacts ({newUsersCount})</span>
+              </button>
+            </div>
+          )}
+
           {/* Search Results List with Top & Bottom Shadow Fades */}
           <div className="relative">
             {/* Top Shadow Vignette */}
@@ -191,14 +296,26 @@ export default function NewGroupModal() {
                     </div>
                   ))}
                 </div>
-              ) : users.length === 0 ? (
+              ) : displayedUsers.length === 0 ? (
                 <div className="py-6 text-center text-slate-400 space-y-1 border border-slate-200/60 rounded-2xl bg-slate-50/40 p-4">
                   <UserIcon className="h-6 w-6 mx-auto opacity-30" />
-                  <p className="text-xs">No teammates found</p>
+                  <p className="text-xs">
+                    {filterMode === 'direct_only'
+                      ? 'No direct contacts found'
+                      : filterMode === 'shared_groups_only'
+                      ? 'No teammates found in shared groups'
+                      : filterMode === 'new_only'
+                      ? 'No new contacts found'
+                      : 'No teammates found'}
+                  </p>
                 </div>
               ) : (
-                users.map((targetUser) => {
+                displayedUsers.map((targetUser) => {
                   const isSelected = selectedParticipants.some((p) => p._id === targetUser._id);
+                  const existingConv = getExistingConversation(targetUser._id);
+                  const isAlreadyMessaged = !!existingConv;
+                  const sharedGroups = getSharedGroups(targetUser._id);
+
                   return (
                     <button
                       key={targetUser._id}
@@ -210,22 +327,42 @@ export default function NewGroupModal() {
                           : 'bg-white dark:bg-card border-slate-200/70 dark:border-border/60 hover:border-purple-200 hover:shadow-xs'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 min-w-0 pr-2">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-bold text-xs shadow-2xs">
                           {targetUser.name.charAt(0).toUpperCase()}
                         </div>
-                        <div className="text-left">
-                          <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white">
-                            {targetUser.name}
-                          </p>
-                          <p className="text-xs text-slate-400 font-mono mt-0.5">
+                        <div className="text-left min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white truncate">
+                              {targetUser.name}
+                            </p>
+                            {isAlreadyMessaged ? (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 border border-purple-100 dark:border-purple-900/40 px-1.5 py-0.2 rounded-md shrink-0">
+                                <CheckCircle2 className="h-2.5 w-2.5 text-purple-600 dark:text-purple-400" />
+                                <span>Direct Contact</span>
+                              </span>
+                            ) : sharedGroups.length > 0 ? (
+                              <span
+                                title={`In group: ${sharedGroups.map((g) => g.name).join(', ')}`}
+                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/40 px-1.5 py-0.2 rounded-md shrink-0 max-w-[150px]"
+                              >
+                                <Users className="h-2.5 w-2.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                                <span className="truncate">
+                                  {sharedGroups.length === 1
+                                    ? sharedGroups[0].name
+                                    : `${sharedGroups[0].name} (+${sharedGroups.length - 1})`}
+                                </span>
+                              </span>
+                            ) : null}
+                          </div>
+                          <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
                             {targetUser.phone}
                           </p>
                         </div>
                       </div>
 
                       <div
-                        className={`flex h-5.5 w-5.5 items-center justify-center rounded-lg border transition-all ${
+                        className={`flex h-5.5 w-5.5 items-center justify-center rounded-lg border transition-all shrink-0 ${
                           isSelected
                             ? 'bg-purple-600 border-purple-600 text-white shadow-xs'
                             : 'border-slate-300 dark:border-border bg-slate-50/80'
