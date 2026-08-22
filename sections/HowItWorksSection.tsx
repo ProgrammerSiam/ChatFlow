@@ -80,7 +80,7 @@ export default function HowItWorksSection() {
                   Instant Phone Authentication
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal mt-2 line-clamp-3">
-                  Enter your phone and name to log in. Accounts are <Highlight>auto-registered on first access</Highlight> and secured with stateless <Highlight>JWT session tokens</Highlight> with zero password friction.
+                  Enter your phone and name to log in. Accounts are <Highlight>auto-registered on first visit</Highlight> and secured with stateless JWT tokens — no password required.
                 </p>
               </div>
             </div>
@@ -126,7 +126,7 @@ export default function HowItWorksSection() {
                   Global Teammate Discovery
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal mt-2 line-clamp-3">
-                  Look up teammates by phone or name with <Highlight>300ms debounced search</Highlight> and instantly explore or open active <Highlight>team group channels</Highlight> in real time.
+                  Find teammates by phone or name with <Highlight>300ms debounced search</Highlight> and open existing direct or <Highlight>group channels</Highlight> instantly.
                 </p>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function HowItWorksSection() {
                   Multi-Member Group Creation
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal mt-2 line-clamp-3">
-                  Name your channel, multi-select teammates from your directory, and launch <Highlight>collaborative workspaces</Highlight> with <Highlight>role-gated admin controls</Highlight>.
+                  Name your group, pick teammates, and launch a <Highlight>collaborative workspace</Highlight> with full <Highlight>admin controls</Highlight> in seconds.
                 </p>
               </div>
             </div>
@@ -208,7 +208,7 @@ export default function HowItWorksSection() {
                 </h3>
 
                 <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-                  Manage all direct chats and group channels with <Highlight>real-time unread badges</Highlight>, 0ms optimistic delivery, and <Highlight>automatic reconnection gap-filling</Highlight> across every browser and device.
+                  Stay in sync with <Highlight>real-time unread badges</Highlight>, instant message delivery, and <Highlight>auto-reconnection</Highlight> across every browser and device.
                 </p>
               </div>
 
