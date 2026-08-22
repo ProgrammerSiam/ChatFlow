@@ -29,18 +29,16 @@ export default function AiModelsPricingSection() {
 
             <h2
               id="tech-stack-heading"
-              className="text-slate-900 dark:text-white text-2xl sm:text-3xl md:text-4xl font-medium tracking-[-1px] leading-[1.15] max-w-3xl mx-auto"
+              className="text-slate-900 dark:text-white text-3xl sm:text-4xl md:text-5xl lg:text-[50px] font-medium tracking-[-1.5px] leading-[1.12] max-w-3xl mx-auto"
             >
-              Engineered with Modern{' '}
-              <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight">
+              Engineered with High-Performance{' '}
+              <span className="inline-flex items-center px-3 sm:px-4 py-0.5 sm:py-1 rounded-2xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-sm align-middle leading-tight">
                 Tech Stack
               </span>
             </h2>
 
-            <p className="text-slate-500 dark:text-slate-400 max-w-xl text-sm sm:text-base leading-relaxed">
-              Built from the ground up with Next.js 16 App Router, Socket.IO v4,
-              TanStack Query v5, and Tailwind CSS v4 for instantaneous real-time
-              delivery and resilient multi-device sync.
+            <p className="text-slate-500 dark:text-slate-400 max-w-2xl text-sm sm:text-base md:text-lg leading-relaxed">
+              Built with Next.js 16, Socket.IO v4, TanStack Query v5, and Tailwind CSS v4 for 0ms optimistic delivery, instant synchronization, and stateless security.
             </p>
 
             <div className="pt-2">
@@ -282,8 +280,8 @@ export default function AiModelsPricingSection() {
               </div>
             </div>
 
-            {/* Connecting Circuit Flow SVG (Pure White) */}
-            <div className="relative z-30 text-white w-full max-w-[520px] flex justify-center mb-0.5 pt-0 select-none pointer-events-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
+            {/* Connecting Circuit Flow SVG with Infinite Flow Stream Animation */}
+            <div className="relative z-30 w-full max-w-[520px] flex justify-center mb-0.5 pt-0 select-none pointer-events-none drop-shadow-[0_2px_12px_rgba(142,124,255,0.25)]">
               <svg
                 width="520"
                 height="106"
@@ -292,52 +290,89 @@ export default function AiModelsPricingSection() {
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-full h-auto overflow-visible"
               >
-                <path
-                  d="M259.619 105.909L263.949 98.4087H255.289L259.619 105.909ZM0.75 0H0V49.7207H0.75H1.5V0H0.75ZM21.75 70.7207V71.4707H238.619V70.7207V69.9707H21.75V70.7207ZM259.619 91.7207H258.869V99.1587H259.619H260.369V91.7207H259.619ZM238.619 70.7207V71.4707C249.803 71.4707 258.869 80.5369 258.869 91.7207H259.619H260.369C260.369 79.7085 250.631 69.9707 238.619 69.9707V70.7207ZM0.75 49.7207H0C0 61.7329 9.73781 71.4707 21.75 71.4707V70.7207V69.9707C10.5662 69.9707 1.5 60.9045 1.5 49.7207H0.75Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M259.619 105.909L255.289 98.4087H263.949L259.619 105.909ZM518.488 0H519.238V49.7207H518.488H517.738V0H518.488ZM497.488 70.7207V71.4707H280.619V70.7207V69.9707H497.488V70.7207ZM259.619 91.7207H260.369V99.1587H259.619H258.869V91.7207H259.619ZM280.619 70.7207V71.4707C269.435 71.4707 260.369 80.5369 260.369 91.7207H259.619H258.869C258.869 79.7085 268.607 69.9707 280.619 69.9707V70.7207ZM518.488 49.7207H519.238C519.238 61.7329 509.5 71.4707 497.488 71.4707V70.7207V69.9707C508.671 69.9707 517.738 60.9045 517.738 49.7207H518.488Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M259.619 105.908L263.949 98.4085H255.289L259.619 105.908ZM169.149 0.654297H168.399V49.5805H169.149H169.899V0.654297H169.149ZM190.149 70.5805V71.3305H238.619V70.5805V69.8305H190.149V70.5805ZM259.619 91.5805H258.869V99.1585H259.619H260.369V91.5805H259.619ZM238.619 70.5805V71.3305C249.803 71.3305 258.869 80.3968 258.869 91.5805H259.619H260.369C260.369 79.5683 250.631 69.8305 238.619 69.8305V70.5805ZM169.149 49.5805H168.399C168.399 61.5927 178.137 71.3305 190.149 71.3305V70.5805V69.8305C178.965 69.8305 169.899 60.7643 169.899 49.5805H169.149Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M259.619 105.908L255.289 98.4085H263.949L259.619 105.908ZM350.089 0.654297H350.839V49.5805H350.089H349.339V0.654297H350.089ZM329.089 70.5805V71.3305H280.619V70.5805V69.8305H329.089V70.5805ZM259.619 91.5805H260.369V99.1585H259.619H258.869V91.5805H259.619ZM280.619 70.5805V71.3305C269.435 71.3305 260.369 80.3968 260.369 91.5805H259.619H258.869C258.869 79.5683 268.607 69.8305 280.619 69.8305V70.5805ZM350.089 49.5805H350.839C350.839 61.5927 341.101 71.3305 329.089 71.3305V70.5805V69.8305C340.272 69.8305 349.339 60.7643 349.339 49.5805H350.089Z"
-                  fill="currentColor"
-                />
+                <defs>
+                  {/* Infinite Traveling Flow Pulse */}
+                  <linearGradient id="flow-pulse-y" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.4" />
+                    <stop offset="45%" stopColor="#A293FF" stopOpacity="1" />
+                    <stop offset="55%" stopColor="#FFFFFF" stopOpacity="1" />
+                    <stop offset="65%" stopColor="#8E7CFF" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.4" />
+                    <animateTransform
+                      attributeName="gradientTransform"
+                      type="translate"
+                      values="0 -1.5; 0 1.5"
+                      dur="2.2s"
+                      repeatCount="indefinite"
+                    />
+                  </linearGradient>
+                </defs>
+
+                {/* Base Track (Pure White Line Foundation) */}
+                <g className="text-white/50">
+                  <path
+                    d="M259.619 105.909L263.949 98.4087H255.289L259.619 105.909ZM0.75 0H0V49.7207H0.75H1.5V0H0.75ZM21.75 70.7207V71.4707H238.619V70.7207V69.9707H21.75V70.7207ZM259.619 91.7207H258.869V99.1587H259.619H260.369V91.7207H259.619ZM238.619 70.7207V71.4707C249.803 71.4707 258.869 80.5369 258.869 91.7207H259.619H260.369C260.369 79.7085 250.631 69.9707 238.619 69.9707V70.7207ZM0.75 49.7207H0C0 61.7329 9.73781 71.4707 21.75 71.4707V70.7207V69.9707C10.5662 69.9707 1.5 60.9045 1.5 49.7207H0.75Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M259.619 105.909L255.289 98.4087H263.949L259.619 105.909ZM518.488 0H519.238V49.7207H518.488H517.738V0H518.488ZM497.488 70.7207V71.4707H280.619V70.7207V69.9707H497.488V70.7207ZM259.619 91.7207H260.369V99.1587H259.619H258.869V91.7207H259.619ZM280.619 70.7207V71.4707C269.435 71.4707 260.369 80.5369 260.369 91.7207H259.619H258.869C258.869 79.7085 268.607 69.9707 280.619 69.9707V70.7207ZM518.488 49.7207H519.238C519.238 61.7329 509.5 71.4707 497.488 71.4707V70.7207V69.9707C508.671 69.9707 517.738 60.9045 517.738 49.7207H518.488Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M259.619 105.908L263.949 98.4085H255.289L259.619 105.908ZM169.149 0.654297H168.399V49.5805H169.149H169.899V0.654297H169.149ZM190.149 70.5805V71.3305H238.619V70.5805V69.8305H190.149V70.5805ZM259.619 91.5805H258.869V99.1585H259.619H260.369V91.5805H259.619ZM238.619 70.5805V71.3305C249.803 71.3305 258.869 80.3968 258.869 91.5805H259.619H260.369C260.369 79.5683 250.631 69.8305 238.619 69.8305V70.5805ZM169.149 49.5805H168.399C168.399 61.5927 178.137 71.3305 190.149 71.3305V70.5805V69.8305C178.965 69.8305 169.899 60.7643 169.899 49.5805H169.149Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M259.619 105.908L255.289 98.4085H263.949L259.619 105.908ZM350.089 0.654297H350.839V49.5805H350.089H349.339V0.654297H350.089ZM329.089 70.5805V71.3305H280.619V70.5805V69.8305H329.089V70.5805ZM259.619 91.5805H260.369V99.1585H259.619H258.869V91.5805H259.619ZM280.619 70.5805V71.3305C269.435 71.3305 260.369 80.3968 260.369 91.5805H259.619H258.869C258.869 79.5683 268.607 69.8305 280.619 69.8305V70.5805ZM350.089 49.5805H350.839C350.839 61.5927 341.101 71.3305 329.089 71.3305V70.5805V69.8305C340.272 69.8305 349.339 60.7643 349.339 49.5805H350.089Z"
+                    fill="currentColor"
+                  />
+                </g>
+
+                {/* Infinite Glowing Animated Stream Layer */}
+                <g fill="url(#flow-pulse-y)">
+                  <path
+                    d="M259.619 105.909L263.949 98.4087H255.289L259.619 105.909ZM0.75 0H0V49.7207H0.75H1.5V0H0.75ZM21.75 70.7207V71.4707H238.619V70.7207V69.9707H21.75V70.7207ZM259.619 91.7207H258.869V99.1587H259.619H260.369V91.7207H259.619ZM238.619 70.7207V71.4707C249.803 71.4707 258.869 80.5369 258.869 91.7207H259.619H260.369C260.369 79.7085 250.631 69.9707 238.619 69.9707V70.7207ZM0.75 49.7207H0C0 61.7329 9.73781 71.4707 21.75 71.4707V70.7207V69.9707C10.5662 69.9707 1.5 60.9045 1.5 49.7207H0.75Z"
+                  />
+                  <path
+                    d="M259.619 105.909L255.289 98.4087H263.949L259.619 105.909ZM518.488 0H519.238V49.7207H518.488H517.738V0H518.488ZM497.488 70.7207V71.4707H280.619V70.7207V69.9707H497.488V70.7207ZM259.619 91.7207H260.369V99.1587H259.619H258.869V91.7207H259.619ZM280.619 70.7207V71.4707C269.435 71.4707 260.369 80.5369 260.369 91.7207H259.619H258.869C258.869 79.7085 268.607 69.9707 280.619 69.9707V70.7207ZM518.488 49.7207H519.238C519.238 61.7329 509.5 71.4707 497.488 71.4707V70.7207V69.9707C508.671 69.9707 517.738 60.9045 517.738 49.7207H518.488Z"
+                  />
+                  <path
+                    d="M259.619 105.908L263.949 98.4085H255.289L259.619 105.908ZM169.149 0.654297H168.399V49.5805H169.149H169.899V0.654297H169.149ZM190.149 70.5805V71.3305H238.619V70.5805V69.8305H190.149V70.5805ZM259.619 91.5805H258.869V99.1585H259.619H260.369V91.5805H259.619ZM238.619 70.5805V71.3305C249.803 71.3305 258.869 80.3968 258.869 91.5805H259.619H260.369C260.369 79.5683 250.631 69.8305 238.619 69.8305V70.5805ZM169.149 49.5805H168.399C168.399 61.5927 178.137 71.3305 190.149 71.3305V70.5805V69.8305C178.965 69.8305 169.899 60.7643 169.899 49.5805H169.149Z"
+                  />
+                  <path
+                    d="M259.619 105.908L255.289 98.4085H263.949L259.619 105.908ZM350.089 0.654297H350.839V49.5805H350.089H349.339V0.654297H350.089ZM329.089 70.5805V71.3305H280.619V70.5805V69.8305H329.089V70.5805ZM259.619 91.5805H260.369V99.1585H259.619H258.869V91.5805H259.619ZM280.619 70.5805V71.3305C269.435 71.3305 260.369 80.3968 260.369 91.5805H259.619H258.869C258.869 79.5683 268.607 69.8305 280.619 69.8305V70.5805ZM350.089 49.5805H350.839C350.839 61.5927 341.101 71.3305 329.089 71.3305V70.5805V69.8305C340.272 69.8305 349.339 60.7643 349.339 49.5805H350.089Z"
+                  />
+                </g>
               </svg>
             </div>
 
-            {/* Central Unified ChatFlow Core Platform Tier Card */}
+            {/* Central Unified ChatFlow Core Platform Hub (Column View: Logo + Title) */}
             <div className="relative z-20">
-              <div className="border border-slate-200/80 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 rounded-[24px] flex flex-col sm:flex-row items-center gap-4 border-2 px-6 py-4 shadow-[0px_20px_50px_rgba(114,92,255,0.15)] dark:shadow-[0px_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-                {/* ChatFlow Official Brand Logo with Infinite Rotating Border Animation */}
-                <div className="relative size-14 sm:size-16 shrink-0 rounded-2xl p-[2px] overflow-hidden shadow-lg shadow-purple-500/25 flex items-center justify-center">
+              <div className="border border-slate-200/80 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 rounded-[24px] flex flex-col items-center justify-center text-center gap-3 border-2 px-8 py-5 shadow-[0px_20px_50px_rgba(114,92,255,0.15)] dark:shadow-[0px_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+                {/* ChatFlow Official Brand Logo with Enhanced Infinite Rotating Border Animation */}
+                <div className="relative size-20 sm:size-24 shrink-0 rounded-[26px] p-[3.5px] overflow-hidden shadow-2xl shadow-purple-500/30 flex items-center justify-center">
                   {/* Infinite Rotating Conic Gradient Beam */}
                   <div
                     className="absolute -inset-[150%] animate-[spin_3s_linear_infinite]"
                     style={{
                       background:
-                        'conic-gradient(from 0deg, transparent 0 260deg, #8E7CFF 310deg, #D5CCFF 360deg)',
+                        'conic-gradient(from 0deg, transparent 0 250deg, #8E7CFF 300deg, #D5CCFF 360deg)',
                     }}
                   />
                   <div
                     className="absolute -inset-[150%] animate-[spin_3s_linear_infinite]"
                     style={{
                       background:
-                        'conic-gradient(from 180deg, transparent 0 260deg, #725CFF 310deg, #F472B6 360deg)',
+                        'conic-gradient(from 180deg, transparent 0 250deg, #725CFF 300deg, #F472B6 360deg)',
                     }}
                   />
 
                   {/* Inner Surface & Brand Icon */}
-                  <div className="relative h-full w-full rounded-[14px] bg-white dark:bg-zinc-950 flex items-center justify-center p-1.5 z-10">
-                    <div className="h-full w-full rounded-[10px] bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] flex items-center justify-center text-white shadow-xs overflow-hidden">
+                  <div className="relative h-full w-full rounded-[22px] bg-white dark:bg-zinc-950 flex items-center justify-center p-2 z-10">
+                    <div className="h-full w-full rounded-[16px] bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] flex items-center justify-center text-white shadow-sm overflow-hidden">
                       <svg
-                        width="26"
-                        height="26"
+                        width="38"
+                        height="38"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
@@ -362,26 +397,10 @@ export default function AiModelsPricingSection() {
                   </div>
                 </div>
 
-                {/* Platform Label & Conditional Action Button */}
-                <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                  <p className="text-slate-900 dark:text-white leading-none font-bold text-lg sm:text-xl tracking-tight">
-                    ChatFlow Core Platform
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    0ms Optimistic Delivery • WebSocket Stream
-                  </p>
-
-                  <Link
-                    href={isAuthenticated ? '/chat' : '/login'}
-                    className="mt-2.5 inline-flex items-center gap-2 text-xs font-semibold rounded-full px-4 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                  >
-                    <span>{isAuthenticated ? 'Open App' : 'Try Free'}</span>
-                    <span className="text-[10px] bg-white/25 px-1.5 py-0.5 rounded-full font-medium">
-                      {isAuthenticated ? 'Active Workspace' : 'Instant Setup'}
-                    </span>
-                    <ArrowRight className="size-3" />
-                  </Link>
-                </div>
+                {/* Platform Label */}
+                <p className="text-slate-900 dark:text-white leading-none font-bold text-lg sm:text-xl tracking-tight">
+                  ChatFlow Core Platform
+                </p>
               </div>
             </div>
           </div>
