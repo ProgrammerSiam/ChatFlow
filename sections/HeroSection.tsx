@@ -44,7 +44,7 @@ export default function HeroSection() {
               href="#demo"
               className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 border border-slate-200/90 dark:border-border text-slate-900 dark:text-white bg-white dark:bg-card h-12 w-full px-6 text-sm sm:text-base font-medium hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 sm:w-auto shadow-xs"
             >
-              <span>View Sandbox</span>
+              <span>View Demo</span>
             </a>
 
             <Link

@@ -2,7 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+import {
+  motion,
+  useScroll,
+  useMotionValueEvent,
+  AnimatePresence,
+} from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
 import BrandLogo from '@/shared/BrandLogo';
 
@@ -64,7 +69,11 @@ export default function Navbar() {
       >
         {/* Brand Logo (Matches UI Design System) */}
         <Link href="/" className="inline-flex shrink-0">
-          <BrandLogo prefix="Chat" suffix="Flow" size={scrolled ? 'md' : 'lg'} />
+          <BrandLogo
+            prefix="Chat"
+            suffix="Flow"
+            size={scrolled ? 'md' : 'lg'}
+          />
         </Link>
 
         {/* Centered Segmented Pill Menu */}
@@ -85,7 +94,7 @@ export default function Navbar() {
             href="#demo"
             className="rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
-            Sandbox
+            Demo
           </a>
           <a
             href="#how-it-works"
@@ -114,5 +123,3 @@ export default function Navbar() {
     </motion.header>
   );
 }
-
-

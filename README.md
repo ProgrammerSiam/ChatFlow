@@ -35,7 +35,7 @@ ChatFlow delivers an ultra-smooth, low-latency communication suite consisting of
 2. **Part 2 — Creative Landing Page (`/`)**:
    - **Interactive Live Preview**: Interactive animated chat widget demonstrating real-time responses.
    - **Feature Bento Grid**: Highlighting state synchronization, TanStack Query caching, and resilient WebSockets.
-   - **Interactive Typing Sandbox**: Live simulation allowing visitors to test messaging interactions.
+   - **Interactive Typing Demo**: Live simulation allowing visitors to test messaging interactions.
    - **Modern Aesthetic**: Glassmorphism surfaces, dark/light theme fidelity, gradient glows, and celebratory milestone confetti.
 
 ---

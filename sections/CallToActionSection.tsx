@@ -14,7 +14,12 @@ export default function CallToActionSection() {
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 text-center sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-5">
           {/* Top Tag Pill */}
-          <BadgePill icon={<Sparkles className="size-3 text-purple-600 dark:text-purple-400" />} label="Ready to Explore?" />
+          <BadgePill
+            icon={
+              <Sparkles className="size-3 text-purple-600 dark:text-purple-400" />
+            }
+            label="Ready to Explore?"
+          />
 
           {/* Heading & Subtitle */}
           <div className="space-y-4">
@@ -25,7 +30,9 @@ export default function CallToActionSection() {
               </span>
             </h2>
             <p className="text-slate-500 dark:text-slate-400 mx-auto max-w-xl text-sm sm:text-base leading-[1.6] text-pretty">
-              Instant Socket.io synchronization, TanStack Query client caching, and role-gated group workspaces built for high-velocity teams and creators.
+              Instant Socket.io synchronization, TanStack Query client caching,
+              and role-gated group workspaces built for high-velocity teams and
+              creators.
             </p>
           </div>
         </div>
@@ -36,7 +43,7 @@ export default function CallToActionSection() {
             href="#demo"
             className="gap-2 inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 border border-slate-200/90 dark:border-border text-slate-900 dark:text-white hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 bg-white dark:bg-card h-12 w-full px-6 text-sm sm:text-base font-medium sm:w-auto shadow-xs"
           >
-            View Plans
+            View Demo
           </a>
           <Link
             href={isAuthenticated ? '/chat' : '/login'}
@@ -52,7 +59,8 @@ export default function CallToActionSection() {
         className="pointer-events-none absolute inset-0 overflow-hidden select-none"
         style={{
           maskImage: 'linear-gradient(to top, black 40%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to top, black 40%, transparent 100%)',
         }}
       >
         {/* Left Graphic */}
