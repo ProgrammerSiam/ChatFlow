@@ -2,15 +2,17 @@
 
 import { useEffect, useRef, useState, useLayoutEffect, useCallback } from 'react';
 import {
-  Loader2,
   AlertCircle,
   ArrowDown,
   Check,
   Clock,
   RotateCcw,
+  Copy,
+  ExternalLink,
 } from 'lucide-react';
 import { Message, GroupParticipant } from '@/types';
 import { useAuthStore } from '@/store/useAuthStore';
+import { toast } from 'sonner';
 
 interface MessageListProps {
   messages: Message[];
@@ -21,6 +23,48 @@ interface MessageListProps {
   isGroup?: boolean;
   fetchNextPage: () => void;
   onRetryMessage: (tempId: string, text: string) => void;
+}
+
+// URL linkifier and highlighter helper
+function renderMessageContent(text: string, isSelf: boolean) {
+  const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+  const parts = text.split(urlRegex);
+
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      let url = part;
+      let trailingPunctuation = '';
+      const matchTrailing = url.match(/[.,!?;:]+$/);
+      if (matchTrailing) {
+        trailingPunctuation = matchTrailing[0];
+        url = url.slice(0, -trailingPunctuation.length);
+      }
+
+      const href = url.startsWith('www.') ? `https://${url}` : url;
+
+      return (
+        <span key={i} className="inline-flex items-center gap-0.5">
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className={`font-semibold underline underline-offset-3 transition-all break-all rounded px-1.5 py-0.5 inline-flex items-center gap-1 cursor-pointer select-text ${
+              isSelf
+                ? 'bg-white/20 text-white hover:bg-white/30 hover:text-white decoration-white/70 shadow-2xs'
+                : 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900/70 hover:text-purple-700 dark:hover:text-purple-300 decoration-purple-400/60 shadow-2xs'
+            }`}
+            title={`Open link: ${href}`}
+          >
+            <span>{url}</span>
+            <ExternalLink className="h-3 w-3 shrink-0 opacity-80" />
+          </a>
+          {trailingPunctuation}
+        </span>
+      );
+    }
+    return part;
+  });
 }
 
 export default function MessageList({
@@ -39,8 +83,19 @@ export default function MessageList({
 
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showScrollDownPill, setShowScrollDownPill] = useState(false);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const prevMessagesCountRef = useRef(messages.length);
   const prevScrollHeightRef = useRef<number>(0);
+
+  const handleCopyMessage = (id: string, text: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    toast.success('Message copied to clipboard');
+    setTimeout(() => {
+      setCopiedId(null);
+    }, 2000);
+  };
 
   // Check if user is near bottom
   const checkIfAtBottom = useCallback(() => {
@@ -290,19 +345,44 @@ export default function MessageList({
 
                 {/* Message Bubble */}
                 <div
-                  className={`group relative max-w-[82%] sm:max-w-[70%] rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
+                  className={`group relative max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
                     isSelf
                       ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
                       : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
                   }`}
                 >
-                  <p className="whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium">
-                    {message.text}
-                  </p>
+                  {/* Copy Button Quick Action on Hover */}
+                  <button
+                    type="button"
+                    onClick={(e) =>
+                      handleCopyMessage(
+                        message._id || message.tempId || '',
+                        message.text,
+                        e
+                      )
+                    }
+                    className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
+                      isSelf
+                        ? 'hover:bg-white/20 text-white/70 hover:text-white bg-black/10'
+                        : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
+                    }`}
+                    title="Copy message text"
+                  >
+                    {copiedId === (message._id || message.tempId) ? (
+                      <Check className="h-3 w-3 text-emerald-300" />
+                    ) : (
+                      <Copy className="h-3 w-3" />
+                    )}
+                  </button>
 
-                  {/* Message Meta: Timestamp & Status */}
+                  {/* Message Text with URL linkifier */}
+                  <div className="whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text pr-4">
+                    {renderMessageContent(message.text, isSelf)}
+                  </div>
+
+                  {/* Message Meta: Timestamp, Status, & Quick Action */}
                   <div
-                    className={`flex items-center justify-end gap-1.5 mt-1 text-[11px] font-medium ${
+                    className={`flex items-center justify-end gap-1.5 mt-1.5 text-[11px] font-medium select-none ${
                       isSelf ? 'text-white/85' : 'text-muted-foreground'
                     }`}
                   >

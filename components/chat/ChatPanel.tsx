@@ -47,7 +47,7 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
     : conversation?.participant?.phone || '';
 
   return (
-    <div className="flex-1 flex h-full gap-2 sm:gap-3 overflow-hidden select-none">
+    <div className="flex-1 flex h-full gap-2 sm:gap-3 overflow-hidden">
       
       {/* Middle Main Chat Panel (Reduced width, side-by-side) */}
       <div className="flex-1 flex flex-col h-full rounded-[24px] bg-white dark:bg-card border border-slate-200/80 dark:border-border/70 shadow-xs overflow-hidden min-w-0">
