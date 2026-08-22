@@ -125,40 +125,42 @@ c:\Work_With_Company\Task\
 
 ### REST Endpoints Reference
 
-| Endpoint | Method | Purpose | Request Body / Query | Expected Response Shape |
-|---|---|---|---|---|
-| `/auth/login` | `POST` | Login / Auto-registration | `{ phone: string, name: string }` | `{ token: string, user: User }` |
-| `/auth/me` | `GET` | Session Restore / Token Verify | Headers: `Authorization: Bearer <token>` | `{ user: User }` |
-| `/users/search` | `GET` | Fuzzy User Search | `?q=query` | `SearchUser[]` |
-| `/conversations` | `GET` | Fetch User Conversations | Headers: `Authorization` | `{ data: Conversation[] }` |
-| `/conversations` | `POST` | Create Direct Chat | `{ userId: string }` | `Conversation` |
-| `/conversations/group` | `POST` | Create Group Chat | `{ name: string, participantIds: string[] }` | `Conversation` |
-| `/conversations/{id}/messages` | `GET` | Fetch Paginated Messages | `?limit=20&before=<oldestId>` | `{ messages: Message[], hasMore: boolean }` |
-| `/messages` | `POST` | Send Message | `{ conversationId: string, text: string }` | `Message` |
-| `/conversations/{id}` | `PATCH` | Rename Group (Admin only) | `{ name: string }` | `Conversation` |
-| `/conversations/{id}/participants` | `POST` | Add Members (Admin only) | `{ userIds: string[] }` | `Conversation` |
-| `/conversations/{id}/participants/{userId}` | `DELETE` | Remove Member / Leave Group | - | `{ success: boolean }` |
-| `/conversations/{id}/admins` | `POST` | Promote Member to Admin | `{ userId: string }` | `Conversation` |
-| `/health` | `GET` | Backend Health Check | - | `{ status: "ok" }` |
+| Endpoint                                    | Method   | Purpose                        | Request Body / Query                         | Expected Response Shape                     |
+| ------------------------------------------- | -------- | ------------------------------ | -------------------------------------------- | ------------------------------------------- |
+| `/auth/login`                               | `POST`   | Login / Auto-registration      | `{ phone: string, name: string }`            | `{ token: string, user: User }`             |
+| `/auth/me`                                  | `GET`    | Session Restore / Token Verify | Headers: `Authorization: Bearer <token>`     | `{ user: User }`                            |
+| `/users/search`                             | `GET`    | Fuzzy User Search              | `?q=query`                                   | `SearchUser[]`                              |
+| `/conversations`                            | `GET`    | Fetch User Conversations       | Headers: `Authorization`                     | `{ data: Conversation[] }`                  |
+| `/conversations`                            | `POST`   | Create Direct Chat             | `{ userId: string }`                         | `Conversation`                              |
+| `/conversations/group`                      | `POST`   | Create Group Chat              | `{ name: string, participantIds: string[] }` | `Conversation`                              |
+| `/conversations/{id}/messages`              | `GET`    | Fetch Paginated Messages       | `?limit=20&before=<oldestId>`                | `{ messages: Message[], hasMore: boolean }` |
+| `/messages`                                 | `POST`   | Send Message                   | `{ conversationId: string, text: string }`   | `Message`                                   |
+| `/conversations/{id}`                       | `PATCH`  | Rename Group (Admin only)      | `{ name: string }`                           | `Conversation`                              |
+| `/conversations/{id}/participants`          | `POST`   | Add Members (Admin only)       | `{ userIds: string[] }`                      | `Conversation`                              |
+| `/conversations/{id}/participants/{userId}` | `DELETE` | Remove Member / Leave Group    | -                                            | `{ success: boolean }`                      |
+| `/conversations/{id}/admins`                | `POST`   | Promote Member to Admin        | `{ userId: string }`                         | `Conversation`                              |
+| `/health`                                   | `GET`    | Backend Health Check           | -                                            | `{ status: "ok" }`                          |
 
 ### Socket.io Real-Time Events
 
-| Event | Direction | Payload | Description |
-|---|---|---|---|
-| `message:new` | Server → Client | `Message` | Inbound message dispatched to active/background conversations |
-| `conversation:updated` | Server → Client | `Conversation` | Live updates for group rename, added/removed members, admin promotions |
-| `connect` | Client | - | Handshake succeeded; triggers gap-fill query invalidation |
-| `disconnect` | Client | `reason: string` | Socket disconnected; sets reconnecting UI badge |
+| Event                  | Direction       | Payload          | Description                                                            |
+| ---------------------- | --------------- | ---------------- | ---------------------------------------------------------------------- |
+| `message:new`          | Server → Client | `Message`        | Inbound message dispatched to active/background conversations          |
+| `conversation:updated` | Server → Client | `Conversation`   | Live updates for group rename, added/removed members, admin promotions |
+| `connect`              | Client          | -                | Handshake succeeded; triggers gap-fill query invalidation              |
+| `disconnect`           | Client          | `reason: string` | Socket disconnected; sets reconnecting UI badge                        |
 
 ---
 
 ## 🚀 Quick Start
 
 ### 1. Prerequisites
+
 - **Node.js**: `v20.x` or higher
 - **Package Manager**: `npm` (v10+)
 
 ### 2. Installation
+
 ```bash
 # Clone the repository
 git clone <repository-url>
@@ -169,22 +171,28 @@ npm install
 ```
 
 ### 3. Environment Configuration
+
 Create a `.env.local` file in the root directory (or copy from `.env.example`):
+
 ```bash
 cp .env.example .env.local
 ```
 
 Ensure the following variables are defined:
+
 ```env
 NEXT_PUBLIC_API_URL=https://frontend-task-chatapp.onrender.com/api
 NEXT_PUBLIC_SOCKET_URL=https://frontend-task-chatapp.onrender.com
 ```
 
 ### 4. Running the Development Server
+
 ```bash
 npm run dev
 ```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser:
+
 - Landing Page: `http://localhost:3000/`
 - Chat Application: `http://localhost:3000/chat`
 - Login Screen: `http://localhost:3000/login`
