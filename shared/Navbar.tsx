@@ -58,44 +58,44 @@ export default function Navbar() {
         }}
         className={`pointer-events-auto flex items-center justify-between transition-all duration-400 ease-out ${
           scrolled
-            ? 'w-full max-w-2xl sm:max-w-3xl mt-3 px-4 py-2 rounded-full bg-white/85 dark:bg-slate-950/85 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 shadow-lg shadow-purple-500/8 dark:shadow-black/40 ring-1 ring-black/5 dark:ring-white/10'
-            : 'w-full max-w-6xl pt-4 pb-2 px-2 bg-transparent'
+            ? 'w-full max-w-2xl sm:max-w-3xl mt-4 px-5 py-2.5 rounded-full bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl border border-slate-200/90 dark:border-slate-800/90 shadow-xl shadow-purple-500/10 dark:shadow-black/50 ring-1 ring-black/5 dark:ring-white/10'
+            : 'w-full max-w-6xl pt-6 pb-3 px-4 bg-transparent'
         }`}
       >
         {/* Brand Logo (Matches UI Design System) */}
         <Link href="/" className="inline-flex shrink-0">
-          <BrandLogo prefix="Chat" suffix="Flow" size={scrolled ? 'sm' : 'md'} />
+          <BrandLogo prefix="Chat" suffix="Flow" size={scrolled ? 'md' : 'lg'} />
         </Link>
 
         {/* Centered Segmented Pill Menu */}
-        <nav className="hidden md:flex items-center gap-1 rounded-full px-1.5 py-0.5 backdrop-blur-md">
+        <nav className="hidden md:flex items-center gap-1.5 rounded-full px-2 py-1 backdrop-blur-md">
           <Link
             href="/"
-            className="rounded-full px-3 py-1 text-[13px] font-semibold text-slate-900 dark:text-white transition-all hover:text-purple-600"
+            className="rounded-full px-3.5 py-1.5 text-sm font-semibold text-slate-900 dark:text-white transition-all hover:text-purple-600 dark:hover:text-purple-400"
           >
             Home
           </Link>
           <a
             href="#features"
-            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Features
           </a>
           <a
             href="#demo"
-            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Sandbox
           </a>
           <a
             href="#how-it-works"
-            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             Process
           </a>
           <a
             href="#faq"
-            className="rounded-full px-3 py-1 text-[13px] font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            className="rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
           >
             FAQ
           </a>
@@ -105,7 +105,7 @@ export default function Navbar() {
         <div className="flex items-center shrink-0">
           <Link
             href={isAuthenticated ? '/chat' : '/login'}
-            className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 bg-slate-950 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 border border-slate-900 dark:border-white px-4.5 py-1.5 text-xs sm:text-[13px] font-semibold shadow-md shadow-slate-950/15 active:scale-95"
+            className="inline-flex items-center justify-center rounded-full transition-all cursor-pointer duration-200 bg-slate-950 hover:bg-black dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-950 border border-slate-900 dark:border-white px-5.5 py-2 h-10 text-sm font-semibold shadow-md shadow-slate-950/20 active:scale-95"
           >
             <span>{isAuthenticated ? 'Open App' : 'Try Free'}</span>
           </Link>
