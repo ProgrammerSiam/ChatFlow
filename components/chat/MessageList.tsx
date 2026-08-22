@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useLayoutEffect, useCallback } from 'react';
+import { useEffect, useRef, useState, useLayoutEffect, useCallback, useMemo } from 'react';
 import {
   AlertCircle,
   ArrowDown,
@@ -9,6 +9,7 @@ import {
   RotateCcw,
   Copy,
   ExternalLink,
+  Search,
 } from 'lucide-react';
 import { Message, GroupParticipant } from '@/types';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -21,12 +22,33 @@ interface MessageListProps {
   hasNextPage?: boolean;
   participants?: GroupParticipant[];
   isGroup?: boolean;
+  searchQuery?: string;
+  onClearSearch?: () => void;
   fetchNextPage: () => void;
   onRetryMessage: (tempId: string, text: string) => void;
 }
 
+function highlightSearchTerm(text: string, query: string) {
+  if (!query || !query.trim()) return text;
+  const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escaped})`, 'gi');
+  const segments = text.split(regex);
+  return segments.map((seg, idx) =>
+    regex.test(seg) ? (
+      <mark
+        key={idx}
+        className="bg-amber-300 dark:bg-amber-400 text-slate-950 font-bold px-0.5 rounded-xs"
+      >
+        {seg}
+      </mark>
+    ) : (
+      seg
+    )
+  );
+}
+
 // URL linkifier and highlighter helper
-function renderMessageContent(text: string, isSelf: boolean) {
+function renderMessageContent(text: string, isSelf: boolean, searchQuery?: string) {
   const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
   const parts = text.split(urlRegex);
 
@@ -56,14 +78,18 @@ function renderMessageContent(text: string, isSelf: boolean) {
             }`}
             title={`Open link: ${href}`}
           >
-            <span>{url}</span>
+            <span>{searchQuery ? highlightSearchTerm(url, searchQuery) : url}</span>
             <ExternalLink className="h-3 w-3 shrink-0 opacity-80" />
           </a>
           {trailingPunctuation}
         </span>
       );
     }
-    return part;
+    return searchQuery ? (
+      <span key={i}>{highlightSearchTerm(part, searchQuery)}</span>
+    ) : (
+      part
+    );
   });
 }
 
@@ -74,6 +100,8 @@ export default function MessageList({
   hasNextPage,
   participants,
   isGroup,
+  searchQuery,
+  onClearSearch,
   fetchNextPage,
   onRetryMessage,
 }: MessageListProps) {
@@ -86,6 +114,14 @@ export default function MessageList({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const prevMessagesCountRef = useRef(messages.length);
   const prevScrollHeightRef = useRef<number>(0);
+
+  const isSearchActive = Boolean(searchQuery && searchQuery.trim().length > 0);
+
+  const displayedMessages = useMemo(() => {
+    if (!isSearchActive || !searchQuery) return messages;
+    const q = searchQuery.trim().toLowerCase();
+    return messages.filter((m) => m.text?.toLowerCase().includes(q));
+  }, [messages, isSearchActive, searchQuery]);
 
   const handleCopyLink = (id: string, text: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -114,7 +150,7 @@ export default function MessageList({
     const container = scrollContainerRef.current;
     if (!container) return true;
     const { scrollTop, scrollHeight, clientHeight } = container;
-    const threshold = 150;
+    const threshold = 180;
     const atBottom = scrollHeight - scrollTop - clientHeight <= threshold;
     setIsAtBottom(atBottom);
     if (atBottom) {
@@ -163,20 +199,22 @@ export default function MessageList({
         ? latestMessage.sender._id === currentUser?._id
         : latestMessage.sender === currentUser?._id);
 
-    // If current user sent the message, always scroll to bottom
-    if (isSenderSelf) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
+    const timer = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+      const distanceFromBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight;
 
-    // For incoming messages: if at bottom -> scroll, otherwise show pill
-    if (isAtBottom) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      requestAnimationFrame(() => {
+      // If sent by self or close to bottom, smooth scroll to bottom
+      if (isSenderSelf || isAtBottom || distanceFromBottom <= 250) {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        setShowScrollDownPill(false);
+      } else {
         setShowScrollDownPill(true);
-      });
-    }
+      }
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, [messages, isAtBottom, currentUser?._id]);
 
   // Initial scroll to bottom on load
@@ -265,6 +303,24 @@ export default function MessageList({
               </div>
             </div>
           </div>
+        ) : isSearchActive && displayedMessages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full py-16 text-center space-y-2">
+            <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 flex items-center justify-center mb-1">
+              <Search className="h-5 w-5" />
+            </div>
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">No matching messages</h4>
+            <p className="text-xs text-muted-foreground max-w-xs">
+              No messages matching &quot;{searchQuery}&quot; were found in this chat.
+            </p>
+            {onClearSearch && (
+              <button
+                onClick={onClearSearch}
+                className="mt-2 text-xs font-semibold text-purple-600 dark:text-purple-400 hover:underline cursor-pointer"
+              >
+                Clear search
+              </button>
+            )}
+          </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full py-16 text-center space-y-2">
             <span className="text-4xl">👋</span>
@@ -274,132 +330,152 @@ export default function MessageList({
             </p>
           </div>
         ) : (
-          messages.map((message) => {
-            const senderObj =
-              typeof message.sender === 'object' ? message.sender : null;
-            const senderId = senderObj ? senderObj._id : message.sender;
-
-            // Robust active user detection from store or localStorage
-            let activeUser = currentUser;
-            if (!activeUser && typeof window !== 'undefined') {
-              try {
-                const stored = localStorage.getItem('chatflow_user');
-                if (stored) activeUser = JSON.parse(stored);
-              } catch {
-                // ignore
-              }
-            }
-
-            const currentId = activeUser?._id || (activeUser as unknown as { id?: string })?.id;
-            const currentName = activeUser?.name?.toLowerCase().trim();
-            const currentPhone = activeUser?.phone?.trim();
-
-            const selfParticipant = participants?.find(
-              (p) =>
-                (currentId && p._id === currentId) ||
-                (currentPhone && p.phone?.trim() === currentPhone) ||
-                (currentName && p.name?.toLowerCase().trim() === currentName)
-            );
-
-            const resolvedMyId = selfParticipant?._id || currentId;
-            const resolvedMyName = selfParticipant?.name?.toLowerCase().trim() || currentName;
-            const resolvedMyPhone = selfParticipant?.phone?.trim() || currentPhone;
-
-            const participantMatch = participants?.find(
-              (p) =>
-                (senderId && p._id === senderId) ||
-                (senderObj?.phone && p.phone?.trim() === senderObj.phone.trim()) ||
-                (senderObj?.name && p.name?.toLowerCase().trim() === senderObj.name.toLowerCase().trim()) ||
-                (typeof message.sender === 'string' && p.name?.toLowerCase().trim() === message.sender.toLowerCase().trim())
-            );
-
-            const senderName =
-              senderObj?.name ||
-              participantMatch?.name ||
-              (typeof message.sender === 'string' && message.sender.length < 30 ? message.sender : 'Teammate');
-
-            const isSenderNameMatch = Boolean(
-              (resolvedMyName && senderName.toLowerCase().trim() === resolvedMyName) ||
-              (currentName && senderName.toLowerCase().trim() === currentName) ||
-              (typeof message.sender === 'string' && resolvedMyName && message.sender.toLowerCase().trim() === resolvedMyName) ||
-              (typeof message.sender === 'string' && currentName && message.sender.toLowerCase().trim() === currentName)
-            );
-
-            const isSenderIdMatch = Boolean(
-              (resolvedMyId && (senderId === resolvedMyId || participantMatch?._id === resolvedMyId || senderObj?._id === resolvedMyId)) ||
-              (currentId && (senderId === currentId || participantMatch?._id === currentId || senderObj?._id === currentId))
-            );
-
-            const isSenderPhoneMatch = Boolean(
-              (resolvedMyPhone && (senderObj?.phone?.trim() === resolvedMyPhone || participantMatch?.phone?.trim() === resolvedMyPhone)) ||
-              (currentPhone && (senderObj?.phone?.trim() === currentPhone || participantMatch?.phone?.trim() === currentPhone))
-            );
-
-            // Comprehensive self check
-            const isSelf =
-              message.sender === 'me' ||
-              message.status === 'sending' ||
-              isSenderIdMatch ||
-              isSenderNameMatch ||
-              isSenderPhoneMatch;
-
-            const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
-            const hasLink = urlRegex.test(message.text);
-
-            return (
-              <div
-                key={message._id || message.tempId}
-                className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
-              >
-                {/* Sender Name in group chats for other participants */}
-                {!isSelf && isGroup && (
-                  <span className="text-[11px] font-semibold text-primary/85 ml-2 mb-1">
-                    {senderName}
+          <>
+            {isSearchActive && (
+              <div className="sticky top-0 z-20 flex items-center justify-between px-3 py-1.5 rounded-xl bg-purple-50/95 dark:bg-purple-950/90 border border-purple-200/80 dark:border-purple-800/60 shadow-xs mb-2 backdrop-blur-sm">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-purple-700 dark:text-purple-300">
+                  <Search className="h-3.5 w-3.5" />
+                  <span>
+                    {displayedMessages.length} match{displayedMessages.length === 1 ? '' : 'es'} for &quot;{searchQuery}&quot;
                   </span>
+                </div>
+                {onClearSearch && (
+                  <button
+                    onClick={onClearSearch}
+                    className="text-[11px] font-bold text-purple-600 hover:text-purple-800 dark:text-purple-400 hover:underline cursor-pointer"
+                  >
+                    Clear filter
+                  </button>
                 )}
+              </div>
+            )}
 
-                {/* Message Bubble */}
+            {displayedMessages.map((message) => {
+              const senderObj =
+                typeof message.sender === 'object' ? message.sender : null;
+              const senderId = senderObj ? senderObj._id : message.sender;
+
+              // Robust active user detection from store or localStorage
+              let activeUser = currentUser;
+              if (!activeUser && typeof window !== 'undefined') {
+                try {
+                  const stored = localStorage.getItem('chatflow_user');
+                  if (stored) activeUser = JSON.parse(stored);
+                } catch {
+                  // ignore
+                }
+              }
+
+              const currentId = activeUser?._id || (activeUser as unknown as { id?: string })?.id;
+              const currentName = activeUser?.name?.toLowerCase().trim();
+              const currentPhone = activeUser?.phone?.trim();
+
+              const selfParticipant = participants?.find(
+                (p) =>
+                  (currentId && p._id === currentId) ||
+                  (currentPhone && p.phone?.trim() === currentPhone) ||
+                  (currentName && p.name?.toLowerCase().trim() === currentName)
+              );
+
+              const resolvedMyId = selfParticipant?._id || currentId;
+              const resolvedMyName = selfParticipant?.name?.toLowerCase().trim() || currentName;
+              const resolvedMyPhone = selfParticipant?.phone?.trim() || currentPhone;
+
+              const participantMatch = participants?.find(
+                (p) =>
+                  (senderId && p._id === senderId) ||
+                  (senderObj?.phone && p.phone?.trim() === senderObj.phone.trim()) ||
+                  (senderObj?.name && p.name?.toLowerCase().trim() === senderObj.name.toLowerCase().trim()) ||
+                  (typeof message.sender === 'string' && p.name?.toLowerCase().trim() === message.sender.toLowerCase().trim())
+              );
+
+              const senderName =
+                senderObj?.name ||
+                participantMatch?.name ||
+                (typeof message.sender === 'string' && message.sender.length < 30 ? message.sender : 'Teammate');
+
+              const isSenderNameMatch = Boolean(
+                (resolvedMyName && senderName.toLowerCase().trim() === resolvedMyName) ||
+                (currentName && senderName.toLowerCase().trim() === currentName) ||
+                (typeof message.sender === 'string' && resolvedMyName && message.sender.toLowerCase().trim() === resolvedMyName) ||
+                (typeof message.sender === 'string' && currentName && message.sender.toLowerCase().trim() === currentName)
+              );
+
+              const isSenderIdMatch = Boolean(
+                (resolvedMyId && (senderId === resolvedMyId || participantMatch?._id === resolvedMyId || senderObj?._id === resolvedMyId)) ||
+                (currentId && (senderId === currentId || participantMatch?._id === currentId || senderObj?._id === currentId))
+              );
+
+              const isSenderPhoneMatch = Boolean(
+                (resolvedMyPhone && (senderObj?.phone?.trim() === resolvedMyPhone || participantMatch?.phone?.trim() === resolvedMyPhone)) ||
+                (currentPhone && (senderObj?.phone?.trim() === currentPhone || participantMatch?.phone?.trim() === currentPhone))
+              );
+
+              // Comprehensive self check
+              const isSelf =
+                message.sender === 'me' ||
+                message.status === 'sending' ||
+                isSenderIdMatch ||
+                isSenderNameMatch ||
+                isSenderPhoneMatch;
+
+              const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
+              const hasLink = urlRegex.test(message.text);
+
+              return (
                 <div
-                  className={`group relative max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
-                    isSelf
-                      ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
-                      : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
-                  }`}
+                  key={message._id || message.tempId}
+                  className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
                 >
-                  {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
-                  {hasLink && (
-                    <button
-                      type="button"
-                      onClick={(e) =>
-                        handleCopyLink(
-                          message._id || message.tempId || '',
-                          message.text,
-                          e
-                        )
-                      }
-                      className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
-                        isSelf
-                          ? 'hover:bg-white/20 text-white/80 hover:text-white bg-black/10'
-                          : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
-                      }`}
-                      title="Copy link"
-                    >
-                      {copiedId === (message._id || message.tempId) ? (
-                        <Check className="h-3 w-3 text-emerald-300" />
-                      ) : (
-                        <Copy className="h-3 w-3" />
-                      )}
-                    </button>
+                  {/* Sender Name in group chats for other participants */}
+                  {!isSelf && isGroup && (
+                    <span className="text-[11px] font-semibold text-primary/85 ml-2 mb-1">
+                      {senderName}
+                    </span>
                   )}
 
-                  {/* Message Text with URL linkifier */}
+                  {/* Message Bubble */}
                   <div
-                    className={`whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text ${
-                      hasLink ? 'pr-4' : 'pr-0'
+                    className={`group relative max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
+                      isSelf
+                        ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
+                        : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
                     }`}
                   >
-                    {renderMessageContent(message.text, isSelf)}
-                  </div>
+                    {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
+                    {hasLink && (
+                      <button
+                        type="button"
+                        onClick={(e) =>
+                          handleCopyLink(
+                            message._id || message.tempId || '',
+                            message.text,
+                            e
+                          )
+                        }
+                        className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
+                          isSelf
+                            ? 'hover:bg-white/20 text-white/80 hover:text-white bg-black/10'
+                            : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
+                        }`}
+                        title="Copy link"
+                      >
+                        {copiedId === (message._id || message.tempId) ? (
+                          <Check className="h-3 w-3 text-emerald-300" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
+                      </button>
+                    )}
+
+                    {/* Message Text with URL linkifier & search highlighter */}
+                    <div
+                      className={`whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text ${
+                        hasLink ? 'pr-4' : 'pr-0'
+                      }`}
+                    >
+                      {renderMessageContent(message.text, isSelf, searchQuery)}
+                    </div>
 
                   {/* Message Meta: Timestamp, Status, & Quick Action */}
                   <div
@@ -445,10 +521,11 @@ export default function MessageList({
                 )}
               </div>
             );
-          })
-        )}
+          })}
+        </>
+      )}
 
-        <div ref={messagesEndRef} />
+      <div ref={messagesEndRef} />
       </div>
 
       {/* Floating "↓ New message" Pill Button */}

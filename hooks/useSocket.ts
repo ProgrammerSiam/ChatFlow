@@ -30,18 +30,31 @@ export function useSocket() {
 
     const socket = initializeSocket(token);
 
-    const handleNewMessage = (msg: Message) => {
-      const activeId = activeIdRef.current;
+    // Join active conversation room if set
+    if (activeConversationId) {
+      socket.emit('join', activeConversationId);
+      socket.emit('join_conversation', activeConversationId);
+      socket.emit('joinRoom', activeConversationId);
+    }
+
+    const handleNewMessage = (rawMsg: Message | Record<string, unknown>) => {
+      const msg = rawMsg as Message;
+      const activeId = activeIdRef.current || useChatUIStore.getState().activeConversationId;
       const currentUserId = currentUserIdRef.current;
+
+      const rawConv = msg.conversation || (msg as unknown as Record<string, unknown>).conversationId || (msg as unknown as Record<string, unknown>).conversation_id || (msg as unknown as Record<string, unknown>).room;
       const convId =
-        typeof msg.conversation === 'object'
-          ? (msg.conversation as { _id?: string })._id
-          : msg.conversation || (msg as unknown as { conversationId?: string }).conversationId;
+        typeof rawConv === 'object' && rawConv !== null
+          ? (rawConv as { _id?: string })._id || (rawConv as { id?: string }).id
+          : rawConv;
+
+      const convIdStr = convId ? String(convId).trim() : null;
+      const activeIdStr = activeId ? String(activeId).trim() : null;
 
       // 1. If message belongs to active chat, update active messages cache with deduplication
-      if (activeId && convId === activeId) {
+      if (activeIdStr && convIdStr && convIdStr === activeIdStr) {
         queryClient.setQueryData<InfiniteData<MessagesResponse>>(
-          ['messages', activeId],
+          ['messages', activeIdStr],
           (oldData) => {
             if (!oldData) {
               return {
@@ -55,7 +68,7 @@ export function useSocket() {
 
             const newPages = oldData.pages.map((page) => {
               const updated = page.messages.map((m) => {
-                if (m._id === msg._id) {
+                if (m._id === msg._id || (m.tempId && m.tempId === msg.tempId)) {
                   alreadyExists = true;
                   return msg;
                 }
@@ -95,9 +108,9 @@ export function useSocket() {
 
       // 2. Update sidebar conversations cache (reorder to top, update lastMessage, unread count)
       queryClient.setQueryData<Conversation[]>(['conversations'], (oldConvs = []) => {
-        const existing = oldConvs.find((c) => c._id === convId);
-        const isActive = activeId === convId;
-        const senderId = typeof msg.sender === 'object' ? msg.sender._id : msg.sender;
+        const existing = oldConvs.find((c) => String(c._id).trim() === convIdStr);
+        const isActive = activeIdStr && convIdStr && activeIdStr === convIdStr;
+        const senderId = typeof msg.sender === 'object' ? msg.sender?._id : msg.sender;
         const isFromSelf = senderId === currentUserId;
 
         if (existing) {
@@ -116,7 +129,7 @@ export function useSocket() {
             updatedAt: msg.createdAt || new Date().toISOString(),
           };
 
-          const remaining = oldConvs.filter((c) => c._id !== convId);
+          const remaining = oldConvs.filter((c) => String(c._id).trim() !== convIdStr);
           return [updated, ...remaining];
         } else {
           // If conversation is brand new to this client, invalidate conversations to fetch fresh shape
@@ -141,12 +154,21 @@ export function useSocket() {
       });
     };
 
+    // Register all standard real-time message event variants
     socket.on('message:new', handleNewMessage);
+    socket.on('message', handleNewMessage);
+    socket.on('new_message', handleNewMessage);
+    socket.on('newMessage', handleNewMessage);
     socket.on('conversation:updated', handleConversationUpdated);
+    socket.on('conversation_updated', handleConversationUpdated);
 
     return () => {
       socket.off('message:new', handleNewMessage);
+      socket.off('message', handleNewMessage);
+      socket.off('new_message', handleNewMessage);
+      socket.off('newMessage', handleNewMessage);
       socket.off('conversation:updated', handleConversationUpdated);
+      socket.off('conversation_updated', handleConversationUpdated);
     };
-  }, [isAuthenticated, token, queryClient]);
+  }, [isAuthenticated, token, activeConversationId, queryClient]);
 }
