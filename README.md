@@ -157,6 +157,7 @@ Before writing production code, the following foundational groundwork was comple
 2. **End-to-End User Flow Mapping**:
    - Mapped the entire application flow: phone login & auto-registration → debounced user search → starting 1-on-1 direct chats → optimistic messaging with retry → multi-member group creation & admin governance → WebSocket real-time sync and reconnection.
 3. **UI/UX Research & Visual Direction**:
+   - Researched design patterns and component micro-interactions across top design platforms (**Dribbble**, **Behance**, **Mobbin**, **Land-book**, **Awwwards**, **SiteInspire**, **Muzli**, **UI Movement**, **Refero.design**, **Screenlane**, **Collect UI**, **Pttrns**, and **UI8**).
    - Locked in the visual design system (clean layout, dark/light theme tokens, typography, glassmorphic card elevations, and scoped celebration triggers) before building components to avoid mid-implementation redesigns.
 4. **System Architecture & State Boundaries**:
    - Formalized strict state management boundaries separating asynchronous server data (TanStack Query v5) from client UI toggles (Zustand v5) and establishing a resilient Socket.io lifecycle singleton.
@@ -181,6 +182,8 @@ Before writing production code, the following foundational groundwork was comple
 
 ### 2. Design Reasoning (Part 2)
 
+- **Design Inspiration & R&D Platforms**:
+  - Synthesized modern chat, command-palette, and workspace UI patterns inspired by research across **Dribbble**, **Behance**, **Mobbin**, **Land-book**, **Awwwards**, **SiteInspire**, **Muzli**, **UI Movement**, **Refero.design**, **Screenlane**, **Collect UI**, **Pttrns**, and **UI8**.
 - **Aesthetic Direction**:
   - Implemented a clean SaaS design system with dark/light mode fidelity, subtle purple/indigo gradients (`#8E7CFF` to `#725CFF`), 1px translucent border rings, and glassmorphic card surfaces (`backdrop-blur-md`).
 - **Interactive Demonstrations Over Static Mockups**:
