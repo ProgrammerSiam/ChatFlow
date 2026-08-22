@@ -267,6 +267,25 @@ export default function MessageList({
 
   const currentPins = activeConversationId ? pinnedMessages[activeConversationId] || [] : [];
 
+  // Stable current-user ID: single source of truth for message alignment.
+  // Computed once per render, NOT per message. Falls back to localStorage
+  // only during Zustand hydration window.
+  const resolvedCurrentUserId = useMemo(() => {
+    if (currentUser?._id) return currentUser._id;
+    if (typeof window !== 'undefined') {
+      try {
+        const stored = localStorage.getItem('chatflow_user');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          return parsed?._id || parsed?.id || null;
+        }
+      } catch {
+        // ignore
+      }
+    }
+    return null;
+  }, [currentUser]);
+
   const displayedMessages = useMemo(() => {
     if (!isSearchActive || !searchQuery) return messages;
     const q = searchQuery.trim().toLowerCase();
@@ -539,38 +558,9 @@ export default function MessageList({
                 typeof message.sender === 'object' ? message.sender : null;
               const senderId = senderObj ? senderObj._id : message.sender;
 
-              // Robust active user detection from store or localStorage
-              let activeUser = currentUser;
-              if (!activeUser && typeof window !== 'undefined') {
-                try {
-                  const stored = localStorage.getItem('chatflow_user');
-                  if (stored) activeUser = JSON.parse(stored);
-                } catch {
-                  // ignore
-                }
-              }
-
-              const currentId = activeUser?._id || (activeUser as unknown as { id?: string })?.id;
-              const currentName = activeUser?.name?.toLowerCase().trim();
-              const currentPhone = activeUser?.phone?.trim();
-
-              const selfParticipant = participants?.find(
-                (p) =>
-                  (currentId && p._id === currentId) ||
-                  (currentPhone && p.phone?.trim() === currentPhone) ||
-                  (currentName && p.name?.toLowerCase().trim() === currentName)
-              );
-
-              const resolvedMyId = selfParticipant?._id || currentId;
-              const resolvedMyName = selfParticipant?.name?.toLowerCase().trim() || currentName;
-              const resolvedMyPhone = selfParticipant?.phone?.trim() || currentPhone;
-
+              // Resolve sender display info from participants list
               const participantMatch = participants?.find(
-                (p) =>
-                  (senderId && p._id === senderId) ||
-                  (senderObj?.phone && p.phone?.trim() === senderObj.phone.trim()) ||
-                  (senderObj?.name && p.name?.toLowerCase().trim() === senderObj.name.toLowerCase().trim()) ||
-                  (typeof message.sender === 'string' && p.name?.toLowerCase().trim() === message.sender.toLowerCase().trim())
+                (p) => senderId && p._id === senderId
               );
 
               const senderName =
@@ -580,30 +570,14 @@ export default function MessageList({
 
               const senderPhone = senderObj?.phone || participantMatch?.phone;
 
-              const isSenderNameMatch = Boolean(
-                (resolvedMyName && senderName.toLowerCase().trim() === resolvedMyName) ||
-                (currentName && senderName.toLowerCase().trim() === currentName) ||
-                (typeof message.sender === 'string' && resolvedMyName && message.sender.toLowerCase().trim() === resolvedMyName) ||
-                (typeof message.sender === 'string' && currentName && message.sender.toLowerCase().trim() === currentName)
-              );
-
-              const isSenderIdMatch = Boolean(
-                (resolvedMyId && (senderId === resolvedMyId || participantMatch?._id === resolvedMyId || senderObj?._id === resolvedMyId)) ||
-                (currentId && (senderId === currentId || participantMatch?._id === currentId || senderObj?._id === currentId))
-              );
-
-              const isSenderPhoneMatch = Boolean(
-                (resolvedMyPhone && (senderObj?.phone?.trim() === resolvedMyPhone || participantMatch?.phone?.trim() === resolvedMyPhone)) ||
-                (currentPhone && (senderObj?.phone?.trim() === currentPhone || participantMatch?.phone?.trim() === currentPhone))
-              );
-
-              // Comprehensive self check
+              // Self-detection: ID-only matching.
+              // Uses the stable resolvedCurrentUserId (computed once per render
+              // via useMemo above), never name/phone fuzzy matching.
               const isSelf =
                 message.sender === 'me' ||
                 message.status === 'sending' ||
-                isSenderIdMatch ||
-                isSenderNameMatch ||
-                isSenderPhoneMatch;
+                Boolean(resolvedCurrentUserId && senderId === resolvedCurrentUserId) ||
+                Boolean(resolvedCurrentUserId && senderObj?._id === resolvedCurrentUserId);
 
               // Message Grouping Calculation (consecutive messages from same sender)
               const prevMsg = idx > 0 ? displayedMessages[idx - 1] : null;

@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useQueryClient, InfiniteData } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
-import { initializeSocket, setSocketQueryClient } from '@/lib/socket';
+import { initializeSocket, getSocket, setSocketQueryClient } from '@/lib/socket';
 import { Conversation, Message, MessagesResponse } from '@/types';
 
 export function useSocket() {
@@ -14,15 +14,28 @@ export function useSocket() {
   const activeIdRef = useRef(activeConversationId);
   const currentUserIdRef = useRef(user?._id);
 
+  // Keep refs in sync — these are read inside event handlers to avoid
+  // stale closures without forcing effect re-runs.
   useEffect(() => {
     activeIdRef.current = activeConversationId;
-    currentUserIdRef.current = user?._id;
-  }, [activeConversationId, user?._id]);
+  }, [activeConversationId]);
 
+  useEffect(() => {
+    currentUserIdRef.current = user?._id;
+  }, [user?._id]);
+
+  // Provide the QueryClient reference to the socket module for gap-fill
   useEffect(() => {
     setSocketQueryClient(queryClient);
   }, [queryClient]);
 
+  // ────────────────────────────────────────────────────────────
+  // Effect 1: Socket initialization + event listener registration
+  // Deps: [isAuthenticated, token, queryClient]
+  // Does NOT include activeConversationId — handlers read from
+  // activeIdRef.current instead to avoid teardown/rebuild on every
+  // conversation switch.
+  // ────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!isAuthenticated || !token) {
       return;
@@ -30,16 +43,9 @@ export function useSocket() {
 
     const socket = initializeSocket(token);
 
-    // Join active conversation room if set
-    if (activeConversationId) {
-      socket.emit('join', activeConversationId);
-      socket.emit('join_conversation', activeConversationId);
-      socket.emit('joinRoom', activeConversationId);
-    }
-
     const handleNewMessage = (rawMsg: Message | Record<string, unknown>) => {
       const msg = rawMsg as Message;
-      const activeId = activeIdRef.current || useChatUIStore.getState().activeConversationId;
+      const activeId = activeIdRef.current;
       const currentUserId = currentUserIdRef.current;
 
       const rawConv = msg.conversation || (msg as unknown as Record<string, unknown>).conversationId || (msg as unknown as Record<string, unknown>).conversation_id || (msg as unknown as Record<string, unknown>).room;
@@ -170,5 +176,41 @@ export function useSocket() {
       socket.off('conversation:updated', handleConversationUpdated);
       socket.off('conversation_updated', handleConversationUpdated);
     };
-  }, [isAuthenticated, token, activeConversationId, queryClient]);
+  }, [isAuthenticated, token, queryClient]);
+
+  // ────────────────────────────────────────────────────────────
+  // Effect 2: Room join/leave on conversation switch
+  // Deps: [activeConversationId, isAuthenticated]
+  // Separated from Effect 1 so switching conversations doesn't
+  // tear down and rebuild all event listeners.
+  // ────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!isAuthenticated || !activeConversationId) return;
+
+    const socket = getSocket();
+    if (!socket) return;
+
+    const joinRoom = () => {
+      // Read the latest activeConversationId from ref in case it changed
+      // between this handler being registered and firing
+      const currentActiveId = activeIdRef.current;
+      if (currentActiveId) {
+        socket.emit('join', currentActiveId);
+        socket.emit('join_conversation', currentActiveId);
+        socket.emit('joinRoom', currentActiveId);
+      }
+    };
+
+    // Join immediately if already connected
+    if (socket.connected) {
+      joinRoom();
+    }
+
+    // Also join on (re)connect so room membership survives reconnection
+    socket.on('connect', joinRoom);
+
+    return () => {
+      socket.off('connect', joinRoom);
+    };
+  }, [activeConversationId, isAuthenticated]);
 }
