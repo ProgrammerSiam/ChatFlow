@@ -4,10 +4,8 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import {
-  Plus,
   Users,
   Search,
-  MessageSquare,
   LogOut,
   Sparkles,
   MessageSquarePlus,
@@ -17,7 +15,6 @@ import CoolTooltip from '@/shared/CoolTooltip';
 import { useConversations } from '@/hooks/useConversations';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
-import { Conversation } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -136,23 +133,37 @@ export default function Sidebar() {
             </svg>
           </button>
 
-          {/* New Chat & New Group Compact Icons */}
+          {/* Quick Action Icons: Search, New Chat & New Group */}
           <div className="flex flex-col gap-2 pt-0.5">
-            <button
-              onClick={() => setNewChatOpen(true)}
-              title="New Direct Chat"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer"
-            >
-              <MessageSquarePlus className="h-4.5 w-4.5" />
-            </button>
+            <CoolTooltip content="Search Users & Conversations" side="right">
+              <button
+                onClick={() => setNewChatOpen(true)}
+                aria-label="Search users and conversations"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:border-purple-300 dark:hover:text-purple-400 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+              >
+                <Search className="h-4.5 w-4.5" />
+              </button>
+            </CoolTooltip>
 
-            <button
-              onClick={() => setNewGroupOpen(true)}
-              title="New Group Workspace"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted text-purple-600 dark:text-purple-400 hover:bg-purple-50 shadow-2xs transition-colors cursor-pointer"
-            >
-              <Users className="h-4.5 w-4.5" />
-            </button>
+            <CoolTooltip content="New Direct Chat" side="right">
+              <button
+                onClick={() => setNewChatOpen(true)}
+                aria-label="New direct chat"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs hover:opacity-90 active:scale-95 transition-all cursor-pointer hover:scale-105"
+              >
+                <MessageSquarePlus className="h-4.5 w-4.5" />
+              </button>
+            </CoolTooltip>
+
+            <CoolTooltip content="New Group Workspace" side="right">
+              <button
+                onClick={() => setNewGroupOpen(true)}
+                aria-label="New group workspace"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/50 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+              >
+                <Users className="h-4.5 w-4.5" />
+              </button>
+            </CoolTooltip>
           </div>
 
           <div className="w-8 border-t border-slate-200/60 dark:border-border/60 my-0.5" />
