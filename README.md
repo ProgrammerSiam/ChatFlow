@@ -194,8 +194,9 @@ Before writing production code, the following foundational groundwork was comple
 
 ### 3. AI Tool Usage
 
-- **Tools Used**:
-  - Google DeepMind Antigravity IDE (Gemini 3.7 Flash agentic assistant).
+- **Debugging & deep reasoning** — Claude Opus 4.6 (Thinking), used for root-cause analysis (e.g. socket lifecycle issues, race conditions) and architectural decisions requiring careful trade-off evaluation.
+- **UI/UX generation** — Gemini 3.7 Flash Medium, used for visual design exploration and landing page layout ideas.
+- **Technical research** — Claude (web-enabled), used for looking up API/library documentation and verifying implementation patterns.
 - **Specific Tasks Handled by AI**:
   - Scaffolding repetitive boilerplate (TypeScript interface declarations in `types/index.ts`, initial CRUD API wrappers in `lib/api.ts`, and SVG icon integration).
   - Investigating API response structures and drafting initial TanStack Query infinite query parameters.
