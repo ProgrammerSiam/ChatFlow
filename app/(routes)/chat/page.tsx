@@ -15,7 +15,6 @@ import {
   Sunrise,
   Clock,
   Sparkles,
-  Search,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
@@ -88,30 +87,10 @@ export default function ChatIndexPage() {
 
         {/* Header Action Buttons */}
         <div className="flex items-center gap-2.5">
-          <div
-            onClick={() => setNewChatOpen(true)}
-            className="relative flex items-center w-52 sm:w-64 md:w-72 cursor-pointer group"
-          >
-            <Search className="absolute left-3.5 h-4 w-4 text-slate-400 group-hover:text-purple-600 transition-colors pointer-events-none" />
-            <input
-              type="text"
-              readOnly
-              onClick={() => setNewChatOpen(true)}
-              placeholder="Global search..."
-              className="w-full h-9.5 rounded-2xl border border-slate-200/90 dark:border-border/80 bg-slate-50/80 hover:bg-white dark:bg-muted/40 dark:hover:bg-muted/70 pl-9.5 pr-14 text-xs sm:text-[13px] text-slate-900 dark:text-white placeholder:text-slate-400 group-hover:border-purple-300 dark:group-hover:border-purple-700/60 group-hover:shadow-xs cursor-pointer transition-all focus:outline-none"
-            />
-            <div className="absolute right-2.5 flex items-center pointer-events-none">
-              <kbd className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-white dark:bg-card border border-slate-200/90 dark:border-border text-slate-500 dark:text-slate-400 shadow-2xs">
-                <span className="text-[11px] leading-none font-sans">⌘</span>
-                <span className="text-[10px] font-bold font-mono leading-none">K</span>
-              </kbd>
-            </div>
-          </div>
-
           <CoolTooltip content="Start a new direct chat" side="bottom">
             <button
               onClick={() => setNewChatOpen(true)}
-              className="h-10 px-4 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs sm:text-[13px] font-semibold shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-2 shrink-0"
+              className="h-9.5 px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs sm:text-[13px] font-semibold shadow-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-2 shrink-0"
             >
               <MessageSquarePlus className="h-4 w-4" />
               <span>New Chat</span>

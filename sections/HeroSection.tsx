@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import BadgePill from '@/shared/BadgePill';
-import { Mic, Languages, Play, ChevronUp } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function HeroSection() {
@@ -57,66 +56,10 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Desktop Workspace Showcase Frame with Floating Glass Addons */}
+        {/* Desktop Workspace Showcase Frame */}
         <div className="relative mt-12 sm:mt-16 mx-auto max-w-5xl flex flex-col items-center justify-center">
           {/* Atmospheric Underlay Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-72 sm:h-96 w-full max-w-4xl rounded-full bg-gradient-to-r from-purple-500/25 via-indigo-500/20 to-purple-500/25 blur-[120px] pointer-events-none" />
-
-          {/* Floating Mini Addon 1 (Top Left - Voice Answers) */}
-          <div className="hidden lg:flex absolute -left-6 top-12 z-30 items-center gap-3 rounded-2xl border border-white/90 dark:border-white/20 bg-white/60 dark:bg-zinc-900/60 p-3.5 shadow-[0_12px_36px_-6px_rgba(114,92,255,0.18)] dark:shadow-[0_16px_40px_-8px_rgba(0,0,0,0.6)] backdrop-blur-2xl backdrop-saturate-150 ring-1 ring-white/70 dark:ring-white/10 animate-in fade-in slide-in-from-left duration-700">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-purple-100/80 dark:bg-purple-950/80 text-purple-600 dark:text-purple-300 shadow-inner">
-              <Mic className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs font-bold leading-tight text-foreground">
-                Answers on the go.
-              </p>
-              <p className="text-[11px] text-muted-foreground">
-                Just speak up.
-              </p>
-            </div>
-          </div>
-
-          {/* Floating Mini Addon 2 (Bottom Left - Languages Translation) */}
-          <div className="hidden lg:flex absolute -left-5 bottom-12 z-30 items-center gap-3 rounded-2xl border border-white/90 dark:border-white/20 bg-white/60 dark:bg-zinc-900/60 px-4 py-3 shadow-[0_12px_36px_-6px_rgba(114,92,255,0.18)] dark:shadow-[0_16px_40px_-8px_rgba(0,0,0,0.6)] backdrop-blur-2xl backdrop-saturate-150 ring-1 ring-white/70 dark:ring-white/10 animate-in fade-in slide-in-from-left duration-700">
-            <Languages className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-            <div className="h-2 w-24 rounded-full bg-slate-200/80 dark:bg-slate-700/80 overflow-hidden">
-              <div className="h-full w-2/3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full" />
-            </div>
-          </div>
-
-          {/* Floating Mini Addon 3 (Top Right - Voice Waveform Audio Player) */}
-          <div className="hidden lg:flex absolute -right-6 top-14 z-30 items-center gap-3 rounded-2xl border border-white/90 dark:border-purple-800/40 bg-white/60 dark:bg-zinc-900/60 px-4 py-3.5 shadow-[0_12px_36px_-6px_rgba(114,92,255,0.2)] dark:shadow-[0_16px_40px_-8px_rgba(0,0,0,0.6)] backdrop-blur-2xl backdrop-saturate-150 ring-1 ring-white/70 dark:ring-white/10 animate-in fade-in slide-in-from-right duration-700">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white shadow-sm">
-              <Play className="h-3.5 w-3.5 ml-0.5 fill-white" />
-            </div>
-            <div className="flex items-center gap-0.5">
-              {[
-                4, 8, 14, 18, 10, 16, 22, 12, 6, 18, 24, 14, 8, 12, 16, 10, 5,
-              ].map((h, i) => (
-                <span
-                  key={i}
-                  style={{ height: `${h}px` }}
-                  className={`w-0.5 rounded-full ${
-                    i < 8
-                      ? 'bg-purple-600 dark:bg-purple-400'
-                      : 'bg-purple-300 dark:bg-purple-800'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Floating Mini Addon 4 (Bottom Right - High-Speed Badge) */}
-          <div className="hidden lg:flex absolute -right-5 bottom-10 z-30 flex-col items-center justify-center rounded-2xl border border-white/90 dark:border-white/20 bg-white/60 dark:bg-zinc-900/60 p-3.5 shadow-[0_12px_36px_-6px_rgba(114,92,255,0.18)] dark:shadow-[0_16px_40px_-8px_rgba(0,0,0,0.6)] backdrop-blur-2xl backdrop-saturate-150 text-center w-32 ring-1 ring-white/70 dark:ring-white/10 animate-in fade-in slide-in-from-right duration-700">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100/80 dark:bg-purple-950/80 text-purple-600 mb-1 shadow-inner">
-              <ChevronUp className="h-4 w-4" />
-            </div>
-            <p className="text-[11px] font-bold text-foreground leading-tight">
-              High-speed
-            </p>
-            <p className="text-[10px] text-muted-foreground">processing</p>
-          </div>
 
           {/* Browser / App Window Container */}
           <div className="relative z-10 w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 shadow-[0_25px_70px_-15px_rgba(114,92,255,0.2)] dark:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.8)] backdrop-blur-2xl overflow-hidden text-card-foreground ring-1 ring-black/5 dark:ring-white/10">
