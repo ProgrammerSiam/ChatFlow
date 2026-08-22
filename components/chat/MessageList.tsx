@@ -14,6 +14,7 @@ import {
 import { Message, GroupParticipant } from '@/types';
 import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'sonner';
+import CoolTooltip from '@/shared/CoolTooltip';
 
 interface MessageListProps {
   messages: Message[];
@@ -26,6 +27,25 @@ interface MessageListProps {
   onClearSearch?: () => void;
   fetchNextPage: () => void;
   onRetryMessage: (tempId: string, text: string) => void;
+}
+
+const AVATAR_GRADIENTS = [
+  'bg-gradient-to-tr from-amber-500 to-yellow-400 text-white shadow-amber-500/20',
+  'bg-gradient-to-tr from-purple-500 to-indigo-500 text-white shadow-purple-500/20',
+  'bg-gradient-to-tr from-emerald-500 to-teal-400 text-white shadow-emerald-500/20',
+  'bg-gradient-to-tr from-blue-500 to-cyan-400 text-white shadow-blue-500/20',
+  'bg-gradient-to-tr from-rose-500 to-pink-500 text-white shadow-rose-500/20',
+  'bg-gradient-to-tr from-violet-500 to-fuchsia-500 text-white shadow-violet-500/20',
+];
+
+function getAvatarColor(seed: string) {
+  if (!seed) return AVATAR_GRADIENTS[0];
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % AVATAR_GRADIENTS.length;
+  return AVATAR_GRADIENTS[index];
 }
 
 function highlightSearchTerm(text: string, query: string) {
@@ -467,102 +487,118 @@ export default function MessageList({
               return (
                 <div
                   key={message._id || message.tempId}
-                  className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
+                  className={`flex items-end gap-2 sm:gap-2.5 ${
+                    isSelf ? 'justify-end' : 'justify-start'
+                  } group/row`}
                 >
-                  {/* Sender Name in group chats for other participants */}
-                  {!isSelf && isGroup && (
-                    <span className="text-[11px] font-semibold text-primary/85 ml-2 mb-1">
-                      {senderName}
-                    </span>
+                  {/* Left Profile Avatar for Incoming Messages with Name on Hover */}
+                  {!isSelf && (
+                    <CoolTooltip content={senderName} side="top">
+                      <div
+                        className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-xs shrink-0 cursor-pointer select-none transition-all hover:scale-110 active:scale-95 ring-2 ring-white dark:ring-card ${getAvatarColor(
+                          senderName || (typeof senderId === 'string' ? senderId : 'user')
+                        )}`}
+                        title={senderName}
+                      >
+                        {(senderName || 'U').charAt(0).toUpperCase()}
+                      </div>
+                    </CoolTooltip>
                   )}
 
-                  {/* Message Bubble */}
+                  {/* Message Bubble Column */}
                   <div
-                    className={`group relative max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
-                      isSelf
-                        ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
-                        : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
-                    }`}
+                    className={`flex flex-col ${
+                      isSelf ? 'items-end' : 'items-start'
+                    } max-w-[85%] sm:max-w-[75%]`}
                   >
-                    {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
-                    {hasLink && (
-                      <button
-                        type="button"
-                        onClick={(e) =>
-                          handleCopyLink(
-                            message._id || message.tempId || '',
-                            message.text,
-                            e
-                          )
-                        }
-                        className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
-                          isSelf
-                            ? 'hover:bg-white/20 text-white/80 hover:text-white bg-black/10'
-                            : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
-                        }`}
-                        title="Copy link"
-                      >
-                        {copiedId === (message._id || message.tempId) ? (
-                          <Check className="h-3 w-3 text-emerald-300" />
-                        ) : (
-                          <Copy className="h-3 w-3" />
-                        )}
-                      </button>
-                    )}
-
-                    {/* Message Text with URL linkifier & search highlighter */}
+                    {/* Message Bubble */}
                     <div
-                      className={`whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text ${
-                        hasLink ? 'pr-4' : 'pr-0'
+                      className={`group relative w-full rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
+                        isSelf
+                          ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
+                          : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
                       }`}
                     >
-                      {renderMessageContent(message.text, isSelf, searchQuery)}
+                      {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
+                      {hasLink && (
+                        <button
+                          type="button"
+                          onClick={(e) =>
+                            handleCopyLink(
+                              message._id || message.tempId || '',
+                              message.text,
+                              e
+                            )
+                          }
+                          className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
+                            isSelf
+                              ? 'hover:bg-white/20 text-white/80 hover:text-white bg-black/10'
+                              : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
+                          }`}
+                          title="Copy link"
+                        >
+                          {copiedId === (message._id || message.tempId) ? (
+                            <Check className="h-3 w-3 text-emerald-300" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </button>
+                      )}
+
+                      {/* Message Text with URL linkifier & search highlighter */}
+                      <div
+                        className={`whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text ${
+                          hasLink ? 'pr-4' : 'pr-0'
+                        }`}
+                      >
+                        {renderMessageContent(message.text, isSelf, searchQuery)}
+                      </div>
+
+                      {/* Message Meta: Timestamp, Status, & Quick Action */}
+                      <div
+                        className={`flex items-center justify-end gap-1.5 mt-1.5 text-[11px] font-medium select-none ${
+                          isSelf ? 'text-white/85' : 'text-muted-foreground'
+                        }`}
+                      >
+                        <span>{formatMessageTime(message.createdAt)}</span>
+
+                        {/* Status icons for own messages */}
+                        {isSelf && (
+                          <span className="inline-flex items-center">
+                            {message.status === 'sending' ? (
+                              <Clock className="h-3 w-3 animate-pulse" />
+                            ) : message.status === 'failed' ? (
+                              <button
+                                onClick={() =>
+                                  onRetryMessage(
+                                    message.tempId || message._id,
+                                    message.text
+                                  )
+                                }
+                                className="inline-flex items-center gap-0.5 text-rose-200 font-bold underline"
+                                title="Failed to send. Click to retry"
+                              >
+                                <RotateCcw className="h-3 w-3" />
+                                Retry
+                              </button>
+                            ) : (
+                              <Check className="h-3 w-3" />
+                            )}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
-                  {/* Message Meta: Timestamp, Status, & Quick Action */}
-                  <div
-                    className={`flex items-center justify-end gap-1.5 mt-1.5 text-[11px] font-medium select-none ${
-                      isSelf ? 'text-white/85' : 'text-muted-foreground'
-                    }`}
-                  >
-                    <span>{formatMessageTime(message.createdAt)}</span>
-
-                    {/* Status icons for own messages */}
-                    {isSelf && (
-                      <span className="inline-flex items-center">
-                        {message.status === 'sending' ? (
-                          <Clock className="h-3 w-3 animate-pulse" />
-                        ) : message.status === 'failed' ? (
-                          <button
-                            onClick={() =>
-                              onRetryMessage(
-                                message.tempId || message._id,
-                                message.text
-                              )
-                            }
-                            className="inline-flex items-center gap-0.5 text-rose-200 font-bold underline"
-                            title="Failed to send. Click to retry"
-                          >
-                            <RotateCcw className="h-3 w-3" />
-                            Retry
-                          </button>
-                        ) : (
-                          <Check className="h-3 w-3" />
-                        )}
-                      </span>
+                    {/* Failed message banner */}
+                    {isSelf && message.status === 'failed' && (
+                      <div className="flex items-center gap-1 mt-1 text-[11px] text-destructive mr-1 font-medium">
+                        <AlertCircle className="h-3 w-3" />
+                        <span>Failed to deliver message</span>
+                      </div>
                     )}
                   </div>
                 </div>
-
-                {/* Failed message banner */}
-                {isSelf && message.status === 'failed' && (
-                  <div className="flex items-center gap-1 mt-1 text-[11px] text-destructive mr-1 font-medium">
-                    <AlertCircle className="h-3 w-3" />
-                    <span>Failed to deliver message</span>
-                  </div>
-                )}
-              </div>
-            );
+              );
           })}
         </>
       )}

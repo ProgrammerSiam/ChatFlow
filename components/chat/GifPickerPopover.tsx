@@ -304,25 +304,25 @@ export default function GifPickerPopover({
   return (
     <div
       ref={popoverRef}
-      className="absolute bottom-16 right-4 sm:right-16 z-50 w-72 sm:w-84 rounded-2xl bg-white dark:bg-[#18181B] border border-slate-200 dark:border-zinc-800 shadow-2xl shadow-purple-950/20 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150"
+      className="absolute bottom-16 right-4 sm:right-16 z-50 w-72 sm:w-84 rounded-2xl bg-[#18181B] border border-zinc-800/90 shadow-2xl shadow-black/80 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 text-white"
       style={{ maxHeight: '420px' }}
     >
       {/* Header & Search Bar */}
-      <div className="p-2.5 border-b border-slate-100 dark:border-zinc-800/80 bg-slate-50/70 dark:bg-zinc-900/60">
+      <div className="p-2.5 border-b border-zinc-800/80 bg-[#121214]">
         <div className="relative flex items-center">
-          <Search className="absolute left-2.5 h-3.5 w-3.5 text-slate-400" />
+          <Search className="absolute left-2.5 h-3.5 w-3.5 text-zinc-400" />
           <input
             ref={searchInputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search GIFs..."
-            className="w-full bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700/80 rounded-xl pl-8 pr-7 py-1.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400 shadow-2xs"
+            className="w-full bg-[#27272A] border border-zinc-700/60 rounded-xl pl-8 pr-7 py-1.5 text-xs text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500/60 focus:border-purple-500 shadow-2xs"
           />
           {searchQuery ? (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
+              className="absolute right-2 text-zinc-400 hover:text-white p-0.5 cursor-pointer"
             >
               <X className="h-3 w-3" />
             </button>
@@ -337,10 +337,10 @@ export default function GifPickerPopover({
                 key={cat.key}
                 type="button"
                 onClick={() => setSelectedCategory(cat.key)}
-                className={`text-[11px] font-semibold px-2 py-1 rounded-lg shrink-0 transition-all cursor-pointer ${
+                className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg shrink-0 transition-all cursor-pointer ${
                   selectedCategory === cat.key
-                    ? 'bg-purple-600 text-white shadow-2xs'
-                    : 'bg-slate-200/60 dark:bg-zinc-800/70 text-slate-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-zinc-700'
+                    ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-sm shadow-purple-500/25 font-bold'
+                    : 'bg-[#27272A] text-zinc-300 hover:bg-[#323238] border border-zinc-700/50'
                 }`}
               >
                 {cat.label}
@@ -351,19 +351,19 @@ export default function GifPickerPopover({
       </div>
 
       {/* GIFs Grid */}
-      <div className="flex-1 overflow-y-auto p-2 no-scrollbar min-h-[220px] max-h-[300px]">
+      <div className="flex-1 overflow-y-auto p-2 no-scrollbar min-h-[220px] max-h-[300px] bg-[#18181B]">
         {isLoadingOnline ? (
-          <div className="flex flex-col items-center justify-center h-48 space-y-2 text-slate-400">
-            <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
+          <div className="flex flex-col items-center justify-center h-48 space-y-2 text-zinc-400">
+            <Loader2 className="h-5 w-5 animate-spin text-purple-400" />
             <span className="text-xs">Finding best GIFs...</span>
           </div>
         ) : displayGifs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-48 text-center p-4 space-y-1.5 text-slate-400">
+          <div className="flex flex-col items-center justify-center h-48 text-center p-4 space-y-1.5 text-zinc-400">
             <Sparkles className="h-5 w-5 text-purple-400" />
-            <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <p className="text-xs font-semibold text-zinc-200">
               No GIFs found
             </p>
-            <p className="text-[11px]">Try searching with different keywords</p>
+            <p className="text-[11px] text-zinc-500">Try searching with different keywords</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-1.5">
@@ -372,7 +372,7 @@ export default function GifPickerPopover({
                 key={gif.id}
                 type="button"
                 onClick={() => onSelectGif(gif.url)}
-                className="group relative rounded-xl overflow-hidden bg-slate-100 dark:bg-zinc-800 border border-slate-200/50 dark:border-zinc-700/50 aspect-video hover:ring-2 hover:ring-purple-500 hover:scale-[1.02] transition-all cursor-pointer shadow-2xs"
+                className="group relative rounded-xl overflow-hidden bg-[#27272A] border border-zinc-700/40 aspect-video hover:ring-2 hover:ring-purple-500 hover:scale-[1.02] transition-all cursor-pointer shadow-2xs"
                 title={gif.title}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -382,7 +382,7 @@ export default function GifPickerPopover({
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:opacity-95 transition-opacity"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-1.5">
                   <span className="text-[10px] font-medium text-white truncate drop-shadow-xs">
                     {gif.title}
                   </span>
@@ -394,12 +394,12 @@ export default function GifPickerPopover({
       </div>
 
       {/* Footer Branding */}
-      <div className="px-3 py-1.5 border-t border-slate-100 dark:border-zinc-800/80 bg-slate-50/50 dark:bg-zinc-900/40 flex items-center justify-between text-[10px] text-slate-400">
+      <div className="px-3 py-1.5 border-t border-zinc-800/80 bg-[#121214] flex items-center justify-between text-[10px] text-zinc-400">
         <span className="flex items-center gap-1 font-medium">
-          <TrendingUp className="h-3 w-3 text-purple-500" />
+          <TrendingUp className="h-3 w-3 text-purple-400" />
           Instant GIF Search
         </span>
-        <span className="font-bold text-slate-500 dark:text-zinc-400">Powered by GIPHY</span>
+        <span className="font-bold text-zinc-500">Powered by GIPHY</span>
       </div>
     </div>
   );
