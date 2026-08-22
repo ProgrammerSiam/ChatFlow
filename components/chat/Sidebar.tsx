@@ -9,6 +9,7 @@ import {
   LogOut,
   Sparkles,
   MessageSquarePlus,
+  Home,
 } from 'lucide-react';
 import BrandLogo from '@/shared/BrandLogo';
 import CoolTooltip from '@/shared/CoolTooltip';
@@ -133,8 +134,18 @@ export default function Sidebar() {
             </svg>
           </button>
 
-          {/* Quick Action Icons: Search, New Chat & New Group */}
+          {/* Quick Action Icons: Home, Search, New Chat & New Group */}
           <div className="flex flex-col gap-2 pt-0.5">
+            <CoolTooltip content="Landing Page" side="right">
+              <Link
+                href="/"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border bg-white dark:bg-muted text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:border-purple-300 dark:hover:text-purple-400 shadow-2xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+                title="Go to Landing Page"
+              >
+                <Home className="h-4.5 w-4.5" />
+              </Link>
+            </CoolTooltip>
+
             <CoolTooltip content="Search Users & Conversations" side="right">
               <button
                 onClick={() => setNewChatOpen(true)}
@@ -244,33 +255,45 @@ export default function Sidebar() {
             </Link>
           </CoolTooltip>
 
-          {/* Larger Collapse Toggle Button */}
-          <CoolTooltip
-            content="Collapse sidebar"
-            side="bottom"
-            align="end"
-            shortcut="⌘["
-          >
-            <button
-              onClick={toggleSidebarCollapsed}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border/70 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-2xs"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+          {/* Header Action Buttons: Home Landing Link & Collapse Sidebar */}
+          <div className="flex items-center gap-1.5">
+            <CoolTooltip content="Landing Page" side="bottom">
+              <Link
+                href="/"
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border/70 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
+                title="Go to Landing Page"
               >
-                <rect width="18" height="18" x="3" y="3" rx="4" />
-                <path d="M9 3v18" />
-                <path d="m14 9-3 3 3 3" />
-              </svg>
-            </button>
-          </CoolTooltip>
+                <Home className="h-4 w-4" />
+              </Link>
+            </CoolTooltip>
+
+            <CoolTooltip
+              content="Collapse sidebar"
+              side="bottom"
+              align="end"
+              shortcut="⌘["
+            >
+              <button
+                onClick={toggleSidebarCollapsed}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 dark:border-border/70 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect width="18" height="18" x="3" y="3" rx="4" />
+                  <path d="M9 3v18" />
+                  <path d="m14 9-3 3 3 3" />
+                </svg>
+              </button>
+            </CoolTooltip>
+          </div>
         </div>
 
         {/* Action Buttons: New Direct Chat & New Group Chat */}
