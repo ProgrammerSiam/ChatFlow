@@ -195,8 +195,8 @@ export default function AiModelsPricingSection() {
             </div>
 
             {/* Connecting Circuit Flow SVG */}
-            <div className="text-slate-300 dark:text-zinc-700/80 w-full max-w-[520px] flex justify-center py-2 select-none pointer-events-none">
-              <svg width="520" height="106" viewBox="0 0 520 106" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+            <div className="relative z-30 text-white w-full max-w-[520px] flex justify-center mb-0.5 pt-0 select-none pointer-events-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
+              <svg width="520" height="106" viewBox="0 0 520 106" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto overflow-visible">
                 <path d="M259.619 105.909L263.949 98.4087H255.289L259.619 105.909ZM0.75 0H0V49.7207H0.75H1.5V0H0.75ZM21.75 70.7207V71.4707H238.619V70.7207V69.9707H21.75V70.7207ZM259.619 91.7207H258.869V99.1587H259.619H260.369V91.7207H259.619ZM238.619 70.7207V71.4707C249.803 71.4707 258.869 80.5369 258.869 91.7207H259.619H260.369C260.369 79.7085 250.631 69.9707 238.619 69.9707V70.7207ZM0.75 49.7207H0C0 61.7329 9.73781 71.4707 21.75 71.4707V70.7207V69.9707C10.5662 69.9707 1.5 60.9045 1.5 49.7207H0.75Z" fill="currentColor" />
                 <path d="M259.619 105.909L255.289 98.4087H263.949L259.619 105.909ZM518.488 0H519.238V49.7207H518.488H517.738V0H518.488ZM497.488 70.7207V71.4707H280.619V70.7207V69.9707H497.488V70.7207ZM259.619 91.7207H260.369V99.1587H259.619H258.869V91.7207H259.619ZM280.619 70.7207V71.4707C269.435 71.4707 260.369 80.5369 260.369 91.7207H259.619H258.869C258.869 79.7085 268.607 69.9707 280.619 69.9707V70.7207ZM518.488 49.7207H519.238C519.238 61.7329 509.5 71.4707 497.488 71.4707V70.7207V69.9707C508.671 69.9707 517.738 60.9045 517.738 49.7207H518.488Z" fill="currentColor" />
                 <path d="M259.619 105.908L263.949 98.4085H255.289L259.619 105.908ZM169.149 0.654297H168.399V49.5805H169.149H169.899V0.654297H169.149ZM190.149 70.5805V71.3305H238.619V70.5805V69.8305H190.149V70.5805ZM259.619 91.5805H258.869V99.1585H259.619H260.369V91.5805H259.619ZM238.619 70.5805V71.3305C249.803 71.3305 258.869 80.3968 258.869 91.5805H259.619H260.369C260.369 79.5683 250.631 69.8305 238.619 69.8305V70.5805ZM169.149 49.5805H168.399C168.399 61.5927 178.137 71.3305 190.149 71.3305V70.5805V69.8305C178.965 69.8305 169.899 60.7643 169.899 49.5805H169.149Z" fill="currentColor" />
@@ -204,27 +204,33 @@ export default function AiModelsPricingSection() {
               </svg>
             </div>
 
-            {/* Central Unified ChatFlow Tier Card */}
-            <div className="relative mt-2">
-              <div className="border border-slate-200/80 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 rounded-[22px] flex items-center gap-4 border-2 px-5 py-4 shadow-[0px_20px_50px_rgba(114,92,255,0.12)] dark:shadow-[0px_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+            {/* Central Unified ChatFlow Tier Card with Action CTA */}
+            <div className="relative z-20">
+              <div className="border border-slate-200/80 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 rounded-[24px] flex flex-col sm:flex-row items-center gap-4 border-2 px-5 py-4 shadow-[0px_20px_50px_rgba(114,92,255,0.15)] dark:shadow-[0px_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
                 {/* Glowing Iridescent App Icon */}
-                <div className="relative size-16 shrink-0 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-lg shadow-purple-500/20">
+                <div className="relative size-14 sm:size-16 shrink-0 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-0.5 shadow-lg shadow-purple-500/20">
                   <div className="h-full w-full rounded-[14px] bg-white dark:bg-zinc-950 flex items-center justify-center">
-                    <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                    <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
                       ⚡
                     </div>
                   </div>
                 </div>
 
-                {/* Price & Savings */}
-                <div className="flex flex-col items-start">
+                {/* Price & Action Button */}
+                <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
                   <p className="text-slate-900 dark:text-white leading-none">
                     <span className="text-3xl sm:text-4xl font-semibold tracking-[-1px]">$12</span>
                     <span className="text-sm font-normal text-slate-500 dark:text-slate-400">/month</span>
                   </p>
-                  <span className="mt-1.5 text-xs inline-flex items-center justify-center font-semibold rounded-full px-2.5 py-0.5 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
-                    Save $113/mo
-                  </span>
+
+                  <Link
+                    href={isAuthenticated ? '/chat' : '/login'}
+                    className="mt-2 inline-flex items-center gap-2 text-xs font-semibold rounded-full px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  >
+                    <span>Grab The Deal</span>
+                    <span className="text-[10px] bg-white/25 px-1.5 py-0.5 rounded-full font-medium">Save $113/mo</span>
+                    <span>→</span>
+                  </Link>
                 </div>
               </div>
             </div>
