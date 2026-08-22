@@ -1,169 +1,121 @@
 ---
 name: api-integration
-description: 'Add, modify, or debug REST/WebSocket data fetching in ChatFlow — covers TanStack Query and socket.io-client. For client-only state (auth, active conversation), see the state-management skill instead.'
+description: "Add, modify, or debug REST API endpoints and Socket.io real-time communication in ChatFlow — covers TanStack Query v5 queries/mutations, optimistic updates, and WebSocket events."
 ---
 
-# API Integration Skill — ChatFlow
+# API & Real-Time Integration Skill — ChatFlow
 
-ChatFlow uses **TanStack Query** for all server/REST data (conversations, messages, user search)
-and **socket.io-client** for real-time events. Client-only state is a separate concern — see the
-**state-management** skill for Zustand.
-
-> All REST calls go through TanStack Query hooks. No ad-hoc `fetch` inside components.
-
----
-
-## 🗂️ File Structure
-
-src/lib/
-api/
-client.ts # base fetch wrapper — auth header injection, base URL
-auth.ts # login, /auth/me
-conversations.ts # list, start direct, get messages, create group, participants, admins, rename
-messages.ts # send message
-users.ts # search
-socket.ts # socket.io-client singleton, connect/disconnect lifecycle
+ChatFlow uses a unified client architecture:
+- **REST API Client**: [`lib/api.ts`](file:///lib/api.ts) with Bearer token injection and global 401 interceptor.
+- **Server State & Caching**: **TanStack Query v5** (`@tanstack/react-query`) via custom hooks in [`hooks/`](file:///hooks).
+- **Real-Time WebSockets**: **Socket.io Client v4** via [`lib/socket.ts`](file:///lib/socket.ts) and [`hooks/useSocket.ts`](file:///hooks/useSocket.ts).
 
 ---
 
-## 📡 Base API Client
+## 🌐 Endpoints & API Contract Map
 
-`src/lib/api/client.ts`:
+Base URL (REST): `https://frontend-task-chatapp.onrender.com/api` (Configured via `NEXT_PUBLIC_API_URL`)  
+Socket URL: `https://frontend-task-chatapp.onrender.com` (Configured via `NEXT_PUBLIC_SOCKET_URL`)
 
+| Endpoint | Method | Function in `lib/api.ts` | Request Body / Query | Expected Response Shape |
+|---|---|---|---|---|
+| `/auth/login` | `POST` | `api.login(phone, name)` | `{ phone: string, name: string }` | `{ token: string, user: User }` |
+| `/auth/me` | `GET` | `api.getMe()` | Headers: `Authorization: Bearer <token>` | `{ user: User }` |
+| `/users/search` | `GET` | `api.searchUsers(query)` | `?q=query` | `SearchUser[]` |
+| `/conversations` | `GET` | `api.getConversations()` | - | `{ data: Conversation[] }` |
+| `/conversations` | `POST` | `api.createDirectConversation(userId)` | `{ userId: string }` | `Conversation` |
+| `/conversations/group` | `POST` | `api.createGroupConversation(name, participantIds)` | `{ name: string, participantIds: string[] }` | `Conversation` |
+| `/conversations/{id}/messages` | `GET` | `api.getMessages(id, limit, before)` | `?limit=20&before=<oldestId>` | `MessagesResponse` (`{ messages: Message[], hasMore: boolean }`) |
+| `/messages` | `POST` | `api.sendMessage(conversationId, text)` | `{ conversationId: string, text: string }` | `Message` |
+| `/conversations/{id}` | `PATCH` | `api.renameGroup(id, name)` | `{ name: string }` | `Conversation` |
+| `/conversations/{id}/participants` | `POST` | `api.addGroupParticipants(id, userIds)` | `{ userIds: string[] }` | `Conversation` |
+| `/conversations/{id}/participants/{userId}` | `DELETE` | `api.removeGroupParticipant(id, userId)` | - | `{ success: boolean }` |
+| `/conversations/{id}/admins` | `POST` | `api.promoteGroupAdmin(id, userId)` | `{ userId: string }` | `Conversation` |
+| `/health` | `GET` | `api.getHealth()` | - | `{ status: string }` |
+
+---
+
+## 🪝 TanStack Query Hooks Pattern
+
+### 1. Conversations List (`hooks/useConversations.ts`)
 ```ts
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-export async function apiFetch<T>(
-  path: string,
-  options: RequestInit = {}
-): Promise<T> {
-  const token = useAuthStore.getState().token;
-
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...options.headers,
-    },
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message ?? 'Request failed');
-  }
-  return res.json();
-}
-```
-
----
-
-## 🔌 Socket Setup
-
-`src/lib/socket.ts`:
-
-```ts
-import { io, Socket } from 'socket.io-client';
-
-let socket: Socket | null = null;
-
-export function connectSocket(token: string): Socket {
-  if (socket?.connected) return socket;
-  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!, { auth: { token } });
-  return socket;
-}
-
-export function disconnectSocket() {
-  socket?.disconnect();
-  socket = null;
-}
-
-export function getSocket(): Socket | null {
-  return socket;
-}
-```
-
-> ⚠️ **Socket connects to the root origin, NOT `/api`.** Do not append `/api` to `NEXT_PUBLIC_SOCKET_URL`.
-
-**Events:**
-| Direction | Event | Payload |
-| :--- | :--- | :--- |
-| client → server | `message:send` | `{ conversationId, text }` (optional ack) |
-| server → client | `message:new` | new message object |
-| server → client | `conversation:updated` | group changed (renamed/members/admins) |
-
----
-
-## 🧩 Using TanStack Query in Components
-
-```tsx
-'use client';
-
-import { useQuery } from '@tanstack/react-query';
-import { getConversations } from '@/lib/api/conversations';
-
-export function ConversationList() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['conversations'],
-    queryFn: getConversations,
-  });
-
-  if (isLoading) return <Skeleton />;
-  if (isError) return <ErrorState />;
-  if (!data?.length) return <EmptyState />;
-  return (
-    <>
-      {data.map((c) => (
-        <ConversationListItem key={c._id} conversation={c} />
-      ))}
-    </>
-  );
-}
-```
-
-### Query vs Mutation
-
-|            | `useQuery`                         | `useMutation`                                   |
-| :--------- | :--------------------------------- | :---------------------------------------------- |
-| Use for    | GET-style reads (list, history)    | POST/PATCH/DELETE writes (send, create, rename) |
-| Cache role | `queryKey` — cached under this key | `invalidateQueries` / `setQueryData` on success |
-
-### Common Options
-
-- `enabled: !!conversationId` — skip until required arg is ready.
-- `staleTime` — tune per-resource freshness (conversations list can be short-lived).
-- Infinite query (`useInfiniteQuery`) for message pagination — `before` cursor + `hasMore`.
-
----
-
-## 🔄 Syncing Socket Events with Query Cache
-
-On `message:new`, push into the relevant query cache directly instead of refetching:
-
-```ts
-socket.on('message:new', (message) => {
-  queryClient.setQueryData(['messages', message.conversationId], (old) =>
-    old ? { ...old, messages: [...old.messages, message] } : old
-  );
-  queryClient.invalidateQueries({ queryKey: ['conversations'] }); // reorder sidebar
+// Query Key: ['conversations']
+const query = useQuery({
+  queryKey: ['conversations'],
+  queryFn: async () => {
+    const res = await api.getConversations();
+    return res.data || [];
+  },
+  enabled: isAuthenticated,
+  staleTime: 30 * 1000,
 });
 ```
 
+### 2. Reverse Paginated Messages (`hooks/useMessages.ts`)
+```ts
+// Query Key: ['messages', conversationId]
+const query = useInfiniteQuery({
+  queryKey: ['messages', conversationId],
+  queryFn: async ({ pageParam }: { pageParam?: string }) => {
+    if (!conversationId) return { messages: [], hasMore: false };
+    return api.getMessages(conversationId, 20, pageParam);
+  },
+  initialPageParam: undefined as string | undefined,
+  getNextPageParam: (lastPage: MessagesResponse) => {
+    if (!lastPage.hasMore || !lastPage.messages?.length) return undefined;
+    // Oldest message ID is used as cursor for the `before` parameter
+    const oldest = lastPage.messages.reduce((prev, curr) => 
+      new Date(curr.createdAt).getTime() < new Date(prev.createdAt).getTime() ? curr : prev
+    );
+    return oldest?._id;
+  },
+  enabled: !!conversationId && isAuthenticated,
+  staleTime: 10 * 1000,
+});
+```
+
+### 3. Optimistic Message Sending (`hooks/useSendMessage.ts`)
+Optimistic updates ensure instant feedback, temp ID replacement, and automatic rollback on error:
+- **`onMutate`**:
+  - Cancel outgoing `['messages', conversationId]` queries.
+  - Append `{ tempId, text, status: 'sending', createdAt, sender }` to the message cache.
+  - Optimistically update the sidebar conversation's `lastMessage` and bump it to top.
+- **`onSuccess`**:
+  - Replace temporary optimistic message in cache with real server message (`status: 'sent'`).
+  - Invalidate `['conversations']` to sync server timestamp.
+- **`onError`**:
+  - Mark message status as `'failed'` in cache to render one-click retry action.
+
 ---
 
-## 🌊 Next.js App Router Notes
+## ⚡ Socket.io Real-Time Lifecycle (`hooks/useSocket.ts`)
 
-- TanStack Query hooks are client-only (`'use client'` required).
-- Wrap the app once with `<QueryClientProvider>` in `app/providers.tsx`.
-- Never call query hooks conditionally or outside a component/hook body.
+- **Connection Handshake**: Initialized with root origin URL and `auth: { token }`.
+- **`message:new` Listener**:
+  - Active Conversation: Updates `['messages', activeId]` cache with deduplication.
+  - Inactive/Background Conversation: Updates sidebar `['conversations']` list (bumps to top, updates `lastMessage`, increments `unreadCount`).
+- **`conversation:updated` Listener**:
+  - Live patches conversation metadata (name, member additions, promotions) in `['conversations']` cache.
+- **Reconnection Gap-Filling**:
+  - On `'connect'` (after reconnecting from disconnect), automatically invalidates `['conversations']` and `['messages', activeId]` to catch up on any missed activity.
+
+---
+
+## 🛡️ Global 401 Unauthorized Interceptor (`lib/api.ts`)
+
+If any request returns `401 Unauthorized`:
+1. `setUnauthorizedHandler()` triggers `useAuthStore.getState().logout()`.
+2. Socket connection is disconnected (`disconnectSocket()`).
+3. Local storage credentials are wiped.
+4. User receives an intuitive toast: *"Session expired. Please log in again."*
+5. Client redirects to `/login`.
 
 ---
 
 ## ✅ API Integration Checklist
 
-- [ ] No ad-hoc `fetch` in components — everything routes through `lib/api/*` + TanStack Query.
-- [ ] Socket connects to root origin, not `/api`.
-- [ ] `message:new` updates query cache directly (no unnecessary refetch of message history).
-- [ ] `conversation:updated` invalidates/updates the conversations list.
-- [ ] Mutations that change server state invalidate the matching query key.
-- [ ] Queries needing an argument that may be `undefined` use `enabled`.
+- [ ] All network requests go through [`lib/api.ts`](file:///lib/api.ts).
+- [ ] Query keys follow standard hierarchy (`['conversations']`, `['messages', id]`, `['users', 'search', query]`).
+- [ ] Optimistic mutations handle `onMutate`, `onSuccess`, and `onError` rollback.
+- [ ] Socket handlers safely deduplicate incoming messages against optimistic temporary IDs.
+- [ ] Reconnect triggers automatic query cache invalidation.

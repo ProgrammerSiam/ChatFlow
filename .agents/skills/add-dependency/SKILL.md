@@ -1,77 +1,73 @@
 ---
 name: add-dependency
-description: 'Safely add, update, or audit npm packages in ChatFlow — use before running any npm install command'
+description: "Safely add, update, or audit npm packages in ChatFlow — use before running any npm install command"
 ---
 
 # Add Dependency Skill — ChatFlow
 
 ---
 
-## 📋 Current Key Dependencies
+## 📋 Current Installed Dependencies
 
-| Package                    | Version  | Purpose                                                    |
-| :------------------------- | :------- | :--------------------------------------------------------- |
-| `next`                     | `16.2.6` | App framework — **pin this exact version**                 |
-| `react` / `react-dom`      | `19.2.4` | UI runtime — **pin this exact version**                    |
-| `typescript`               | `^5`     | Static typing                                              |
-| `tailwindcss`              | `^4`     | Styling                                                    |
-| `@tailwindcss/postcss`     | `^4`     | Tailwind PostCSS integration                               |
-| `framer-motion`            | `^12`    | Animations                                                 |
-| `lucide-react`             | `^1`     | Icon library                                               |
-| `shadcn`                   | `^4`     | Component CLI                                              |
-| `clsx`                     | `^2`     | Class name utility                                         |
-| `tailwind-merge`           | `^3`     | Tailwind class conflict resolver                           |
-| `embla-carousel-react`     | `^8`     | Carousel (landing page, if needed)                         |
-| `class-variance-authority` | `^0.7`   | Component variant helper                                   |
-| `tw-animate-css`           | `^1.4`   | Animation CSS utilities                                    |
-| `zustand`                  | `^5`     | Client state (auth, active conversation, optimistic msgs)  |
-| `@tanstack/react-query`    | `^5`     | Server state — conversations, messages, search, pagination |
-| `socket.io-client`         | `^4`     | Real-time WebSocket connection                             |
-| `react-hook-form`          | `^7`     | Login/group-create form handling                           |
-| `zod`                      | `^3`     | Form + payload validation                                  |
+Based on [`package.json`](file:///package.json):
+
+| Package | Version | Category | Purpose |
+| :--- | :--- | :--- | :--- |
+| `next` | `16.2.6` | Core Framework | Next.js App Router framework |
+| `react` / `react-dom` | `19.2.4` | Core UI | React 19 core library |
+| `typescript` | `^5` | Development | Strict type system |
+| `@tanstack/react-query` | `^5.101.4` | State & Cache | Server state, infinite pagination, query caching |
+| `zustand` | `^5.0.15` | State | Global client state (auth session, UI modals) |
+| `socket.io-client` | `^4.8.3` | Real-time | Real-time WebSocket connection |
+| `tailwindcss` | `^4` | Styling | Utility-first CSS v4 engine |
+| `@tailwindcss/postcss` | `^4` | Styling | PostCSS Tailwind integration |
+| `framer-motion` | `^12.40.0` | Animations | Interactive spring animations and transitions |
+| `lucide-react` | `^1.17.0` | Icons | Feather-style SVG icon system |
+| `sonner` | `^2.0.7` | UI / Feedback | Toast notification manager |
+| `clsx` | `^2.1.1` | Utility | Conditional class utility |
+| `tailwind-merge` | `^3.6.0` | Utility | Conflict-free class merging |
+| `tw-animate-css` | `^1.4.0` | Styling | Micro-animations CSS support |
+| `canvas-confetti` | `^1.9.4` | Polish | Delight milestone confetti effects |
+| `class-variance-authority`| `^0.7.1` | Utility | Component variant helper |
 
 ---
 
 ## ➕ Adding a New Package
 
+Always verify package requirements with `npm`:
 ```bash
-npm list <package-name>        # check if exists
-npm install <package-name>      # runtime dep
-npm install -D <package-name>   # dev-only dep
+# Check if package is installed
+npm list <package-name>
+
+# Install runtime dependency
+npm install <package-name>
+
+# Install dev-only dependency
+npm install -D <package-name>
 ```
 
 ---
 
 ## ⚠️ Package Constraints
 
-- **Package Manager**: `npm` exclusively — never yarn/pnpm/bun.
-- **Do not upgrade `next` or `react`** without explicit approval.
-- Avoid libraries needing `'use client'` globally.
-- Prefer lightweight alternatives (`date-fns` over `moment`, `lucide-react` over `react-icons`).
-- **No Redux/RTK** — this project uses Zustand + TanStack Query, not Redux Toolkit.
+- **Package Manager**: Use `npm` exclusively (never yarn/pnpm/bun in this repo).
+- **React 19 & Next.js 16 Compatibility**: Ensure any third-party UI package supports React 19 peer dependencies without breaking the build.
+- **No Heavy Bundles**: Prefer lightweight icons (`lucide-react`) and standard date APIs (`Date` / `Intl`) over heavy packages like `moment`.
+- **No Redux / MobX**: The architecture uses Zustand and TanStack Query exclusively.
 
 ---
 
-## 🔍 Checking Outdated Packages
+## 🧹 Verification After Package Changes
 
-```bash
-npm outdated
-```
-
----
-
-## 🧹 After Adding a Package
-
-1. Confirm `package.json` lists it.
-2. Run `npm run build`.
-3. Update `DEVELOPMENT.md` Tech Stack section if significant.
-4. Update `AGENTS.md` Technology Stack section if it changes workflow.
+After adding or updating any package:
+1. Run `npx tsc --noEmit` to verify type definitions.
+2. Run `npm run build` to verify tree-shaking and production bundle compilation.
+3. Run `npm audit --audit-level=high` to check for security vulnerabilities.
 
 ---
 
 ## ✅ Add Dependency Checklist
 
-- [ ] Not already present in `package.json`.
-- [ ] Installed via `npm`.
-- [ ] `npm run build` passes.
-- [ ] Docs updated if significant addition.
+- [ ] Package is not already provided by existing utilities.
+- [ ] Installed with `npm install`.
+- [ ] `npx tsc --noEmit` and `npm run build` pass cleanly.

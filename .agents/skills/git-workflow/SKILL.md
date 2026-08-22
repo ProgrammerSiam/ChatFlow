@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: 'Commit message format, branch strategy, and pre-commit requirements for ChatFlow'
+description: "Commit message format, branch strategy, and pre-commit verification requirements for ChatFlow"
 ---
 
 # Git Workflow — ChatFlow
@@ -9,49 +9,55 @@ description: 'Commit message format, branch strategy, and pre-commit requirement
 
 ## 🌿 Branch Strategy
 
-Single-branch model for this take-home (24hr deadline) — direct commits to `main` are fine,
-but keep commits atomic and well-labeled for reviewer readability.
-
-| Branch pattern             | Purpose                                        |
-| :------------------------- | :--------------------------------------------- |
-| `main`                     | Working branch — all commits                   |
-| `feat/<short-description>` | Optional, if you want visible phase separation |
+- **`main`**: Production-ready branch containing all tested and verified features.
+- **`feat/<feature-name>`** or **`fix/<bug-name>`**: Dedicated branches for scoped development.
 
 ---
 
-## 💬 Commit Message Format (Conventional Commits)
+## 💬 Commit Message Convention (Conventional Commits)
 
-<type>: <short imperative description>
+Format: `<type>(<scope>): <short imperative description>`
 
-| Type     | Used for                                                          |
-| :------- | :---------------------------------------------------------------- |
-| `feat:`  | New features/components (login, message list, socket integration) |
-| `fix:`   | Bug fixes                                                         |
-| `docs:`  | README, API_DOCUMENTATION, AGENTS.md changes                      |
-| `chore:` | Config, deps, tooling                                             |
-| `style:` | Landing page visual/animation work                                |
-
-**Example phase-wise history:**
-
-feat: implement login and auth store
-feat: add conversation list with react-query
-feat: integrate socket.io for real-time messages
-feat: build landing page hero and demo preview
-docs: add API documentation and README write-up
+| Type | Description | Example |
+| :--- | :--- | :--- |
+| `feat` | New user-facing feature | `feat(chat): add real-time message deduplication` |
+| `fix` | Bug fix | `fix(auth): handle expired token with 401 interceptor` |
+| `refactor` | Code change that neither fixes a bug nor adds a feature | `refactor(store): modularize chat UI state actions` |
+| `style` | Formatting, CSS, animations, visual design | `style(landing): polish hero bento grid hover states` |
+| `docs` | Documentation updates | `docs: update API documentation and AGENTS.md` |
+| `chore` | Dependency updates, tooling, config changes | `chore: update tailwind and eslint config` |
 
 ---
 
-## ✅ Pre-Commit Requirements
+## 🛡️ Pre-Commit Verification Pipeline
 
-1. **Verification pipeline** passes — `.agents/skills/verification/SKILL.md`.
-2. No `console.log`/`debugger` left in changed files.
-3. No `@ts-ignore` or unexplained `any`.
-4. `git diff --stat` reviewed — only intended files staged.
+Before committing any changes, run the verification pipeline:
+
+1. **TypeScript Typecheck**:
+   ```bash
+   npx tsc --noEmit
+   ```
+2. **ESLint**:
+   ```bash
+   npm run lint
+   ```
+3. **Format Check**:
+   ```bash
+   npx prettier --check .
+   ```
+4. **Git Diff Review**:
+   ```bash
+   git status
+   git diff --stat
+   ```
+   Confirm only intended files are staged (no accidental temp files or test leftovers).
 
 ---
 
-## 🔧 Formatting Before Commit
+## ✅ Git Workflow Checklist
 
-```bash
-npx prettier --write .
-```
+- [ ] Clear, conventional commit messages.
+- [ ] No leftover `console.log`, `debugger`, or temporary test data.
+- [ ] `npx tsc --noEmit` returns 0 errors.
+- [ ] `npm run lint` returns 0 errors.
+- [ ] Clean atomic commit diffs.
