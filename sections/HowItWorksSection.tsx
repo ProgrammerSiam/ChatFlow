@@ -3,12 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import SectionHeader from '@/shared/SectionHeader';
-import {
-  Layers,
-  Sparkles,
-  CheckCheck,
-  ShieldCheck,
-} from 'lucide-react';
+import { Layers } from 'lucide-react';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span className="font-semibold text-slate-900 dark:text-white transition-colors">
@@ -49,20 +44,8 @@ export default function HowItWorksSection() {
                 }}
               />
 
-              {/* Step Badge */}
-              <div className="relative z-10 flex items-center mb-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 dark:bg-zinc-900/90 border border-slate-200/90 dark:border-border/80 shadow-2xs backdrop-blur-md">
-                  <span className="flex size-4.5 items-center justify-center rounded-full bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white font-mono text-[10px] font-bold shadow-2xs">
-                    1
-                  </span>
-                  <span className="text-[11px] font-mono font-bold tracking-wider text-slate-800 dark:text-slate-200 uppercase">
-                    Step 01
-                  </span>
-                </div>
-              </div>
-
               {/* Step 1 Real Image Preview */}
-              <div className="relative z-10 mb-5 overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[200px] w-full flex items-center justify-center p-1.5 shadow-inner group-hover/step:scale-[1.02] transition-transform duration-300">
+              <div className="relative z-10 mb-5 overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[260px] sm:h-[280px] w-full flex items-center justify-center p-1.5 shadow-inner group-hover/step:scale-[1.02] transition-transform duration-300">
                 <div className="relative w-full h-full rounded-[14px] overflow-hidden">
                   <Image
                     src="/assets/loginflow.png"
@@ -70,6 +53,7 @@ export default function HowItWorksSection() {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover object-top select-none rounded-[14px]"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -95,20 +79,8 @@ export default function HowItWorksSection() {
                 }}
               />
 
-              {/* Step Badge */}
-              <div className="relative z-10 flex items-center mb-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 dark:bg-zinc-900/90 border border-slate-200/90 dark:border-border/80 shadow-2xs backdrop-blur-md">
-                  <span className="flex size-4.5 items-center justify-center rounded-full bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white font-mono text-[10px] font-bold shadow-2xs">
-                    2
-                  </span>
-                  <span className="text-[11px] font-mono font-bold tracking-wider text-slate-800 dark:text-slate-200 uppercase">
-                    Step 02
-                  </span>
-                </div>
-              </div>
-
               {/* Step 2 Real Image Preview */}
-              <div className="relative z-10 mb-5 overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[200px] w-full flex items-center justify-center p-1.5 shadow-inner group-hover/step:scale-[1.02] transition-transform duration-300">
+              <div className="relative z-10 mb-5 overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[260px] sm:h-[280px] w-full flex items-center justify-center p-1.5 shadow-inner group-hover/step:scale-[1.02] transition-transform duration-300">
                 <div className="relative w-full h-full rounded-[14px] overflow-hidden">
                   <Image
                     src="/assets/newchat.png"
@@ -116,6 +88,7 @@ export default function HowItWorksSection() {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover object-top select-none rounded-[14px]"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -141,20 +114,8 @@ export default function HowItWorksSection() {
                 }}
               />
 
-              {/* Step Badge */}
-              <div className="relative z-10 flex items-center mb-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 dark:bg-zinc-900/90 border border-slate-200/90 dark:border-border/80 shadow-2xs backdrop-blur-md">
-                  <span className="flex size-4.5 items-center justify-center rounded-full bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white font-mono text-[10px] font-bold shadow-2xs">
-                    3
-                  </span>
-                  <span className="text-[11px] font-mono font-bold tracking-wider text-slate-800 dark:text-slate-200 uppercase">
-                    Step 03
-                  </span>
-                </div>
-              </div>
-
               {/* Step 3 Real Image Preview */}
-              <div className="relative z-10 mb-5 overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[200px] w-full flex items-center justify-center p-1.5 shadow-inner group-hover/step:scale-[1.02] transition-transform duration-300">
+              <div className="relative z-10 mb-5 overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[260px] sm:h-[280px] w-full flex items-center justify-center p-1.5 shadow-inner group-hover/step:scale-[1.02] transition-transform duration-300">
                 <div className="relative w-full h-full rounded-[14px] overflow-hidden">
                   <Image
                     src="/assets/grpflow.png"
@@ -162,6 +123,7 @@ export default function HowItWorksSection() {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover object-top select-none rounded-[14px]"
+                    unoptimized
                   />
                 </div>
               </div>
@@ -179,7 +141,7 @@ export default function HowItWorksSection() {
 
           </div>
 
-          {/* Bottom Large Card: Step 04 Continuous Sync & Workspace Navigation */}
+          {/* Bottom Large Card: Continuous Sync & Workspace Navigation */}
           <div className="mt-3 rounded-[24px] bg-white dark:bg-card group/step relative overflow-hidden p-6 sm:p-8 border border-slate-200/60 dark:border-border/60 transition-all duration-300 shadow-xs hover:shadow-sm hover:border-purple-200/80 dark:hover:border-purple-800/60">
             {/* Corner Ambient Gradient Orb */}
             <div
@@ -192,17 +154,6 @@ export default function HowItWorksSection() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
               {/* Left Editorial Content */}
               <div className="lg:col-span-6 space-y-3">
-                <div className="flex items-center mb-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 dark:bg-zinc-900/90 border border-slate-200/90 dark:border-border/80 shadow-2xs backdrop-blur-md">
-                    <span className="flex size-4.5 items-center justify-center rounded-full bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white font-mono text-[10px] font-bold shadow-2xs">
-                      4
-                    </span>
-                    <span className="text-[11px] font-mono font-bold tracking-wider text-slate-800 dark:text-slate-200 uppercase">
-                      Step 04 • Continuous Sync
-                    </span>
-                  </div>
-                </div>
-
                 <h3 className="text-xl sm:text-2xl font-medium tracking-tight text-slate-900 dark:text-white leading-tight truncate">
                   Always Synchronized Workspace
                 </h3>
@@ -212,9 +163,9 @@ export default function HowItWorksSection() {
                 </p>
               </div>
 
-              {/* Right Visual Image Container for Step 04 */}
+              {/* Right Visual Image Container for Continuous Sync */}
               <div className="lg:col-span-6 w-full">
-                <div className="relative overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[240px] sm:h-[260px] flex items-center justify-center p-2 shadow-inner group-hover/step:scale-[1.01] transition-transform duration-300">
+                <div className="relative overflow-hidden rounded-[20px] bg-slate-100 dark:bg-zinc-900 border border-slate-200/70 dark:border-border/70 h-[280px] sm:h-[320px] flex items-center justify-center p-2 shadow-inner group-hover/step:scale-[1.01] transition-transform duration-300">
                   <div className="relative w-full h-full rounded-[14px] overflow-hidden">
                     <Image
                       src="/assets/chatflow.png"
@@ -222,6 +173,7 @@ export default function HowItWorksSection() {
                       fill
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       className="object-cover object-top select-none rounded-[14px]"
+                      unoptimized
                     />
                   </div>
                 </div>

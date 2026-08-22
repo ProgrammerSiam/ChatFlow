@@ -64,6 +64,7 @@ export default function CallToActionSection() {
             className="max-w-72 sm:max-w-84 md:max-w-96 dark:hidden"
             src="/assets/gradient-glow-light-left.png"
             priority={false}
+            unoptimized
           />
           <Image
             alt="Left graphic dark"
@@ -72,6 +73,7 @@ export default function CallToActionSection() {
             className="max-w-72 sm:max-w-84 md:max-w-96 hidden dark:block"
             src="/assets/gradient-glow-dark-left.png"
             priority={false}
+            unoptimized
           />
         </div>
 
@@ -84,6 +86,7 @@ export default function CallToActionSection() {
             className="max-w-72 sm:max-w-84 md:max-w-96 dark:hidden"
             src="/assets/gradient-glow-light-right.png"
             priority={false}
+            unoptimized
           />
           <Image
             alt="Right graphic dark"
@@ -92,6 +95,7 @@ export default function CallToActionSection() {
             className="max-w-72 sm:max-w-84 md:max-w-96 hidden dark:block"
             src="/assets/gradient-glow-dark-right.png"
             priority={false}
+            unoptimized
           />
         </div>
       </div>

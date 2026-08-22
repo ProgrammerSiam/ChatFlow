@@ -62,22 +62,20 @@ export default function HeroSection() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 h-72 sm:h-96 w-full max-w-4xl rounded-full bg-gradient-to-r from-purple-500/25 via-indigo-500/20 to-purple-500/25 blur-[120px] pointer-events-none" />
 
           {/* Browser / App Window Container */}
-          <div className="relative z-10 w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 shadow-[0_25px_70px_-15px_rgba(114,92,255,0.2)] dark:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.8)] backdrop-blur-2xl overflow-hidden text-card-foreground ring-1 ring-black/5 dark:ring-white/10">
+          <div className="relative z-10 w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-[0_25px_70px_-15px_rgba(114,92,255,0.2)] dark:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.8)] overflow-hidden text-card-foreground ring-1 ring-black/5 dark:ring-white/10">
             {/* Real Workspace Hero Image */}
             <div className="relative w-full overflow-hidden bg-slate-100 dark:bg-zinc-900">
               <Image
                 src="/assets/heroimg.png"
                 alt="ChatFlow Real-Time Workspace"
-                width={2400}
-                height={1480}
+                width={1200}
+                height={740}
                 className="w-full h-auto object-cover select-none"
                 priority
+                unoptimized
               />
             </div>
           </div>
-
-          {/* Smooth Bottom Fade Transition */}
-          <div className="absolute -bottom-6 left-0 right-0 h-28 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/70 to-transparent dark:from-background dark:via-background/70 pointer-events-none z-20" />
         </div>
       </div>
 
@@ -98,7 +96,8 @@ export default function HeroSection() {
             height={866}
             className="max-w-72 sm:max-w-84 md:max-w-96 dark:hidden"
             src="/assets/gradient-glow-light-left.png"
-            priority={false}
+            loading="eager"
+            unoptimized
           />
           <Image
             alt="Left graphic dark"
@@ -106,7 +105,8 @@ export default function HeroSection() {
             height={874}
             className="max-w-72 sm:max-w-84 md:max-w-96 hidden dark:block"
             src="/assets/gradient-glow-dark-left.png"
-            priority={false}
+            loading="eager"
+            unoptimized
           />
         </div>
 
@@ -118,7 +118,8 @@ export default function HeroSection() {
             height={866}
             className="max-w-72 sm:max-w-84 md:max-w-96 dark:hidden"
             src="/assets/gradient-glow-light-right.png"
-            priority={false}
+            loading="eager"
+            unoptimized
           />
           <Image
             alt="Right graphic dark"
@@ -126,7 +127,8 @@ export default function HeroSection() {
             height={874}
             className="max-w-72 sm:max-w-84 md:max-w-96 hidden dark:block"
             src="/assets/gradient-glow-dark-right.png"
-            priority={false}
+            loading="eager"
+            unoptimized
           />
         </div>
       </div>

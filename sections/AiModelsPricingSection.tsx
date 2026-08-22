@@ -1,19 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import BadgePill from '@/shared/BadgePill';
-import { Cpu, ArrowRight } from 'lucide-react';
+import { Cpu } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
+
+const emptySubscribe = () => () => {};
 
 export default function AiModelsPricingSection() {
   const { isAuthenticated } = useAuthStore();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
 
   // Use a stable value during SSR to prevent hydration mismatch
   const authed = mounted && isAuthenticated;

@@ -4,7 +4,6 @@ import React from 'react';
 import {
   MessageSquare,
   Users,
-  Smile,
   Pin,
   Search,
   ShieldCheck,

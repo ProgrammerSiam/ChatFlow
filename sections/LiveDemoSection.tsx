@@ -1,17 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import BadgePill from '@/shared/BadgePill';
 import {
-  Sparkles,
   ArrowRight,
-  CheckCircle2,
-  Circle,
-  FileText,
   MessageSquare,
   Users,
-  Bot,
   Send,
   CheckCheck,
   Zap,
@@ -62,6 +57,7 @@ interface ExpressiveMessage {
 
 export default function LiveDemoSection() {
   const { isAuthenticated } = useAuthStore();
+  const idCounterRef = useRef(100);
 
   // ==========================================
   // CARD 1: 1-ON-1 DIRECT REAL-TIME MESSAGING
@@ -101,12 +97,13 @@ export default function LiveDemoSection() {
     if (!text) return;
 
     triggerCelebration();
-    const tempId = `d-${Date.now()}`;
+    const nextId = idCounterRef.current++;
+    const tempId = `d-${nextId}`;
     const newMsg: DirectMessage = {
       id: tempId,
       sender: 'user',
       text,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: '12:50 PM',
       status: 'sending',
     };
 
@@ -123,10 +120,10 @@ export default function LiveDemoSection() {
     setTimeout(() => {
       setIsDirectTyping(false);
       const peerMsg: DirectMessage = {
-        id: `peer-${Date.now()}`,
+        id: `peer-${idCounterRef.current++}`,
         sender: 'peer',
         text: '⚡ Instant WebSocket broadcast confirmed! Message state synced to cache.',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: '12:51 PM',
         status: 'read',
         reactions: ['👍 2'],
       };
@@ -149,25 +146,34 @@ export default function LiveDemoSection() {
   };
 
   // ==========================================
-  // CARD 2: GROUP WORKSPACES & RBAC GOVERNANCE
+  // CARD 2: MULTI-PARTICIPANT GROUP CHANNELS
   // ==========================================
   const [groupMessages, setGroupMessages] = useState<GroupMessage[]>([
     {
       id: 'g1',
-      senderName: 'Sarah Jenkins',
-      senderRole: 'Lead',
-      avatarBg: 'bg-purple-600 text-white',
-      text: 'Team, v1.0 real-time deployment is officially live! Great work everyone 🎉',
+      senderName: 'Elena Rostova',
+      avatarBg: 'bg-emerald-600 text-white',
+      senderRole: 'Admin',
+      text: 'Team, please review the latest sprint release notes before the deployment cutoff.',
       time: '12:40 PM',
-      reactions: ['🎉 5', '❤️ 4'],
+      reactions: ['🔥 4', '🚀 2'],
     },
     {
       id: 'g2',
-      senderName: 'Emerson Sterling',
-      avatarBg: 'bg-indigo-600 text-white',
-      text: 'Socket handshake verified across all active client nodes. Latency is rock solid under 20ms.',
+      senderName: 'Marcus Vance',
+      avatarBg: 'bg-blue-600 text-white',
+      text: 'All staging integration tests passed with 100% green status.',
       time: '12:42 PM',
-      reactions: ['⚡ 3'],
+      reactions: ['👍 5'],
+    },
+    {
+      id: 'g3',
+      senderName: 'Siam (You)',
+      avatarBg: 'bg-indigo-600 text-white',
+      senderRole: 'Admin',
+      text: 'TanStack Query cache invalidation is hooked up to the socket reconnection handler!',
+      time: '12:43 PM',
+      reactions: ['⚡ 6'],
     },
   ]);
   const [groupInput, setGroupInput] = useState('');
@@ -178,23 +184,16 @@ export default function LiveDemoSection() {
     const text = customText || groupInput.trim();
     if (!text) return;
 
-    if (
-      text.toLowerCase().includes('celebrate') ||
-      text.toLowerCase().includes('launch') ||
-      text.toLowerCase().includes('confetti')
-    ) {
-      triggerMilestoneCelebration();
-    } else {
-      triggerCelebration();
-    }
-
+    triggerCelebration();
+    const nextId = idCounterRef.current++;
     const newMsg: GroupMessage = {
-      id: `g-${Date.now()}`,
+      id: `g-${nextId}`,
       senderName: 'Siam (You)',
       senderRole: 'Admin',
-      avatarBg: 'bg-emerald-600 text-white',
+      avatarBg: 'bg-indigo-600 text-white',
       text,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: '12:52 PM',
+      reactions: ['⚡ 1'],
     };
 
     setGroupMessages((prev) => [...prev, newMsg]);
@@ -204,11 +203,11 @@ export default function LiveDemoSection() {
     setTimeout(() => {
       setIsGroupTyping(false);
       const peerMsg: GroupMessage = {
-        id: `g-reply-${Date.now()}`,
+        id: `g-reply-${idCounterRef.current++}`,
         senderName: 'Alex Rivers',
         avatarBg: 'bg-amber-600 text-white',
         text: '🚀 Group broadcast received across all connected channel participants!',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: '12:53 PM',
         reactions: ['🙌 3'],
       };
       setGroupMessages((prev) => [...prev, peerMsg]);
@@ -278,14 +277,15 @@ export default function LiveDemoSection() {
   const handleSendGif = (label: string, imgUrl: string) => {
     triggerMilestoneCelebration();
     setShowGifPicker(false);
+    const nextId = idCounterRef.current++;
     const newMsg: ExpressiveMessage = {
-      id: `e-${Date.now()}`,
+      id: `e-${nextId}`,
       sender: 'user',
       senderName: 'Siam (You)',
       avatarBg: 'bg-emerald-600 text-white',
       gifUrl: imgUrl,
       gifLabel: label,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: '12:55 PM',
       reactions: [{ emoji: '🔥', count: 1 }],
     };
     setExpressiveMessages((prev) => [...prev, newMsg]);
@@ -296,13 +296,14 @@ export default function LiveDemoSection() {
     const text = expressiveInput.trim();
     if (!text) return;
     triggerCelebration();
+    const nextId = idCounterRef.current++;
     const newMsg: ExpressiveMessage = {
-      id: `e-${Date.now()}`,
+      id: `e-${nextId}`,
       sender: 'user',
       senderName: 'Siam (You)',
       avatarBg: 'bg-emerald-600 text-white',
       text,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: '12:55 PM',
       reactions: [{ emoji: '❤️', count: 1 }],
     };
     setExpressiveMessages((prev) => [...prev, newMsg]);
