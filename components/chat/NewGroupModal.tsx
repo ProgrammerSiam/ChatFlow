@@ -122,7 +122,7 @@ export default function NewGroupModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
+        className="w-full max-w-xl sm:max-w-[620px] rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
       >
         
         {/* Header */}

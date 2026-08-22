@@ -94,8 +94,14 @@ export default function GlobalSearchModal() {
 
   if (!isGlobalSearchOpen) return null;
 
-  const handleOpenConversation = (convId: string) => {
+  const handleClose = () => {
     setGlobalSearchOpen(false);
+    setQuery('');
+    setActiveTab('all');
+  };
+
+  const handleOpenConversation = (convId: string) => {
+    handleClose();
     setActiveConversationId(convId);
     router.push(`/chat/${convId}`);
   };
@@ -124,7 +130,7 @@ export default function GlobalSearchModal() {
 
   return (
     <div
-      onClick={() => setGlobalSearchOpen(false)}
+      onClick={handleClose}
       className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-black/60 backdrop-blur-md p-3 sm:p-4 pt-12 sm:pt-4 animate-in fade-in duration-200"
     >
       <div
@@ -152,7 +158,7 @@ export default function GlobalSearchModal() {
             </div>
           </div>
           <button
-            onClick={() => setGlobalSearchOpen(false)}
+            onClick={handleClose}
             className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100/80 hover:bg-slate-200/80 dark:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Search,
@@ -11,12 +11,15 @@ import {
   MessageSquare,
   ArrowRight,
   CheckCircle2,
+  UserPlus,
 } from 'lucide-react';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useConversations } from '@/hooks/useConversations';
 import { useUserSearch } from '@/hooks/useUserSearch';
 import { toast } from 'sonner';
 import { SearchUser } from '@/types';
+
+type TeammateFilterTab = 'all' | 'new' | 'existing';
 
 export default function NewChatModal() {
   const router = useRouter();
@@ -25,6 +28,7 @@ export default function NewChatModal() {
   const { conversations, createDirectConversation } = useConversations();
   const { query, setQuery, users, isLoading, error } = useUserSearch();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<TeammateFilterTab>('all');
 
   // Close on Escape key
   useEffect(() => {
@@ -47,6 +51,34 @@ export default function NewChatModal() {
           (c.participants && c.participants.some((p) => p._id === userId)))
     );
   };
+
+  // Group users into New Contacts vs. Already Messaged
+  const { newUsers, existingUsers } = useMemo(() => {
+    const existingDirectIds = new Set(
+      conversations
+        .filter((c) => c.type === 'direct')
+        .map((c) => c.participant?._id)
+        .filter(Boolean)
+    );
+
+    const newArr: SearchUser[] = [];
+    const existArr: SearchUser[] = [];
+    for (const u of users) {
+      if (existingDirectIds.has(u._id)) {
+        existArr.push(u);
+      } else {
+        newArr.push(u);
+      }
+    }
+    return { newUsers: newArr, existingUsers: existArr };
+  }, [users, conversations]);
+
+  // Filter based on active tab
+  const displayedUsers = useMemo(() => {
+    if (activeTab === 'new') return newUsers;
+    if (activeTab === 'existing') return existingUsers;
+    return users;
+  }, [activeTab, newUsers, existingUsers, users]);
 
   if (!isNewChatOpen) return null;
 
@@ -85,7 +117,7 @@ export default function NewChatModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
+        className="w-full max-w-xl sm:max-w-[620px] rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-border/60">
@@ -133,11 +165,42 @@ export default function NewChatModal() {
           </div>
         </div>
 
-        {/* Results Header */}
-        <div className="flex items-center justify-between mt-3 pt-1 px-1">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-            {query ? `Results for "${query}"` : 'Available Teammates'} ({users.length})
-          </p>
+        {/* Filter Tabs: All vs New Contacts vs Already Messaged */}
+        <div className="flex items-center gap-1.5 mt-3 pt-1 overflow-x-auto no-scrollbar pb-0.5">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === 'all'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'
+                : 'bg-slate-100/80 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
+            }`}
+          >
+            All Teammates ({users.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('new')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              activeTab === 'new'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'
+                : 'bg-slate-100/80 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
+            }`}
+          >
+            <UserPlus className="h-3 w-3" />
+            <span>New Contacts ({newUsers.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('existing')}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              activeTab === 'existing'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs'
+                : 'bg-slate-100/80 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
+            }`}
+          >
+            <CheckCircle2 className="h-3 w-3 text-purple-500" />
+            <span>Already Messaged ({existingUsers.length})</span>
+          </button>
         </div>
 
         {/* Results List with Top & Bottom Shadow Fades */}
@@ -169,11 +232,17 @@ export default function NewChatModal() {
               <div className="py-8 text-center text-xs text-rose-500">
                 Failed to search. Please try again.
               </div>
-            ) : users.length === 0 ? (
+            ) : displayedUsers.length === 0 ? (
               <div className="py-8 text-center text-slate-400 space-y-1 border border-slate-200/60 dark:border-border/50 rounded-2xl bg-slate-50/40 dark:bg-muted/20 p-4">
                 <UserIcon className="h-7 w-7 mx-auto opacity-30" />
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  {query ? 'No matching teammates found' : 'No registered teammates found'}
+                  {query
+                    ? 'No matching teammates found'
+                    : activeTab === 'new'
+                    ? 'No new unmessaged contacts found'
+                    : activeTab === 'existing'
+                    ? 'No existing conversations yet'
+                    : 'No registered teammates found'}
                 </p>
                 <p className="text-xs text-slate-400">
                   {query
@@ -183,7 +252,7 @@ export default function NewChatModal() {
               </div>
             ) : (
               <div className="space-y-1.5">
-                {users.map((targetUser) => {
+                {displayedUsers.map((targetUser) => {
                   const isStarting = selectedUserId === targetUser._id;
                   const existingConv = getExistingConversation(targetUser._id);
                   const isAlreadyMessaged = !!existingConv;
