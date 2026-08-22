@@ -21,6 +21,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useQueryClient, useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
+import { triggerCelebration } from '@/lib/confetti';
 import { toast } from 'sonner';
 import { User } from '@/types';
 import ConfirmModal from '@/shared/ConfirmModal';
@@ -84,6 +85,7 @@ export default function UserProfileModal() {
     if (currentUser?._id) {
       navigator.clipboard.writeText(currentUser._id);
       setCopied(true);
+      triggerCelebration();
       toast.success('User ID copied to clipboard');
       setTimeout(() => setCopied(false), 2000);
     }

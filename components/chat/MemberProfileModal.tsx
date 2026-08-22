@@ -92,7 +92,6 @@ export default function MemberProfileModal({
       try {
         await navigator.share(shareData);
         setShared(true);
-        triggerCelebration();
         toast.success('Shared successfully');
         setTimeout(() => setShared(false), 2000);
         return;
@@ -105,7 +104,6 @@ export default function MemberProfileModal({
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
         setShared(true);
-        triggerCelebration();
         toast.success('Chat link copied to clipboard');
         setTimeout(() => setShared(false), 2000);
       }
@@ -126,7 +124,6 @@ export default function MemberProfileModal({
       }
 
       const newConv = await createDirectConversation(member._id);
-      triggerCelebration();
       onClose();
       setActiveConversationId(newConv._id);
       router.push(`/chat/${newConv._id}`);

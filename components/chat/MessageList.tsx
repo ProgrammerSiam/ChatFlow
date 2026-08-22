@@ -576,8 +576,16 @@ export default function MessageList({
               const isSelf =
                 message.sender === 'me' ||
                 message.status === 'sending' ||
-                Boolean(resolvedCurrentUserId && senderId === resolvedCurrentUserId) ||
-                Boolean(resolvedCurrentUserId && senderObj?._id === resolvedCurrentUserId);
+                Boolean(
+                  resolvedCurrentUserId &&
+                    senderId &&
+                    String(senderId).trim() === String(resolvedCurrentUserId).trim()
+                ) ||
+                Boolean(
+                  resolvedCurrentUserId &&
+                    senderObj?._id &&
+                    String(senderObj._id).trim() === String(resolvedCurrentUserId).trim()
+                );
 
               // Message Grouping Calculation (consecutive messages from same sender)
               const prevMsg = idx > 0 ? displayedMessages[idx - 1] : null;

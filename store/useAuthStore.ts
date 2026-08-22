@@ -35,6 +35,20 @@ export const useAuthStore = create<AuthState>((set, get) => {
     error: null,
 
     setSession: (token: string, user: User) => {
+      if (!user || !user._id) {
+        // If user object is missing, still update token if provided, but don't overwrite valid user with undefined
+        if (token && typeof window !== 'undefined') {
+          localStorage.setItem(TOKEN_KEY, token);
+        }
+        set((state) => ({
+          token: token || state.token,
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        }));
+        return;
+      }
+
       if (typeof window !== 'undefined') {
         localStorage.setItem(TOKEN_KEY, token);
         localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -92,7 +106,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
 
       try {
         let initialUser: User | null = null;
-        if (storedUserStr) {
+        if (storedUserStr && storedUserStr !== 'undefined' && storedUserStr !== 'null') {
           try {
             initialUser = JSON.parse(storedUserStr);
           } catch {
@@ -100,11 +114,15 @@ export const useAuthStore = create<AuthState>((set, get) => {
           }
         }
 
-        set({ token: storedToken, user: initialUser, isAuthenticated: true });
+        // Hydrate from localStorage immediately so currentUser is available on initial render
+        set({ token: storedToken, user: initialUser, isAuthenticated: true, isLoading: false });
 
-        // Validate token with server
-        const { user } = await api.getMe();
-        get().setSession(storedToken, user);
+        // Validate token and fetch fresh user profile from server
+        const res = await api.getMe();
+        const serverUser = res?.user || (res as unknown as User);
+        if (serverUser && serverUser._id) {
+          get().setSession(storedToken, serverUser);
+        }
         return true;
       } catch {
         get().logout();

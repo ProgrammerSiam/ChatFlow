@@ -179,7 +179,6 @@ export default function ConversationDetailsPanel({
       try {
         await navigator.share(shareData);
         setSharedContact(true);
-        triggerCelebration();
         toast.success('Shared successfully');
         setTimeout(() => setSharedContact(false), 2000);
         return;
@@ -193,7 +192,6 @@ export default function ConversationDetailsPanel({
       if (typeof navigator !== 'undefined' && navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
         setSharedContact(true);
-        triggerCelebration();
         toast.success('Chat link copied to clipboard');
         setTimeout(() => setSharedContact(false), 2000);
       }
@@ -242,6 +240,7 @@ export default function ConversationDetailsPanel({
       queryClient.setQueryData<Conversation[]>(['conversations'], (old = []) =>
         old.map((c) => (c._id === conversation._id ? updated : c))
       );
+      triggerCelebration();
       toast.success(`Added ${selectedToAdd.length} member(s)`);
       setSelectedToAdd([]);
       setIsAddingMembers(false);
@@ -283,6 +282,7 @@ export default function ConversationDetailsPanel({
       queryClient.setQueryData<Conversation[]>(['conversations'], (old = []) =>
         old.map((c) => (c._id === conversation._id ? updated : c))
       );
+      triggerCelebration();
       toast.success(`${memberName} is now a group admin`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to promote member';

@@ -8,7 +8,6 @@ import { useConversations } from '@/hooks/useConversations';
 import { useUserSearch } from '@/hooks/useUserSearch';
 import { toast } from 'sonner';
 import { SearchUser } from '@/types';
-import { triggerMilestoneCelebration } from '@/lib/confetti';
 
 export default function NewGroupModal() {
   const router = useRouter();
@@ -104,7 +103,6 @@ export default function NewGroupModal() {
         participantIds,
       });
 
-      triggerMilestoneCelebration();
       toast.success(`Group "${trimmedName}" created successfully!`);
       setNewGroupOpen(false);
       setGroupName('');

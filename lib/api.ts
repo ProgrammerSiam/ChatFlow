@@ -75,16 +75,35 @@ async function apiRequest<T>(
 export const api = {
   // Auth
   async login(phone: string, name: string): Promise<AuthResponse> {
-    return apiRequest<AuthResponse>('/auth/login', {
+    const res = await apiRequest<
+      { token?: string; user?: User; data?: User } & User
+    >('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ phone, name }),
     });
+
+    const token = res.token || '';
+    const user: User =
+      res.user ||
+      res.data ||
+      (res._id ? { _id: res._id, name: res.name, phone: res.phone, createdAt: res.createdAt } : ({} as User));
+
+    return { token, user };
   },
 
   async getMe(): Promise<{ user: User }> {
-    return apiRequest<{ user: User }>('/auth/me', {
+    const res = await apiRequest<
+      { user?: User; data?: User } & User
+    >('/auth/me', {
       method: 'GET',
     });
+
+    const user: User =
+      res.user ||
+      res.data ||
+      (res._id ? { _id: res._id, name: res.name, phone: res.phone, createdAt: res.createdAt } : ({} as User));
+
+    return { user };
   },
 
   // Users
