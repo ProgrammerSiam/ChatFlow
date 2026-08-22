@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
-  <span className="font-medium text-slate-900 dark:text-white underline decoration-purple-400/60 dark:decoration-purple-400/80 decoration-[1.5px] underline-offset-4 transition-colors">
+  <span className="font-semibold text-slate-900 dark:text-white transition-colors">
     {children}
   </span>
 );

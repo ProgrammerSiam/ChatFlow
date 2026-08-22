@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import BadgePill from '@/shared/BadgePill';
@@ -9,6 +9,14 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 export default function AiModelsPricingSection() {
   const { isAuthenticated } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Use a stable value during SSR to prevent hydration mismatch
+  const authed = mounted && isAuthenticated;
 
   return (
     <section
@@ -43,10 +51,10 @@ export default function AiModelsPricingSection() {
 
             <div className="pt-2">
               <Link
-                href={isAuthenticated ? '/chat' : '/login'}
+                href={authed ? '/chat' : '/login'}
                 className="inline-flex items-center justify-center font-medium transition-all duration-200 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 h-11 rounded-full px-6 text-sm shadow-md hover:scale-105 active:scale-95"
               >
-                {isAuthenticated ? 'Open App' : 'Try Free'}
+                {authed ? 'Open App' : 'Try Free'}
               </Link>
             </div>
           </div>
@@ -348,7 +356,7 @@ export default function AiModelsPricingSection() {
 
             {/* Central Unified ChatFlow Core Platform Hub (Column View: Logo + Title) */}
             <div className="relative z-20">
-              <div className="border border-slate-200/80 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 rounded-[24px] flex flex-col items-center justify-center text-center gap-3 border-2 px-8 py-5 shadow-[0px_20px_50px_rgba(114,92,255,0.15)] dark:shadow-[0px_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
+              <div className="border border-slate-200/80 dark:border-zinc-800 bg-white/95 dark:bg-zinc-900/95 rounded-[24px] flex flex-col items-center justify-center text-center gap-2.5 border-2 px-8 py-3 shadow-[0px_20px_50px_rgba(114,92,255,0.15)] dark:shadow-[0px_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl">
                 {/* ChatFlow Official Brand Logo with Enhanced Infinite Rotating Border Animation */}
                 <div className="relative size-20 sm:size-24 shrink-0 rounded-[26px] p-[3.5px] overflow-hidden shadow-2xl shadow-purple-500/30 flex items-center justify-center">
                   {/* Infinite Rotating Conic Gradient Beam */}
