@@ -27,7 +27,7 @@ export default function HeroSection() {
             className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-[-2px] text-foreground max-w-3xl leading-[1.18]"
           >
             All-in-One{' '}
-            <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight -rotate-1 hover:rotate-0 transition-transform">
+            <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight transition-transform">
               Real-Time
             </span>{' '}
             Chat Platform for Modern Teams
