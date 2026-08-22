@@ -339,34 +339,34 @@ export default function LiveDemoSection() {
               </p>
 
               {/* Compact Feature Bullets */}
-              <div className="space-y-3 pt-0.5 w-full">
+              <div className="space-y-3.5 pt-1 w-full">
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border border-purple-500/20 shadow-2xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
                     <Zap className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">0ms Optimistic Send</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Instant dispatch with rollback</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Instant Send</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">0ms optimistic dispatch</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shadow-2xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
                     <Search className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Smart User Search</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">300ms fuzzy discovery</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">User Discovery</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Debounced member search</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
                     <CheckCheck className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Live Read Receipts</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Seen status indicators</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Read Receipts</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Real-time seen indicators</span>
                   </div>
                 </div>
               </div>
@@ -555,34 +555,34 @@ export default function LiveDemoSection() {
               </p>
 
               {/* Compact Feature Bullets */}
-              <div className="space-y-3 pt-0.5 w-full">
+              <div className="space-y-3.5 pt-1 w-full">
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border border-purple-500/20 shadow-2xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
                     <Users className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Multi-Member Channels</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Broadcast across all teammates</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Team Channels</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Multi-member broadcasts</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-2xs">
-                    <Crown className="size-4" />
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
+                    <Shield className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Admin Governance</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Granular role-gated permissions</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Admin Controls</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Role-gated governance</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-2xs">
-                    <Sparkles className="size-4" />
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
+                    <PartyPopper className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Milestone Confetti</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Interactive launch celebrations</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Milestones</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Team launch celebrations</span>
                   </div>
                 </div>
               </div>
@@ -761,34 +761,34 @@ export default function LiveDemoSection() {
               </p>
 
               {/* Compact Feature Bullets */}
-              <div className="space-y-3 pt-0.5 w-full">
+              <div className="space-y-3.5 pt-1 w-full">
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border border-purple-500/20 shadow-2xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
                     <ImageIcon className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Animated GIFs</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Search & post 60 FPS GIFs</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Tenor GIFs</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">High-FPS animated reactions</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-2xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
                     <Smile className="size-4" />
                   </div>
                   <div>
                     <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Emoji Reactions</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">1-tap inline emoji counters</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">1-tap inline counters</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                  <div className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-indigo-500/10 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shadow-2xs">
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-purple-50 dark:bg-purple-950/60 text-[#725CFF] dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 shadow-xs">
                     <Pin className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Pinned Announcements</span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Pin key specs to channel top</span>
+                    <span className="font-semibold text-slate-900 dark:text-white block text-xs sm:text-sm">Pinned Posts</span>
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">Key channel announcements</span>
                   </div>
                 </div>
               </div>
