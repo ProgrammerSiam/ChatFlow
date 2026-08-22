@@ -235,8 +235,11 @@ export default function Sidebar() {
       <div className="flex flex-col gap-3.5">
         {/* Brand Header */}
         <div className="flex items-center justify-between px-1">
-          <CoolTooltip content="ChatFlow Home" side="bottom">
-            <Link href="/">
+          <CoolTooltip content="Go to Chat Home" side="bottom" align="start">
+            <Link
+              href="/chat"
+              className="hover:opacity-85 active:scale-98 transition-all flex items-center cursor-pointer"
+            >
               <BrandLogo size="md" prefix="Chat" suffix="Flow" />
             </Link>
           </CoolTooltip>

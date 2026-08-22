@@ -228,8 +228,20 @@ export default function MessageList({
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showScrollDownPill, setShowScrollDownPill] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [activeEmojiBarId, setActiveEmojiBarId] = useState<string | null>(null);
-  const [activeOptionsMenuId, setActiveOptionsMenuId] = useState<string | null>(null);
+  const [optionsMenuPopup, setOptionsMenuPopup] = useState<{
+    id: string;
+    text: string;
+    senderName: string;
+    createdAt: string;
+    isPinned: boolean;
+    x: number;
+    y: number;
+  } | null>(null);
+  const [emojiBarPopup, setEmojiBarPopup] = useState<{
+    id: string;
+    x: number;
+    y: number;
+  } | null>(null);
 
   const [profilePopup, setProfilePopup] = useState<{
     id: string;
@@ -274,8 +286,8 @@ export default function MessageList({
         return;
       }
       setProfilePopup(null);
-      setActiveEmojiBarId(null);
-      setActiveOptionsMenuId(null);
+      setOptionsMenuPopup(null);
+      setEmojiBarPopup(null);
     };
 
     document.addEventListener('pointerdown', handleOutsideClick);
@@ -340,19 +352,17 @@ export default function MessageList({
     const container = scrollContainerRef.current;
     if (!container) return true;
     const { scrollTop, scrollHeight, clientHeight } = container;
-    const threshold = 180;
+    const threshold = 120;
     const atBottom = scrollHeight - scrollTop - clientHeight <= threshold;
     setIsAtBottom(atBottom);
-    if (atBottom) {
-      setShowScrollDownPill(false);
-    }
+    setShowScrollDownPill(!atBottom);
     return atBottom;
   }, []);
 
   const handleScroll = () => {
     if (profilePopup) setProfilePopup(null);
-    if (activeEmojiBarId) setActiveEmojiBarId(null);
-    if (activeOptionsMenuId) setActiveOptionsMenuId(null);
+    if (optionsMenuPopup) setOptionsMenuPopup(null);
+    if (emojiBarPopup) setEmojiBarPopup(null);
 
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -701,7 +711,7 @@ export default function MessageList({
                       )
                     )}
 
-                    {/* Hover Quick Actions Bar: 3 Dots, Reply, Emoji Reaction Bar Trigger (Screenshot 1) */}
+                    {/* Hover Quick Actions Bar: 3 Dots & Emoji Reaction Bar Trigger */}
                     <div
                       className={`opacity-0 group-hover/row:opacity-100 focus-within:opacity-100 transition-opacity flex items-center gap-1 ${
                         isSelf ? 'order-first mr-1' : 'order-last ml-1'
@@ -713,68 +723,34 @@ export default function MessageList({
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setActiveOptionsMenuId((prev) =>
-                              prev === (message._id || message.tempId)
-                                ? null
-                                : (message._id || message.tempId || '')
-                            );
-                            setActiveEmojiBarId(null);
+                            if (optionsMenuPopup?.id === (message._id || message.tempId)) {
+                              setOptionsMenuPopup(null);
+                              return;
+                            }
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const isPinned = currentPins.some((p) => p.id === (message._id || message.tempId));
+                            const menuWidth = 176;
+                            const menuHeight = 84;
+                            const placeAbove = rect.top > 120;
+
+                            setOptionsMenuPopup({
+                              id: message._id || message.tempId || '',
+                              text: message.text,
+                              senderName,
+                              createdAt: message.createdAt,
+                              isPinned,
+                              x: isSelf
+                                ? Math.max(12, rect.right - menuWidth)
+                                : Math.min(rect.left, window.innerWidth - menuWidth - 12),
+                              y: placeAbove ? rect.top - menuHeight - 6 : rect.bottom + 6,
+                            });
+                            setEmojiBarPopup(null);
                           }}
                           className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/80 transition-colors cursor-pointer"
                           title="More actions"
                         >
                           <MoreVertical className="h-4 w-4" />
                         </button>
-
-                        {/* 3 Dots Popup Menu */}
-                        {activeOptionsMenuId === (message._id || message.tempId) && (
-                          <div
-                            onClick={(e) => e.stopPropagation()}
-                            className={`absolute bottom-8 ${
-                              isSelf ? 'right-0' : 'left-0'
-                            } z-50 w-44 rounded-2xl bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-zinc-800 shadow-xl p-1 space-y-0.5 text-xs text-slate-800 dark:text-zinc-200 animate-in fade-in zoom-in-95 duration-100`}
-                          >
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (activeConversationId) {
-                                  if (isMessagePinned) {
-                                    unpinMessage(activeConversationId, message._id || message.tempId || '');
-                                    toast.success('Message unpinned');
-                                  } else {
-                                    pinMessage(activeConversationId, {
-                                      id: message._id || message.tempId || '',
-                                      text: message.text,
-                                      senderName,
-                                      createdAt: message.createdAt,
-                                    });
-                                    toast.success('Message pinned to top (max 3)');
-                                  }
-                                }
-                                setActiveOptionsMenuId(null);
-                              }}
-                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left font-medium"
-                            >
-                              <Pin className="h-3.5 w-3.5 text-amber-500" />
-                              <span>{isMessagePinned ? 'Unpin message' : 'Pin message'}</span>
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                navigator.clipboard.writeText(message.text);
-                                toast.success('Message copied to clipboard');
-                                setActiveOptionsMenuId(null);
-                              }}
-                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left font-medium"
-                            >
-                              <Copy className="h-3.5 w-3.5 text-slate-400" />
-                              <span>Copy text</span>
-                            </button>
-                          </div>
-                        )}
                       </div>
 
                       {/* Emoji Reaction Trigger Button */}
@@ -783,47 +759,29 @@ export default function MessageList({
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setActiveEmojiBarId((prev) =>
-                              prev === (message._id || message.tempId)
-                                ? null
-                                : (message._id || message.tempId || '')
-                            );
-                            setActiveOptionsMenuId(null);
+                            if (emojiBarPopup?.id === (message._id || message.tempId)) {
+                              setEmojiBarPopup(null);
+                              return;
+                            }
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const barWidth = 224;
+                            const barHeight = 44;
+                            const placeAbove = rect.top > 90;
+
+                            setEmojiBarPopup({
+                              id: message._id || message.tempId || '',
+                              x: isSelf
+                                ? Math.max(12, rect.right - barWidth)
+                                : Math.min(rect.left, window.innerWidth - barWidth - 12),
+                              y: placeAbove ? rect.top - barHeight - 6 : rect.bottom + 6,
+                            });
+                            setOptionsMenuPopup(null);
                           }}
                           className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/80 transition-colors cursor-pointer"
                           title="React"
                         >
                           <Smile className="h-4 w-4" />
                         </button>
-
-                        {/* Floating Emoji Reaction Bar (Screenshot 2) */}
-                        {activeEmojiBarId === (message._id || message.tempId) && (
-                          <div
-                            onClick={(e) => e.stopPropagation()}
-                            className={`absolute bottom-9 ${
-                              isSelf ? 'right-0' : 'left-0'
-                            } z-50 flex items-center gap-1 p-1.5 rounded-full bg-[#18181B] border border-zinc-700/80 shadow-2xl shadow-black/80 animate-in fade-in zoom-in-95 duration-150 whitespace-nowrap`}
-                          >
-                            {['❤️', '😆', '😮', '😢', '😡', '👍'].map((emoji) => (
-                              <button
-                                key={emoji}
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  toggleReaction(
-                                    message._id || message.tempId || '',
-                                    emoji,
-                                    currentUser?._id || 'me'
-                                  );
-                                  setActiveEmojiBarId(null);
-                                }}
-                                className="h-8 w-8 rounded-full flex items-center justify-center text-lg hover:scale-125 hover:bg-zinc-800 active:scale-95 transition-all cursor-pointer select-none"
-                              >
-                                {emoji}
-                              </button>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     </div>
 
@@ -1035,6 +993,90 @@ export default function MessageList({
         </div>
       )}
 
+      {/* Floating 3 Dots Action Menu (Fixed position, immune to z-index clipping) */}
+      {optionsMenuPopup && (
+        <div
+          data-action-menu="true"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'fixed',
+            left: `${optionsMenuPopup.x}px`,
+            top: `${optionsMenuPopup.y}px`,
+          }}
+          className="z-50 w-44 rounded-2xl bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-zinc-800 shadow-2xl shadow-black/30 p-1 space-y-0.5 text-xs text-slate-800 dark:text-zinc-200 animate-in fade-in zoom-in-95 duration-100 select-none"
+        >
+          <button
+            type="button"
+            onClick={() => {
+              if (activeConversationId) {
+                if (optionsMenuPopup.isPinned) {
+                  unpinMessage(activeConversationId, optionsMenuPopup.id);
+                  toast.success('Message unpinned');
+                } else {
+                  pinMessage(activeConversationId, {
+                    id: optionsMenuPopup.id,
+                    text: optionsMenuPopup.text,
+                    senderName: optionsMenuPopup.senderName,
+                    createdAt: optionsMenuPopup.createdAt,
+                  });
+                  toast.success('Message pinned to top (max 3)');
+                }
+              }
+              setOptionsMenuPopup(null);
+            }}
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left font-medium"
+          >
+            <Pin className="h-3.5 w-3.5 text-amber-500" />
+            <span>{optionsMenuPopup.isPinned ? 'Unpin message' : 'Pin message'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText(optionsMenuPopup.text);
+              toast.success('Message copied to clipboard');
+              setOptionsMenuPopup(null);
+            }}
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left font-medium"
+          >
+            <Copy className="h-3.5 w-3.5 text-slate-400" />
+            <span>Copy text</span>
+          </button>
+        </div>
+      )}
+
+      {/* Floating Emoji Reaction Bar (Fixed position, immune to z-index clipping) */}
+      {emojiBarPopup && (
+        <div
+          data-emoji-bar="true"
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'fixed',
+            left: `${emojiBarPopup.x}px`,
+            top: `${emojiBarPopup.y}px`,
+          }}
+          className="z-50 flex items-center gap-1 p-1.5 rounded-full bg-[#18181B] border border-zinc-700/80 shadow-2xl shadow-black/80 animate-in fade-in zoom-in-95 duration-150 whitespace-nowrap select-none"
+        >
+          {['❤️', '😆', '😮', '😢', '😡', '👍'].map((emoji) => (
+            <button
+              key={emoji}
+              type="button"
+              onClick={() => {
+                toggleReaction(
+                  emojiBarPopup.id,
+                  emoji,
+                  currentUser?._id || 'me'
+                );
+                setEmojiBarPopup(null);
+              }}
+              className="h-8 w-8 rounded-full flex items-center justify-center text-lg hover:scale-125 hover:bg-zinc-800 active:scale-95 transition-all cursor-pointer select-none"
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* View Profile Detail Modal */}
       {viewProfileUser && (
         <div
@@ -1153,15 +1195,16 @@ export default function MessageList({
         </div>
       )}
 
-      {/* Floating "Jump to latest" Pill Button */}
+      {/* Floating Bottom Scroll Arrow Button (centered) */}
       {showScrollDownPill && (
         <button
           type="button"
           onClick={scrollToBottom}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-white dark:bg-[#1E1E22] border border-slate-200/90 dark:border-zinc-700/80 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-200 shadow-md shadow-black/10 hover:bg-slate-50 dark:hover:bg-[#27272A] active:scale-95 transition-all z-20 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-[#3F3F46]/95 dark:bg-[#27272A]/95 hover:bg-[#52525B] dark:hover:bg-[#3F3F46] text-indigo-400 dark:text-indigo-400 shadow-xl shadow-black/40 border border-zinc-600/60 dark:border-zinc-700/80 backdrop-blur-md active:scale-95 transition-all z-20 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
+          title="Scroll to bottom"
+          aria-label="Scroll to bottom"
         >
-          <ArrowDown className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-          <span>Jump to latest</span>
+          <ArrowDown className="h-5 w-5 stroke-[2.5]" />
         </button>
       )}
     </div>
