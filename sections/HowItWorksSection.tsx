@@ -12,7 +12,7 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="py-12 sm:py-16 lg:py-24 bg-white dark:bg-background border-t border-slate-200/60 dark:border-border/40">
+    <section id="how-it-works" className="py-12 sm:py-16 lg:py-24 bg-white dark:bg-background">
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Reusable Section Header */}
         <SectionHeader

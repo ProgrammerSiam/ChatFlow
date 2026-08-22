@@ -62,7 +62,7 @@ export default function FaqSection() {
   };
 
   return (
-    <section id="faq" className="bg-white dark:bg-background pt-12 pb-16 sm:pt-20 sm:pb-24 border-t">
+    <section id="faq" className="bg-white dark:bg-background pt-12 pb-16 sm:pt-20 sm:pb-24">
       <div className="container mx-auto px-4 max-w-4xl">
         {/* Reusable Section Header */}
         <SectionHeader
