@@ -25,18 +25,22 @@ export default function HeroSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[650px] w-full max-w-7xl bg-gradient-to-b from-purple-200/30 via-indigo-100/20 to-transparent dark:from-purple-900/15 dark:via-indigo-950/10 dark:to-transparent blur-[140px] pointer-events-none" />
 
       <div className="container mx-auto px-4 max-w-5xl relative z-10">
-        {/* Top Tag Pill (Matching Design System Spec) */}
+        {/* Top Tag Pill (Overlapping User Avatars + 10K+ users worldwide) */}
         <div className="flex justify-center mb-6">
-          <BadgePill label="With Powerful Team Features" />
+          <BadgePill showAvatars label="10K+ users worldwide" />
         </div>
 
         {/* Main Headline & Subtitle */}
         <div className="flex flex-col items-center gap-4 text-center max-w-4xl mx-auto">
           <h1
             id="hero-heading"
-            className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-[-2px] text-foreground max-w-3xl leading-[1.12]"
+            className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-[-2px] text-foreground max-w-3xl leading-[1.18]"
           >
-            All-in-One Real-Time Chat Platform for Modern Teams
+            All-in-One{' '}
+            <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight -rotate-1 hover:rotate-0 transition-transform">
+              Real-Time
+            </span>{' '}
+            Chat Platform for Modern Teams
           </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
