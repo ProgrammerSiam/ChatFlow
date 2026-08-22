@@ -300,7 +300,8 @@ export default function MessageList({
       if (
         target.closest('[data-action-menu]') ||
         target.closest('[data-emoji-bar]') ||
-        target.closest('[data-profile-popup]')
+        target.closest('[data-profile-popup]') ||
+        target.closest('[data-scroll-down-btn]')
       ) {
         return;
       }
@@ -309,8 +310,8 @@ export default function MessageList({
       setEmojiBarPopup(null);
     };
 
-    document.addEventListener('pointerdown', handleOutsideClick);
-    return () => document.removeEventListener('pointerdown', handleOutsideClick);
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
   const handleJumpToMessage = (messageId: string) => {
@@ -657,7 +658,7 @@ export default function MessageList({
                   <div
                     className={`flex items-end gap-2 sm:gap-2.5 ${
                       isSelf ? 'justify-end' : 'justify-start'
-                    } ${isFirstInGroup ? 'mt-2' : 'mt-0.5'} group/row relative z-10 hover:z-30`}
+                    } ${isFirstInGroup ? 'mt-2' : 'mt-0.5'} group/row relative z-0 hover:z-10`}
                   >
                     {/* Left Profile Avatar for Incoming Messages (Rendered on last message in consecutive group) */}
                     {!isSelf && (
@@ -697,7 +698,7 @@ export default function MessageList({
                     <div
                       className={`opacity-0 group-hover/row:opacity-100 focus-within:opacity-100 transition-opacity flex items-center gap-1 ${
                         isSelf ? 'order-first mr-1' : 'order-last ml-1'
-                      } mb-1 select-none relative z-30`}
+                      } mb-1 select-none relative z-10`}
                     >
                       {/* 3 Dots Options Button */}
                       <div className="relative" data-action-menu="true">
@@ -1177,12 +1178,16 @@ export default function MessageList({
         </div>
       )}
 
-      {/* Floating Bottom Scroll Arrow Button (centered) */}
+      {/* Floating Bottom Scroll Arrow Button (bottom-right corner with high z-index) */}
       {showScrollDownPill && (
         <button
           type="button"
-          onClick={scrollToBottom}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-[#3F3F46]/95 dark:bg-[#27272A]/95 hover:bg-[#52525B] dark:hover:bg-[#3F3F46] text-indigo-400 dark:text-indigo-400 shadow-xl shadow-black/40 border border-zinc-600/60 dark:border-zinc-700/80 backdrop-blur-md active:scale-95 transition-all z-20 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
+          data-scroll-down-btn="true"
+          onClick={(e) => {
+            e.stopPropagation();
+            scrollToBottom();
+          }}
+          className="absolute bottom-4 right-4 sm:right-6 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-slate-900/90 dark:bg-zinc-800/90 hover:bg-slate-800 dark:hover:bg-zinc-700 text-white dark:text-purple-300 shadow-xl shadow-black/30 border border-slate-700/50 dark:border-zinc-600/60 backdrop-blur-md active:scale-95 transition-all z-40 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
           title="Scroll to bottom"
           aria-label="Scroll to bottom"
         >

@@ -34,6 +34,7 @@ export default function Sidebar() {
   const {
     setNewChatOpen,
     setNewGroupOpen,
+    setGlobalSearchOpen,
     setProfileOpen,
     isSidebarCollapsed,
     toggleSidebarCollapsed,
@@ -329,20 +330,29 @@ export default function Sidebar() {
             placeholder="Search conversations..."
             className="w-full h-10 rounded-xl bg-white dark:bg-muted/50 border border-slate-200/70 dark:border-border/50 pl-10 pr-10 text-xs sm:text-[13px] text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-purple-400 shadow-2xs"
           />
-          {/* Right Command Key Icon */}
-          <div className="absolute right-3 flex items-center justify-center text-purple-600/80 dark:text-purple-400/80 pointer-events-none">
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-            </svg>
+          {/* Right Command Key Icon - triggers Global Search */}
+          <div className="absolute right-2 flex items-center">
+            <CoolTooltip content="Global Search (⌘K)" side="top">
+              <button
+                type="button"
+                onClick={() => setGlobalSearchOpen(true)}
+                className="flex items-center justify-center p-1.5 rounded-lg text-purple-600/80 hover:text-purple-700 dark:text-purple-400/80 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/50 transition-colors cursor-pointer"
+                title="Global Search (⌘K)"
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
+                </svg>
+              </button>
+            </CoolTooltip>
           </div>
         </div>
 
@@ -508,11 +518,26 @@ export default function Sidebar() {
 
                   {/* Details */}
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-sm font-medium text-slate-900 dark:text-white truncate">
-                        {title}
-                      </span>
-                      <span className="text-xs text-slate-400 shrink-0">
+                    <div className="flex items-center justify-between gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                          {title}
+                        </span>
+                        {/* Tag rendered only on All / Unread tabs or when searching across conversations */}
+                        {(activeFilter === 'all' ||
+                          activeFilter === 'unread' ||
+                          filterQuery.trim().length > 0) &&
+                          (isGroup ? (
+                            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/70 border border-purple-200/70 dark:border-purple-800/60 px-1.5 py-0.5 rounded-md shrink-0 leading-none">
+                              Group
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200/70 dark:border-indigo-800/60 px-1.5 py-0.5 rounded-md shrink-0 leading-none">
+                              Direct
+                            </span>
+                          ))}
+                      </div>
+                      <span className="text-[11px] font-medium text-slate-400 shrink-0">
                         {time}
                       </span>
                     </div>

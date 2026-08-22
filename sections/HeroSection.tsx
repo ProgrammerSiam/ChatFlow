@@ -34,7 +34,9 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Instant bi-directional WebSocket communication, TanStack Query caching, and role-gated group channels — all in a private, secure workspace built for high-performance team collaboration.
+            Instant bi-directional WebSocket communication, TanStack Query
+            caching, and role-gated group channels — all in a private, secure
+            workspace built for high-performance team collaboration.
           </p>
 
           {/* Base CTA Buttons (Matches User Spec) */}
@@ -66,8 +68,12 @@ export default function HeroSection() {
               <Mic className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-bold leading-tight text-foreground">Answers on the go.</p>
-              <p className="text-[11px] text-muted-foreground">Just speak up.</p>
+              <p className="text-xs font-bold leading-tight text-foreground">
+                Answers on the go.
+              </p>
+              <p className="text-[11px] text-muted-foreground">
+                Just speak up.
+              </p>
             </div>
           </div>
 
@@ -85,12 +91,16 @@ export default function HeroSection() {
               <Play className="h-3.5 w-3.5 ml-0.5 fill-white" />
             </div>
             <div className="flex items-center gap-0.5">
-              {[4, 8, 14, 18, 10, 16, 22, 12, 6, 18, 24, 14, 8, 12, 16, 10, 5].map((h, i) => (
+              {[
+                4, 8, 14, 18, 10, 16, 22, 12, 6, 18, 24, 14, 8, 12, 16, 10, 5,
+              ].map((h, i) => (
                 <span
                   key={i}
                   style={{ height: `${h}px` }}
                   className={`w-0.5 rounded-full ${
-                    i < 8 ? 'bg-purple-600 dark:bg-purple-400' : 'bg-purple-300 dark:bg-purple-800'
+                    i < 8
+                      ? 'bg-purple-600 dark:bg-purple-400'
+                      : 'bg-purple-300 dark:bg-purple-800'
                   }`}
                 />
               ))}
@@ -102,7 +112,9 @@ export default function HeroSection() {
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100/80 dark:bg-purple-950/80 text-purple-600 mb-1 shadow-inner">
               <ChevronUp className="h-4 w-4" />
             </div>
-            <p className="text-[11px] font-bold text-foreground leading-tight">High-speed</p>
+            <p className="text-[11px] font-bold text-foreground leading-tight">
+              High-speed
+            </p>
             <p className="text-[10px] text-muted-foreground">processing</p>
           </div>
 
@@ -152,7 +164,8 @@ export default function HeroSection() {
         className="pointer-events-none absolute inset-0 overflow-hidden select-none"
         style={{
           maskImage: 'linear-gradient(to top, black 40%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to top, black 40%, transparent 100%)',
         }}
       >
         {/* Left Graphic */}

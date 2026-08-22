@@ -12,6 +12,7 @@ export interface PinnedMessageItem {
 interface ChatUIState {
   isNewChatOpen: boolean;
   isNewGroupOpen: boolean;
+  isGlobalSearchOpen: boolean;
   isGroupInfoOpen: boolean;
   isProfileOpen: boolean;
   activeConversationId: string | null;
@@ -23,6 +24,7 @@ interface ChatUIState {
 
   setNewChatOpen: (open: boolean) => void;
   setNewGroupOpen: (open: boolean) => void;
+  setGlobalSearchOpen: (open: boolean) => void;
   setGroupInfoOpen: (open: boolean) => void;
   setProfileOpen: (open: boolean) => void;
   setActiveConversationId: (id: string | null) => void;
@@ -58,6 +60,7 @@ const getInitialReactions = (): Record<string, Record<string, string[]>> => {
 export const useChatUIStore = create<ChatUIState>((set) => ({
   isNewChatOpen: false,
   isNewGroupOpen: false,
+  isGlobalSearchOpen: false,
   isGroupInfoOpen: false,
   isProfileOpen: false,
   activeConversationId: null,
@@ -69,6 +72,7 @@ export const useChatUIStore = create<ChatUIState>((set) => ({
 
   setNewChatOpen: (open) => set({ isNewChatOpen: open }),
   setNewGroupOpen: (open) => set({ isNewGroupOpen: open }),
+  setGlobalSearchOpen: (open) => set({ isGlobalSearchOpen: open }),
   setGroupInfoOpen: (open) => set({ isGroupInfoOpen: open }),
   setProfileOpen: (open) => set({ isProfileOpen: open }),
   setActiveConversationId: (id) => set({ activeConversationId: id }),

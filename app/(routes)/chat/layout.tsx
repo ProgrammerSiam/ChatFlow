@@ -8,13 +8,14 @@ import Sidebar from '@/components/chat/Sidebar';
 import NewChatModal from '@/components/chat/NewChatModal';
 import NewGroupModal from '@/components/chat/NewGroupModal';
 import UserProfileModal from '@/components/chat/UserProfileModal';
+import GlobalSearchModal from '@/components/chat/GlobalSearchModal';
 import { useChatUIStore } from '@/store/useChatUIStore';
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, isLoading } = useAuthStore();
-  const { setNewChatOpen } = useChatUIStore();
+  const { setGlobalSearchOpen } = useChatUIStore();
 
   // Initialize socket lifecycle
   useSocket();
@@ -30,12 +31,12 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        setNewChatOpen(true);
+        setGlobalSearchOpen(true);
       }
     };
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [setNewChatOpen]);
+  }, [setGlobalSearchOpen]);
 
   // Layout-based Skeleton Loading (Exact layout and element anatomy)
   if (isLoading) {
@@ -158,6 +159,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
       <NewChatModal />
       <NewGroupModal />
       <UserProfileModal />
+      <GlobalSearchModal />
     </div>
   );
 }
