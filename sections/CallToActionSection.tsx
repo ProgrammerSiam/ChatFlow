@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
+import BadgePill from '@/shared/BadgePill';
 
 export default function CallToActionSection() {
   const { isAuthenticated } = useAuthStore();
@@ -12,39 +13,7 @@ export default function CallToActionSection() {
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 text-center sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-5">
           {/* Top Tag Pill */}
-          <div className="border-slate-200/80 dark:border-border/60 bg-white dark:bg-card relative z-10 inline-flex items-center gap-2.5 overflow-hidden rounded-xl border-[0.5px] p-1 pe-3.5 shadow-2xs">
-            <div className="border-slate-100 dark:border-border bg-white/80 dark:bg-card/80 flex size-5.5 items-center justify-center rounded-md border-[0.5px]">
-              <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M8.12058 1L2 9.54014H6.87942V15L13 6.45986H8.12058V1Z"
-                  fill="url(#paint0_linear_cta)"
-                  stroke="url(#paint1_linear_cta)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <defs>
-                  <linearGradient id="paint0_linear_cta" x1="9.5634" y1="15.7486" x2="5.81146" y2="0.704719" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#725CFF" />
-                    <stop offset="0.5" stopColor="#C9C1FF" />
-                    <stop offset="1" stopColor="#F8F7FF" />
-                  </linearGradient>
-                  <linearGradient id="paint1_linear_cta" x1="9.5634" y1="15.7486" x2="5.81146" y2="0.704719" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#725CFF" />
-                    <stop offset="0.5" stopColor="#C9C1FF" />
-                    <stop offset="1" stopColor="#F8F7FF" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-            <p className="text-slate-600 dark:text-slate-300 text-xs font-medium">Ready to Explore?</p>
-            <div
-              className="absolute -bottom-4 -left-5 -z-10 size-9.5 -rotate-12 rounded-2xl blur-[10px]"
-              style={{
-                background: 'linear-gradient(347deg, #725CFF 1.7%, #C9C1FF 46.45%, #F8F7FF 90.62%)',
-              }}
-            />
-          </div>
+          <BadgePill label="Ready to Explore?" />
 
           {/* Heading & Subtitle */}
           <div className="space-y-4">

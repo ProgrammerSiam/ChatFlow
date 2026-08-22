@@ -1,8 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
+import BadgePill from '@/shared/BadgePill';
 import {
-  ArrowUpRight,
   Sparkles,
   Play,
   Languages,
@@ -15,8 +16,6 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 
-import BadgePill from '@/shared/BadgePill';
-
 export default function HeroSection() {
   const { isAuthenticated } = useAuthStore();
 
@@ -25,8 +24,8 @@ export default function HeroSection() {
       {/* Background ethereal cloud aura */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[650px] w-full max-w-7xl bg-gradient-to-b from-purple-200/30 via-indigo-100/20 to-transparent dark:from-purple-900/15 dark:via-indigo-950/10 dark:to-transparent blur-[140px] pointer-events-none" />
 
-      <div className="container mx-auto px-4 max-w-5xl">
-        {/* Top Tag Pill (Matches Design System Spec) */}
+      <div className="container mx-auto px-4 max-w-5xl relative z-10">
+        {/* Top Tag Pill (Matching Design System Spec) */}
         <div className="flex justify-center mb-6">
           <BadgePill label="With Powerful Team Features" />
         </div>
@@ -206,6 +205,55 @@ export default function HeroSection() {
 
           {/* Smooth, Gradual Bottom Fade Transition */}
           <div className="absolute -bottom-4 left-0 right-0 h-32 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA]/60 to-transparent dark:from-background dark:via-background/60 pointer-events-none z-20" />
+        </div>
+      </div>
+
+      {/* Decorative Masked Left & Right Gradient Graphics */}
+      <div
+        className="pointer-events-none absolute inset-0 overflow-hidden select-none"
+        style={{
+          maskImage: 'linear-gradient(to top, black 40%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)',
+        }}
+      >
+        {/* Left Graphic */}
+        <div className="absolute bottom-0 left-0">
+          <Image
+            alt="Left graphic light"
+            width={583}
+            height={866}
+            className="max-w-72 sm:max-w-84 md:max-w-96 dark:hidden"
+            src="/assets/gradient-glow-light-left.png"
+            priority={false}
+          />
+          <Image
+            alt="Left graphic dark"
+            width={584}
+            height={874}
+            className="max-w-72 sm:max-w-84 md:max-w-96 hidden dark:block"
+            src="/assets/gradient-glow-dark-left.png"
+            priority={false}
+          />
+        </div>
+
+        {/* Right Graphic */}
+        <div className="absolute right-0 bottom-0">
+          <Image
+            alt="Right graphic light"
+            width={582}
+            height={866}
+            className="max-w-72 sm:max-w-84 md:max-w-96 dark:hidden"
+            src="/assets/gradient-glow-light-right.png"
+            priority={false}
+          />
+          <Image
+            alt="Right graphic dark"
+            width={584}
+            height={874}
+            className="max-w-72 sm:max-w-84 md:max-w-96 hidden dark:block"
+            src="/assets/gradient-glow-dark-right.png"
+            priority={false}
+          />
         </div>
       </div>
     </section>
