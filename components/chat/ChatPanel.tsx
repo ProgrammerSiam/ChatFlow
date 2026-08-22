@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   ArrowLeft,
   Users,
-  User as UserIcon,
+  Info,
   Search,
   X,
 } from 'lucide-react';
@@ -152,17 +152,14 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
             >
               <button
                 onClick={() => setShowRightPanel(!showRightPanel)}
-                className={`flex h-9 w-9 items-center justify-center rounded-xl border transition-all cursor-pointer shadow-2xs ${
+                className={`flex h-9 w-9 items-center justify-center rounded-xl border transition-all cursor-pointer shadow-2xs hover:scale-105 active:scale-95 ${
                   showRightPanel
                     ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border-purple-200 dark:border-purple-800'
                     : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-white dark:hover:bg-muted border-slate-200/80 dark:border-border'
                 }`}
+                aria-label="Toggle details panel"
               >
-                {isGroup ? (
-                  <Users className="h-4.5 w-4.5" />
-                ) : (
-                  <UserIcon className="h-4.5 w-4.5" />
-                )}
+                <Info className="h-4.5 w-4.5" />
               </button>
             </CoolTooltip>
           </div>
@@ -192,9 +189,9 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
         />
       </div>
 
-      {/* Right Side Info & Profile Panel (Rendered initially on desktop) */}
+      {/* Right Side Info & Profile Panel (Expanded width for readability) */}
       {showRightPanel && conversation && (
-        <div className="hidden lg:flex w-72 xl:w-80 h-full shrink-0 animate-in fade-in slide-in-from-right-4 duration-200">
+        <div className="hidden lg:flex w-80 xl:w-96 h-full shrink-0 animate-in fade-in slide-in-from-right-4 duration-200">
           <ConversationDetailsPanel
             conversation={conversation}
             onClose={() => setShowRightPanel(false)}
@@ -209,7 +206,7 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
             onClick={() => setShowRightPanel(false)}
             className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs animate-in fade-in duration-200"
           />
-          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-sm p-3 flex flex-col">
+          <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md p-3 flex flex-col">
             <ConversationDetailsPanel
               conversation={conversation}
               onClose={() => setShowRightPanel(false)}

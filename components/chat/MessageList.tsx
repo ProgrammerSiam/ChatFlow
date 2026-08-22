@@ -47,8 +47,36 @@ function highlightSearchTerm(text: string, query: string) {
   );
 }
 
-// URL linkifier and highlighter helper
+const isMediaUrl = (url: string) => {
+  return Boolean(
+    url.match(/^https?:\/\/.+\.(gif|webp|png|jpe?g)($|\?)/i) ||
+    url.includes('giphy.com/media') ||
+    url.includes('media.giphy.com') ||
+    url.includes('i.giphy.com') ||
+    url.includes('tenor.com') ||
+    url.includes('media.tenor.com')
+  );
+};
+
+// URL linkifier, GIF renderer, and search term highlighter helper
 function renderMessageContent(text: string, isSelf: boolean, searchQuery?: string) {
+  const trimmed = text.trim();
+  if (isMediaUrl(trimmed)) {
+    return (
+      <div className="space-y-1 pt-0.5 pb-0.5">
+        <div className="relative overflow-hidden rounded-xl bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 max-w-xs sm:max-w-sm max-h-64">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={trimmed}
+            alt="Animated GIF"
+            loading="lazy"
+            className="w-full h-auto max-h-60 object-contain rounded-xl"
+          />
+        </div>
+      </div>
+    );
+  }
+
   const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
   const parts = text.split(urlRegex);
 
@@ -63,6 +91,20 @@ function renderMessageContent(text: string, isSelf: boolean, searchQuery?: strin
       }
 
       const href = url.startsWith('www.') ? `https://${url}` : url;
+
+      if (isMediaUrl(href)) {
+        return (
+          <div key={i} className="my-1.5 overflow-hidden rounded-xl bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 max-w-xs sm:max-w-sm">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={href}
+              alt="Animated GIF"
+              loading="lazy"
+              className="w-full h-auto max-h-60 object-contain rounded-xl"
+            />
+          </div>
+        );
+      }
 
       return (
         <span key={i} className="inline-flex items-center gap-0.5">

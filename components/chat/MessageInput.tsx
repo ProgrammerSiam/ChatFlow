@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { SendHorizonal, Smile } from 'lucide-react';
+import { SendHorizonal } from 'lucide-react';
 import EmojiPickerPopover from './EmojiPickerPopover';
+import GifPickerPopover from './GifPickerPopover';
 import CoolTooltip from '@/shared/CoolTooltip';
 
 interface MessageInputProps {
@@ -16,8 +17,10 @@ export default function MessageInput({
 }: MessageInputProps) {
   const [text, setText] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showGifPicker, setShowGifPicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const emojiBtnRef = useRef<HTMLButtonElement>(null);
+  const gifBtnRef = useRef<HTMLButtonElement>(null);
 
   // Auto-resize textarea height based on content
   useEffect(() => {
@@ -38,6 +41,7 @@ export default function MessageInput({
     onSendMessage(trimmed);
     setText('');
     setShowEmojiPicker(false);
+    setShowGifPicker(false);
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
@@ -69,6 +73,11 @@ export default function MessageInput({
     }, 10);
   };
 
+  const handleSelectGif = (gifUrl: string) => {
+    onSendMessage(gifUrl);
+    setShowGifPicker(false);
+  };
+
   const isSendDisabled = disabled || text.trim().length === 0;
 
   return (
@@ -78,6 +87,13 @@ export default function MessageInput({
         onClose={() => setShowEmojiPicker(false)}
         onSelectEmoji={handleInsertEmoji}
         triggerRef={emojiBtnRef}
+      />
+
+      <GifPickerPopover
+        isOpen={showGifPicker}
+        onClose={() => setShowGifPicker(false)}
+        onSelectGif={handleSelectGif}
+        triggerRef={gifBtnRef}
       />
 
       <form
@@ -98,12 +114,36 @@ export default function MessageInput({
           />
         </div>
 
+        {/* GIF Button */}
+        <CoolTooltip content={showGifPicker ? 'Close GIFs' : 'Send Animated GIF'} side="top">
+          <button
+            ref={gifBtnRef}
+            type="button"
+            onClick={() => {
+              setShowGifPicker((prev) => !prev);
+              setShowEmojiPicker(false);
+            }}
+            className={`group flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border transition-all cursor-pointer ${
+              showGifPicker
+                ? 'bg-purple-100 dark:bg-purple-950/70 border-purple-300 dark:border-purple-800 text-purple-600 dark:text-purple-300 shadow-2xs'
+                : 'border-slate-200/80 dark:border-border/80 bg-slate-50/80 dark:bg-muted/40 text-slate-500 hover:text-purple-600 hover:bg-purple-50 hover:border-purple-200 dark:hover:bg-purple-950/40'
+            }`}
+          >
+            <span className="text-[11px] font-black tracking-tight uppercase px-1 py-0.5 rounded bg-slate-200/60 dark:bg-muted/80 text-slate-700 dark:text-slate-200 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+              GIF
+            </span>
+          </button>
+        </CoolTooltip>
+
         {/* Emoji Button (Outside Text Input) */}
         <CoolTooltip content={showEmojiPicker ? 'Close Emojis' : 'Insert Emoji'} side="top">
           <button
             ref={emojiBtnRef}
             type="button"
-            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            onClick={() => {
+              setShowEmojiPicker((prev) => !prev);
+              setShowGifPicker(false);
+            }}
             className={`group flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border transition-all cursor-pointer ${
               showEmojiPicker
                 ? 'bg-purple-100 dark:bg-purple-950/70 border-purple-300 dark:border-purple-800 text-purple-600 dark:text-purple-300 shadow-2xs'
