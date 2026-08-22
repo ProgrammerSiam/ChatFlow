@@ -5,6 +5,7 @@ import IntuitiveChatFeatures from '@/sections/IntuitiveChatFeatures';
 import LiveDemoSection from '@/sections/LiveDemoSection';
 import HowItWorksSection from '@/sections/HowItWorksSection';
 import FaqSection from '@/sections/FaqSection';
+import AiModelsPricingSection from '@/sections/AiModelsPricingSection';
 import CallToActionSection from '@/sections/CallToActionSection';
 
 export default function HomePage() {
@@ -16,6 +17,7 @@ export default function HomePage() {
         <IntuitiveChatFeatures />
         <LiveDemoSection />
         <HowItWorksSection />
+        <AiModelsPricingSection />
         <FaqSection />
         <CallToActionSection />
       </main>

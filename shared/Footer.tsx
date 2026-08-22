@@ -132,21 +132,21 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Below Footer Image Watermark (Clean edge-to-edge ambient integration) */}
+        {/* Below Footer Image Watermark (Enlarged grand display) */}
         <div
-          className="w-full select-none pointer-events-none flex justify-center -mb-4 pt-4 overflow-hidden"
+          className="w-full select-none pointer-events-none flex justify-center -mb-8 sm:-mb-10 pt-4 overflow-hidden"
           style={{
-            maskImage: 'linear-gradient(to bottom, black 30%, transparent 95%)',
+            maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)',
             WebkitMaskImage:
-              'linear-gradient(to bottom, black 30%, transparent 95%)',
+              'linear-gradient(to bottom, black 50%, transparent 100%)',
           }}
         >
           <Image
             src="/assets/footer-watermark-logo.png"
             alt="ChatFlow Watermark"
-            width={1400}
-            height={350}
-            className="w-full max-w-5xl h-auto object-contain max-h-32 sm:max-h-44 invert opacity-20 dark:invert-0 dark:opacity-10 transition-opacity"
+            width={1800}
+            height={480}
+            className="w-full max-w-7xl h-auto object-contain max-h-52 sm:max-h-72 md:max-h-96 lg:max-h-[380px]"
             priority={false}
           />
         </div>
