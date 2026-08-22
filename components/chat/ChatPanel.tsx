@@ -8,11 +8,13 @@ import {
   Info,
   Search,
   X,
+  Pin,
 } from 'lucide-react';
 import { useConversations } from '@/hooks/useConversations';
 import { useMessages } from '@/hooks/useMessages';
 import { useSendMessage } from '@/hooks/useSendMessage';
 import { useChatUIStore } from '@/store/useChatUIStore';
+import { toast } from 'sonner';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import ConversationDetailsPanel from './ConversationDetailsPanel';
@@ -23,12 +25,25 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
   const { messages, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useMessages(conversationId);
   const { sendMessage, retryMessage, isPending } = useSendMessage(conversationId);
-  const { setActiveConversationId } = useChatUIStore();
+  const { setActiveConversationId, pinnedMessages, unpinMessage } = useChatUIStore();
 
   // Show right details panel initially by default on desktop
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const currentPins = pinnedMessages[conversationId] || [];
+
+  const handleJumpToMessage = (messageId: string) => {
+    const el = document.getElementById(`msg-${messageId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('ring-2', 'ring-purple-400', 'rounded-2xl', 'transition-all');
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-purple-400');
+      }, 1800);
+    }
+  };
 
   useEffect(() => {
     setActiveConversationId(conversationId);
@@ -164,6 +179,49 @@ export default function ChatPanel({ conversationId }: { conversationId: string }
             </CoolTooltip>
           </div>
         </header>
+
+        {/* Smooth White Glassy Pinned Messages Attached to Topbar */}
+        {currentPins.length > 0 && (
+          <div className="border-b border-slate-200/70 dark:border-zinc-800/80 bg-white/85 dark:bg-[#18181B]/85 backdrop-blur-md px-4 py-2 flex items-center justify-between gap-3 text-xs shadow-xs z-10 select-none animate-in fade-in slide-in-from-top-1 duration-150 shrink-0">
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 shrink-0">
+                <Pin className="h-3.5 w-3.5 fill-amber-500 text-amber-600" />
+              </div>
+              <div className="min-w-0 flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
+                {currentPins.map((pin) => (
+                  <button
+                    key={pin.id}
+                    type="button"
+                    onClick={() => handleJumpToMessage(pin.id)}
+                    className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/90 dark:bg-[#222226] hover:bg-white dark:hover:bg-[#2A2A2E] border border-slate-200/80 dark:border-zinc-700/70 shadow-2xs transition-all cursor-pointer group shrink-0 max-w-[280px]"
+                    title={`Jump to pinned message by ${pin.senderName}`}
+                  >
+                    <span className="font-bold text-purple-600 dark:text-purple-400 shrink-0 text-[11px]">
+                      {pin.senderName}:
+                    </span>
+                    <span className="text-slate-700 dark:text-zinc-200 truncate text-xs font-medium">
+                      {pin.text}
+                    </span>
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        unpinMessage(conversationId, pin.id);
+                        toast.success('Message unpinned');
+                      }}
+                      className="opacity-0 group-hover:opacity-100 ml-1 p-0.5 hover:bg-slate-200 dark:hover:bg-zinc-600 rounded text-slate-400 hover:text-rose-500 transition-opacity cursor-pointer shrink-0"
+                      title="Unpin"
+                    >
+                      <X className="h-3 w-3" />
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <span className="text-[11px] font-semibold text-slate-400 dark:text-zinc-400 shrink-0">
+              {currentPins.length}/3 pinned
+            </span>
+          </div>
+        )}
 
         {/* Messages Viewport */}
         <MessageList

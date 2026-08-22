@@ -16,10 +16,14 @@ import {
   Phone,
   X,
   Sparkles,
+  MoreVertical,
+  Smile,
+  Pin,
 } from 'lucide-react';
 import { Message, GroupParticipant } from '@/types';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useConversations } from '@/hooks/useConversations';
+import { useChatUIStore } from '@/store/useChatUIStore';
 import { toast } from 'sonner';
 import CoolTooltip from '@/shared/CoolTooltip';
 
@@ -209,12 +213,24 @@ export default function MessageList({
   const { user: currentUser } = useAuthStore();
   const router = useRouter();
   const { createDirectConversation } = useConversations();
+  const {
+    activeConversationId,
+    pinnedMessages,
+    pinMessage,
+    unpinMessage,
+    messageReactions,
+    toggleReaction,
+  } = useChatUIStore();
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showScrollDownPill, setShowScrollDownPill] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [activeEmojiBarId, setActiveEmojiBarId] = useState<string | null>(null);
+  const [activeOptionsMenuId, setActiveOptionsMenuId] = useState<string | null>(null);
+
   const [profilePopup, setProfilePopup] = useState<{
     id: string;
     name: string;
@@ -237,19 +253,45 @@ export default function MessageList({
 
   const isSearchActive = Boolean(searchQuery && searchQuery.trim().length > 0);
 
+  const currentPins = activeConversationId ? pinnedMessages[activeConversationId] || [] : [];
+
   const displayedMessages = useMemo(() => {
     if (!isSearchActive || !searchQuery) return messages;
     const q = searchQuery.trim().toLowerCase();
     return messages.filter((m) => m.text?.toLowerCase().includes(q));
   }, [messages, isSearchActive, searchQuery]);
 
-  // Close profile popup on document click
+  // Close menus on outside click without canceling opening clicks
   useEffect(() => {
-    if (!profilePopup) return;
-    const handleClose = () => setProfilePopup(null);
-    document.addEventListener('click', handleClose);
-    return () => document.removeEventListener('click', handleClose);
-  }, [profilePopup]);
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      if (
+        target.closest('[data-action-menu]') ||
+        target.closest('[data-emoji-bar]') ||
+        target.closest('[data-profile-popup]')
+      ) {
+        return;
+      }
+      setProfilePopup(null);
+      setActiveEmojiBarId(null);
+      setActiveOptionsMenuId(null);
+    };
+
+    document.addEventListener('pointerdown', handleOutsideClick);
+    return () => document.removeEventListener('pointerdown', handleOutsideClick);
+  }, []);
+
+  const handleJumpToMessage = (messageId: string) => {
+    const el = document.getElementById(`msg-${messageId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('ring-2', 'ring-amber-400', 'rounded-2xl', 'transition-all');
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-amber-400');
+      }, 1800);
+    }
+  };
 
   const handleStartDirectChat = async (userId: string) => {
     try {
@@ -308,9 +350,9 @@ export default function MessageList({
   }, []);
 
   const handleScroll = () => {
-    if (profilePopup) {
-      setProfilePopup(null);
-    }
+    if (profilePopup) setProfilePopup(null);
+    if (activeEmojiBarId) setActiveEmojiBarId(null);
+    if (activeOptionsMenuId) setActiveOptionsMenuId(null);
 
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -600,8 +642,17 @@ export default function MessageList({
                 idx === 0 ||
                 !isSameDay(message.createdAt, displayedMessages[idx - 1].createdAt);
 
+              const messageUniqueId = message._id || message.tempId || `msg-${idx}`;
+              const isMessagePinned = currentPins.some((p) => p.id === (message._id || message.tempId));
+              const activeReactions = messageReactions[message._id || message.tempId || ''] || {};
+              const reactionEntries = Object.entries(activeReactions);
+
               return (
-                <div key={message._id || message.tempId || idx} className="space-y-1">
+                <div
+                  key={messageUniqueId}
+                  id={`msg-${message._id || message.tempId}`}
+                  className="space-y-1"
+                >
                   {/* Date Divider Tag (e.g., "Today", "Yesterday") */}
                   {showDateDivider && (
                     <div className="flex items-center justify-center my-3 select-none">
@@ -616,143 +667,303 @@ export default function MessageList({
                       isSelf ? 'justify-end' : 'justify-start'
                     } ${isFirstInGroup ? 'mt-2' : 'mt-0.5'} group/row relative z-10 hover:z-30`}
                   >
-                  {/* Left Profile Avatar for Incoming Messages (Rendered on last message in consecutive group) */}
-                  {!isSelf && (
-                    isLastInGroup ? (
-                      <CoolTooltip content={senderName} side="top" align="start">
+                    {/* Left Profile Avatar for Incoming Messages (Rendered on last message in consecutive group) */}
+                    {!isSelf && (
+                      isLastInGroup ? (
+                        <CoolTooltip content={senderName} side="top" align="start">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              setProfilePopup({
+                                id: senderIdStr,
+                                name: senderName,
+                                phone: senderPhone,
+                                x: Math.min(rect.right + 8, window.innerWidth - 240),
+                                y: Math.max(16, Math.min(rect.top - 20, window.innerHeight - 280)),
+                                initial: (senderName || 'U').charAt(0).toUpperCase(),
+                                avatarColor: getAvatarColor(
+                                  senderName || senderIdStr || 'user'
+                                ),
+                              });
+                            }}
+                            className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-xs shrink-0 cursor-pointer select-none transition-all hover:scale-110 active:scale-95 ring-2 ring-white dark:ring-card ${getAvatarColor(
+                              senderName || senderIdStr || 'user'
+                            )}`}
+                            title={`Click for options • ${senderName}`}
+                          >
+                            {(senderName || 'U').charAt(0).toUpperCase()}
+                          </button>
+                        </CoolTooltip>
+                      ) : (
+                        <div className="w-8 shrink-0 select-none" />
+                      )
+                    )}
+
+                    {/* Hover Quick Actions Bar: 3 Dots, Reply, Emoji Reaction Bar Trigger (Screenshot 1) */}
+                    <div
+                      className={`opacity-0 group-hover/row:opacity-100 focus-within:opacity-100 transition-opacity flex items-center gap-1 ${
+                        isSelf ? 'order-first mr-1' : 'order-last ml-1'
+                      } mb-1 select-none relative z-30`}
+                    >
+                      {/* 3 Dots Options Button */}
+                      <div className="relative" data-action-menu="true">
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            setProfilePopup({
-                              id: senderIdStr,
-                              name: senderName,
-                              phone: senderPhone,
-                              x: Math.min(rect.right + 8, window.innerWidth - 240),
-                              y: Math.max(16, Math.min(rect.top - 20, window.innerHeight - 280)),
-                              initial: (senderName || 'U').charAt(0).toUpperCase(),
-                              avatarColor: getAvatarColor(
-                                senderName || senderIdStr || 'user'
-                              ),
-                            });
+                            setActiveOptionsMenuId((prev) =>
+                              prev === (message._id || message.tempId)
+                                ? null
+                                : (message._id || message.tempId || '')
+                            );
+                            setActiveEmojiBarId(null);
                           }}
-                          className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-xs shrink-0 cursor-pointer select-none transition-all hover:scale-110 active:scale-95 ring-2 ring-white dark:ring-card ${getAvatarColor(
-                            senderName || senderIdStr || 'user'
-                          )}`}
-                          title={`Click for options • ${senderName}`}
+                          className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/80 transition-colors cursor-pointer"
+                          title="More actions"
                         >
-                          {(senderName || 'U').charAt(0).toUpperCase()}
+                          <MoreVertical className="h-4 w-4" />
                         </button>
-                      </CoolTooltip>
-                    ) : (
-                      <div className="w-8 shrink-0 select-none" />
-                    )
-                  )}
 
-                  {/* Message Bubble Column */}
-                  <div
-                    className={`flex flex-col ${
-                      isSelf ? 'items-end' : 'items-start'
-                    } max-w-[85%] sm:max-w-[75%]`}
-                  >
-                    {/* Message Bubble with rounded grouping & base black theme for GIFs */}
-                    <div
-                      className={`group relative w-full ${bubbleCorners} ${
-                        isPureMedia ? 'p-2 sm:p-2.5' : 'px-4 py-2.5'
-                      } shadow-xs transition-all ${
-                        isPureMedia
-                          ? 'bg-[#18181B] text-white border border-zinc-800/90 shadow-md shadow-black/40'
-                          : isSelf
-                          ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white shadow-md shadow-purple-500/15'
-                          : 'bg-white dark:bg-card text-card-foreground border border-border/80'
-                      }`}
-                    >
-                      {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
-                      {hasLink && (
-                        <button
-                          type="button"
-                          onClick={(e) =>
-                            handleCopyLink(
-                              message._id || message.tempId || '',
-                              message.text,
-                              e
-                            )
-                          }
-                          className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
-                            isSelf
-                              ? 'hover:bg-white/20 text-white/80 hover:text-white bg-black/10'
-                              : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
-                          }`}
-                          title="Copy link"
-                        >
-                          {copiedId === (message._id || message.tempId) ? (
-                            <Check className="h-3 w-3 text-emerald-300" />
-                          ) : (
-                            <Copy className="h-3 w-3" />
-                          )}
-                        </button>
-                      )}
+                        {/* 3 Dots Popup Menu */}
+                        {activeOptionsMenuId === (message._id || message.tempId) && (
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className={`absolute bottom-8 ${
+                              isSelf ? 'right-0' : 'left-0'
+                            } z-50 w-44 rounded-2xl bg-white dark:bg-[#1E1E22] border border-slate-200 dark:border-zinc-800 shadow-xl p-1 space-y-0.5 text-xs text-slate-800 dark:text-zinc-200 animate-in fade-in zoom-in-95 duration-100`}
+                          >
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (activeConversationId) {
+                                  if (isMessagePinned) {
+                                    unpinMessage(activeConversationId, message._id || message.tempId || '');
+                                    toast.success('Message unpinned');
+                                  } else {
+                                    pinMessage(activeConversationId, {
+                                      id: message._id || message.tempId || '',
+                                      text: message.text,
+                                      senderName,
+                                      createdAt: message.createdAt,
+                                    });
+                                    toast.success('Message pinned to top (max 3)');
+                                  }
+                                }
+                                setActiveOptionsMenuId(null);
+                              }}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left font-medium"
+                            >
+                              <Pin className="h-3.5 w-3.5 text-amber-500" />
+                              <span>{isMessagePinned ? 'Unpin message' : 'Pin message'}</span>
+                            </button>
 
-                      {/* Message Text with URL linkifier & search highlighter */}
-                      <div
-                        className={`whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text ${
-                          hasLink ? 'pr-4' : 'pr-0'
-                        }`}
-                      >
-                        {renderMessageContent(message.text, isSelf, searchQuery)}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigator.clipboard.writeText(message.text);
+                                toast.success('Message copied to clipboard');
+                                setActiveOptionsMenuId(null);
+                              }}
+                              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left font-medium"
+                            >
+                              <Copy className="h-3.5 w-3.5 text-slate-400" />
+                              <span>Copy text</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
 
-                      {/* Message Meta: Timestamp, Status, & Quick Action */}
-                      <div
-                        className={`flex items-center justify-end gap-1.5 mt-1.5 text-[11px] font-medium select-none ${
-                          isPureMedia
-                            ? 'text-zinc-400'
-                            : isSelf
-                            ? 'text-white/85'
-                            : 'text-muted-foreground'
-                        }`}
-                      >
-                        <span>{formatMessageTime(message.createdAt)}</span>
+                      {/* Emoji Reaction Trigger Button */}
+                      <div className="relative" data-emoji-bar="true">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveEmojiBarId((prev) =>
+                              prev === (message._id || message.tempId)
+                                ? null
+                                : (message._id || message.tempId || '')
+                            );
+                            setActiveOptionsMenuId(null);
+                          }}
+                          className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 hover:bg-slate-200/60 dark:hover:bg-zinc-800/80 transition-colors cursor-pointer"
+                          title="React"
+                        >
+                          <Smile className="h-4 w-4" />
+                        </button>
 
-                        {/* Status icons for own messages */}
-                        {isSelf && (
-                          <span className="inline-flex items-center">
-                            {message.status === 'sending' ? (
-                              <Clock className="h-3 w-3 animate-pulse" />
-                            ) : message.status === 'failed' ? (
+                        {/* Floating Emoji Reaction Bar (Screenshot 2) */}
+                        {activeEmojiBarId === (message._id || message.tempId) && (
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            className={`absolute bottom-9 ${
+                              isSelf ? 'right-0' : 'left-0'
+                            } z-50 flex items-center gap-1 p-1.5 rounded-full bg-[#18181B] border border-zinc-700/80 shadow-2xl shadow-black/80 animate-in fade-in zoom-in-95 duration-150 whitespace-nowrap`}
+                          >
+                            {['❤️', '😆', '😮', '😢', '😡', '👍'].map((emoji) => (
                               <button
-                                onClick={() =>
-                                  onRetryMessage(
-                                    message.tempId || message._id,
-                                    message.text
-                                  )
-                                }
-                                className="inline-flex items-center gap-0.5 text-rose-200 font-bold underline"
-                                title="Failed to send. Click to retry"
+                                key={emoji}
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleReaction(
+                                    message._id || message.tempId || '',
+                                    emoji,
+                                    currentUser?._id || 'me'
+                                  );
+                                  setActiveEmojiBarId(null);
+                                }}
+                                className="h-8 w-8 rounded-full flex items-center justify-center text-lg hover:scale-125 hover:bg-zinc-800 active:scale-95 transition-all cursor-pointer select-none"
                               >
-                                <RotateCcw className="h-3 w-3" />
-                                Retry
+                                {emoji}
                               </button>
-                            ) : (
-                              <Check className="h-3 w-3" />
-                            )}
-                          </span>
+                            ))}
+                          </div>
                         )}
                       </div>
                     </div>
 
-                    {/* Failed message banner */}
-                    {isSelf && message.status === 'failed' && (
-                      <div className="flex items-center gap-1 mt-1 text-[11px] text-destructive mr-1 font-medium">
-                        <AlertCircle className="h-3 w-3" />
-                        <span>Failed to deliver message</span>
+                    {/* Message Bubble Column */}
+                    <div
+                      className={`flex flex-col ${
+                        isSelf ? 'items-end' : 'items-start'
+                      } max-w-[85%] sm:max-w-[75%]`}
+                    >
+                      {/* Message Bubble with rounded grouping & base black theme for GIFs */}
+                      <div
+                        className={`group relative w-full ${bubbleCorners} ${
+                          isPureMedia ? 'p-2 sm:p-2.5' : 'px-4 py-2.5'
+                        } shadow-xs transition-all ${
+                          isPureMedia
+                            ? 'bg-[#18181B] text-white border border-zinc-800/90 shadow-md shadow-black/40'
+                            : isSelf
+                            ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white shadow-md shadow-purple-500/15'
+                            : 'bg-white dark:bg-card text-card-foreground border border-border/80'
+                        }`}
+                      >
+                        {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
+                        {hasLink && (
+                          <button
+                            type="button"
+                            onClick={(e) =>
+                              handleCopyLink(
+                                message._id || message.tempId || '',
+                                message.text,
+                                e
+                              )
+                            }
+                            className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
+                              isSelf
+                                ? 'hover:bg-white/20 text-white/80 hover:text-white bg-black/10'
+                                : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
+                            }`}
+                            title="Copy link"
+                          >
+                            {copiedId === (message._id || message.tempId) ? (
+                              <Check className="h-3 w-3 text-emerald-300" />
+                            ) : (
+                              <Copy className="h-3 w-3" />
+                            )}
+                          </button>
+                        )}
+
+                        {/* Message Text with URL linkifier & search highlighter */}
+                        <div
+                          className={`whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text ${
+                            hasLink ? 'pr-4' : 'pr-0'
+                          }`}
+                        >
+                          {renderMessageContent(message.text, isSelf, searchQuery)}
+                        </div>
+
+                        {/* Message Meta: Timestamp, Status, & Quick Action */}
+                        <div
+                          className={`flex items-center justify-end gap-1.5 mt-1.5 text-[11px] font-medium select-none ${
+                            isPureMedia
+                              ? 'text-zinc-400'
+                              : isSelf
+                              ? 'text-white/85'
+                              : 'text-muted-foreground'
+                          }`}
+                        >
+                          <span>{formatMessageTime(message.createdAt)}</span>
+
+                          {/* Status icons for own messages */}
+                          {isSelf && (
+                            <span className="inline-flex items-center">
+                              {message.status === 'sending' ? (
+                                <Clock className="h-3 w-3 animate-pulse" />
+                              ) : message.status === 'failed' ? (
+                                <button
+                                  onClick={() =>
+                                    onRetryMessage(
+                                      message.tempId || message._id,
+                                      message.text
+                                    )
+                                  }
+                                  className="inline-flex items-center gap-0.5 text-rose-200 font-bold underline"
+                                  title="Failed to send. Click to retry"
+                                >
+                                  <RotateCcw className="h-3 w-3" />
+                                  Retry
+                                </button>
+                              ) : (
+                                <Check className="h-3 w-3" />
+                              )}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    )}
+
+                      {/* Active Emoji Reactions Pills under message */}
+                      {reactionEntries.length > 0 && (
+                        <div
+                          className={`flex flex-wrap items-center gap-1 mt-1 ${
+                            isSelf ? 'justify-end' : 'justify-start'
+                          }`}
+                        >
+                          {reactionEntries.map(([emoji, users]) => {
+                            const hasReacted = users.includes(currentUser?._id || 'me');
+                            return (
+                              <button
+                                key={emoji}
+                                type="button"
+                                onClick={() =>
+                                  toggleReaction(
+                                    message._id || message.tempId || '',
+                                    emoji,
+                                    currentUser?._id || 'me'
+                                  )
+                                }
+                                className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border transition-all cursor-pointer select-none ${
+                                  hasReacted
+                                    ? 'bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800 shadow-2xs'
+                                    : 'bg-white dark:bg-[#1E1E22] text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-800'
+                                }`}
+                              >
+                                <span>{emoji}</span>
+                                <span className="text-[11px] font-bold">{users.length}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {/* Failed message banner */}
+                      {isSelf && message.status === 'failed' && (
+                        <div className="flex items-center gap-1 mt-1 text-[11px] text-destructive mr-1 font-medium">
+                          <AlertCircle className="h-3 w-3" />
+                          <span>Failed to deliver message</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
+              );
             })}
           </>
         )}
@@ -763,6 +974,7 @@ export default function MessageList({
       {/* Floating Profile Action Menu on Avatar Click */}
       {profilePopup && (
         <div
+          data-profile-popup="true"
           onClick={(e) => e.stopPropagation()}
           style={{
             position: 'fixed',
