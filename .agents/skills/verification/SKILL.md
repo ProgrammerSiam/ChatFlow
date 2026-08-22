@@ -35,7 +35,7 @@ npm run lint
 ```bash
 npm run build
 ```
-Required: all routes compile, including `/`, `/login`, `/chat`, `/chat/[conversationId]`.
+Required: all routes compile, including `/`, `/login`, `/chat`, `/chat/[id]`.
 
 ### Step 4 — Dependency Audit
 ```bash
