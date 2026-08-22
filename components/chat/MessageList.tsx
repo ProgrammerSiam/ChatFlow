@@ -12,6 +12,10 @@ import {
   ExternalLink,
   Search,
   MessageSquare,
+  User as UserIcon,
+  Phone,
+  X,
+  Sparkles,
 } from 'lucide-react';
 import { Message, GroupParticipant } from '@/types';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -51,6 +55,38 @@ function getAvatarColor(seed: string) {
   return AVATAR_GRADIENTS[index];
 }
 
+function isSameDay(d1: string | Date, d2: string | Date) {
+  try {
+    const date1 = new Date(d1);
+    const date2 = new Date(d2);
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  } catch {
+    return false;
+  }
+}
+
+function formatDateDivider(dateStr: string) {
+  try {
+    const d = new Date(dateStr);
+    const now = new Date();
+    if (isSameDay(d, now)) return 'Today';
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    if (isSameDay(d, yesterday)) return 'Yesterday';
+    return d.toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined,
+    });
+  } catch {
+    return 'Today';
+  }
+}
+
 function highlightSearchTerm(text: string, query: string) {
   if (!query || !query.trim()) return text;
   const escaped = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -86,8 +122,8 @@ function renderMessageContent(text: string, isSelf: boolean, searchQuery?: strin
   const trimmed = text.trim();
   if (isMediaUrl(trimmed)) {
     return (
-      <div className="space-y-1 pt-0.5 pb-0.5">
-        <div className="relative overflow-hidden rounded-xl bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 max-w-xs sm:max-w-sm max-h-64">
+      <div className="space-y-1">
+        <div className="relative overflow-hidden rounded-xl bg-black border border-zinc-800/90 max-w-xs sm:max-w-sm max-h-64 shadow-xs">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={trimmed}
@@ -117,7 +153,7 @@ function renderMessageContent(text: string, isSelf: boolean, searchQuery?: strin
 
       if (isMediaUrl(href)) {
         return (
-          <div key={i} className="my-1.5 overflow-hidden rounded-xl bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 max-w-xs sm:max-w-sm">
+          <div key={i} className="my-1.5 overflow-hidden rounded-xl bg-black border border-zinc-800/90 max-w-xs sm:max-w-sm shadow-xs">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={href}
@@ -185,6 +221,13 @@ export default function MessageList({
     phone?: string;
     x: number;
     y: number;
+    initial: string;
+    avatarColor: string;
+  } | null>(null);
+  const [viewProfileUser, setViewProfileUser] = useState<{
+    id: string;
+    name: string;
+    phone?: string;
     initial: string;
     avatarColor: string;
   } | null>(null);
@@ -550,15 +593,29 @@ export default function MessageList({
 
               const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
               const hasLink = urlRegex.test(message.text);
+              const isPureMedia = isMediaUrl(message.text.trim());
               const senderIdStr = typeof senderId === 'string' ? senderId : senderObj?._id || '';
 
+              const showDateDivider =
+                idx === 0 ||
+                !isSameDay(message.createdAt, displayedMessages[idx - 1].createdAt);
+
               return (
-                <div
-                  key={message._id || message.tempId}
-                  className={`flex items-end gap-2 sm:gap-2.5 ${
-                    isSelf ? 'justify-end' : 'justify-start'
-                  } ${isFirstInGroup ? 'mt-2.5' : 'mt-0.5'} group/row relative z-10 hover:z-30`}
-                >
+                <div key={message._id || message.tempId || idx} className="space-y-1">
+                  {/* Date Divider Tag (e.g., "Today", "Yesterday") */}
+                  {showDateDivider && (
+                    <div className="flex items-center justify-center my-3 select-none">
+                      <span className="px-3.5 py-1 rounded-full bg-slate-100/90 dark:bg-[#1E1E22] text-slate-600 dark:text-zinc-400 text-xs font-semibold border border-slate-200/60 dark:border-zinc-800/80 shadow-2xs">
+                        {formatDateDivider(message.createdAt)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div
+                    className={`flex items-end gap-2 sm:gap-2.5 ${
+                      isSelf ? 'justify-end' : 'justify-start'
+                    } ${isFirstInGroup ? 'mt-2' : 'mt-0.5'} group/row relative z-10 hover:z-30`}
+                  >
                   {/* Left Profile Avatar for Incoming Messages (Rendered on last message in consecutive group) */}
                   {!isSelf && (
                     isLastInGroup ? (
@@ -599,10 +656,14 @@ export default function MessageList({
                       isSelf ? 'items-end' : 'items-start'
                     } max-w-[85%] sm:max-w-[75%]`}
                   >
-                    {/* Message Bubble with rounded grouping */}
+                    {/* Message Bubble with rounded grouping & base black theme for GIFs */}
                     <div
-                      className={`group relative w-full ${bubbleCorners} px-4 py-2.5 shadow-xs transition-all ${
-                        isSelf
+                      className={`group relative w-full ${bubbleCorners} ${
+                        isPureMedia ? 'p-2 sm:p-2.5' : 'px-4 py-2.5'
+                      } shadow-xs transition-all ${
+                        isPureMedia
+                          ? 'bg-[#18181B] text-white border border-zinc-800/90 shadow-md shadow-black/40'
+                          : isSelf
                           ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white shadow-md shadow-purple-500/15'
                           : 'bg-white dark:bg-card text-card-foreground border border-border/80'
                       }`}
@@ -645,7 +706,11 @@ export default function MessageList({
                       {/* Message Meta: Timestamp, Status, & Quick Action */}
                       <div
                         className={`flex items-center justify-end gap-1.5 mt-1.5 text-[11px] font-medium select-none ${
-                          isSelf ? 'text-white/85' : 'text-muted-foreground'
+                          isPureMedia
+                            ? 'text-zinc-400'
+                            : isSelf
+                            ? 'text-white/85'
+                            : 'text-muted-foreground'
                         }`}
                       >
                         <span>{formatMessageTime(message.createdAt)}</span>
@@ -686,7 +751,8 @@ export default function MessageList({
                     )}
                   </div>
                 </div>
-              );
+              </div>
+            );
             })}
           </>
         )}
@@ -722,6 +788,19 @@ export default function MessageList({
             </div>
           </div>
 
+          {/* Action: View Profile */}
+          <button
+            type="button"
+            onClick={() => {
+              setViewProfileUser(profilePopup);
+              setProfilePopup(null);
+            }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left"
+          >
+            <UserIcon className="h-4 w-4 text-slate-400 shrink-0" />
+            <span>View profile</span>
+          </button>
+
           {/* Action: Send Direct Message */}
           <button
             type="button"
@@ -744,14 +823,133 @@ export default function MessageList({
         </div>
       )}
 
-      {/* Floating "↓ New message" Pill Button */}
+      {/* View Profile Detail Modal */}
+      {viewProfileUser && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => setViewProfileUser(null)}
+        >
+          <div
+            className="relative w-full max-w-sm rounded-3xl bg-white dark:bg-[#18181B] border border-slate-200 dark:border-zinc-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Banner Gradient */}
+            <div className="h-24 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-800 relative p-4 flex justify-between items-start">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold text-white">
+                <Sparkles className="h-3 w-3" />
+                <span>ChatFlow Member</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewProfileUser(null)}
+                className="p-1.5 rounded-full bg-black/30 hover:bg-black/50 text-white/90 transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Profile Avatar & Details */}
+            <div className="px-6 pb-6 pt-0 relative">
+              <div className="-mt-12 mb-3">
+                <div
+                  className={`h-20 w-20 rounded-2xl flex items-center justify-center font-bold text-2xl shadow-xl ring-4 ring-white dark:ring-[#18181B] ${viewProfileUser.avatarColor}`}
+                >
+                  {viewProfileUser.initial}
+                </div>
+              </div>
+
+              <div className="space-y-1 mb-5">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {viewProfileUser.name}
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-zinc-400">
+                  {viewProfileUser.phone || 'No phone provided'}
+                </p>
+              </div>
+
+              {/* Info Cards */}
+              <div className="space-y-2 mb-6">
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-zinc-900/90 border border-slate-100 dark:border-zinc-800/80 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-zinc-300">
+                    <Phone className="h-4 w-4 text-purple-500" />
+                    <span>{viewProfileUser.phone || 'Not available'}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (viewProfileUser.phone) {
+                        navigator.clipboard.writeText(viewProfileUser.phone);
+                        toast.success('Phone copied to clipboard');
+                      }
+                    }}
+                    className="p-1.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-zinc-800 text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+                    title="Copy phone"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 dark:bg-zinc-900/90 border border-slate-100 dark:border-zinc-800/80 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 text-xs text-slate-600 dark:text-zinc-300">
+                    <UserIcon className="h-4 w-4 text-purple-500" />
+                    <span className="font-mono text-[11px] truncate max-w-[200px]">
+                      ID: {viewProfileUser.id || 'Member'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (viewProfileUser.id) {
+                        navigator.clipboard.writeText(viewProfileUser.id);
+                        toast.success('User ID copied to clipboard');
+                      }
+                    }}
+                    className="p-1.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-zinc-800 text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+                    title="Copy user ID"
+                  >
+                    <Copy className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleStartDirectChat(viewProfileUser.id);
+                    setViewProfileUser(null);
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs shadow-md shadow-purple-500/20 hover:opacity-95 active:scale-95 transition-all cursor-pointer"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>Send direct message</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleCopyProfile(viewProfileUser.name, viewProfileUser.phone);
+                    setViewProfileUser(null);
+                  }}
+                  className="py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold text-xs transition-colors cursor-pointer"
+                >
+                  Copy info
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating "Jump to latest" Pill Button */}
       {showScrollDownPill && (
         <button
+          type="button"
           onClick={scrollToBottom}
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 px-5 py-2.5 text-xs font-bold text-white shadow-xl shadow-purple-500/30 hover:opacity-95 active:scale-95 transition-all z-20 animate-bounce cursor-pointer"
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-white dark:bg-[#1E1E22] border border-slate-200/90 dark:border-zinc-700/80 px-4 py-1.5 text-xs font-semibold text-slate-700 dark:text-zinc-200 shadow-md shadow-black/10 hover:bg-slate-50 dark:hover:bg-[#27272A] active:scale-95 transition-all z-20 cursor-pointer animate-in fade-in zoom-in-95 duration-150"
         >
-          <ArrowDown className="h-3.5 w-3.5" />
-          <span>New message</span>
+          <ArrowDown className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
+          <span>Jump to latest</span>
         </button>
       )}
     </div>
