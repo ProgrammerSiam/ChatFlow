@@ -63,27 +63,6 @@ export default function HeroSection() {
 
           {/* Browser / App Window Container */}
           <div className="relative z-10 w-full rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 shadow-[0_25px_70px_-15px_rgba(114,92,255,0.2)] dark:shadow-[0_30px_80px_-15px_rgba(0,0,0,0.8)] backdrop-blur-2xl overflow-hidden text-card-foreground ring-1 ring-black/5 dark:ring-white/10">
-            {/* Window Top Bar */}
-            <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-slate-200/70 dark:border-zinc-800/80 bg-slate-50/80 dark:bg-zinc-900/80 backdrop-blur-md">
-              {/* Traffic Light Window Controls */}
-              <div className="flex items-center gap-2">
-                <span className="size-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/50 inline-block" />
-                <span className="size-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/50 inline-block" />
-                <span className="size-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/50 inline-block" />
-              </div>
-
-              {/* URL / Workspace Status Bar */}
-              <div className="flex items-center gap-2 rounded-full border border-slate-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-950 px-3.5 py-1 text-[11px] sm:text-xs font-mono text-slate-500 dark:text-slate-400 shadow-2xs">
-                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>chatflow.io/workspace</span>
-              </div>
-
-              {/* Status Tag */}
-              <div className="hidden sm:flex items-center gap-1.5 text-[11px] font-semibold text-purple-600 dark:text-purple-400">
-                <span>0ms WebSocket Sync</span>
-              </div>
-            </div>
-
             {/* Real Workspace Hero Image */}
             <div className="relative w-full overflow-hidden bg-slate-100 dark:bg-zinc-900">
               <Image
