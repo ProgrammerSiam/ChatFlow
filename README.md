@@ -148,6 +148,21 @@ ChatFlow/
 
 ## 🧠 Part 3 — Thought Process Write-up
 
+### 0. Groundwork & Preparatory Methodology (Before Coding)
+
+Before writing production code, the following foundational groundwork was completed:
+
+1. **API Brainstorming & Live Endpoint Verification**:
+   - Manually tested every endpoint against the live backend (`https://frontend-task-chatapp.onrender.com/api`) using Swagger UI and curl to verify actual response payloads, status codes, and error shapes — feeding directly into [`API_DOCUMENTATION.md`](./API_DOCUMENTATION.md).
+2. **End-to-End User Flow Mapping**:
+   - Mapped the entire application flow: phone login & auto-registration → debounced user search → starting 1-on-1 direct chats → optimistic messaging with retry → multi-member group creation & admin governance → WebSocket real-time sync and reconnection.
+3. **UI/UX Research & Visual Direction**:
+   - Locked in the visual design system (clean layout, dark/light theme tokens, typography, glassmorphic card elevations, and scoped celebration triggers) before building components to avoid mid-implementation redesigns.
+4. **System Architecture & State Boundaries**:
+   - Formalized strict state management boundaries separating asynchronous server data (TanStack Query v5) from client UI toggles (Zustand v5) and establishing a resilient Socket.io lifecycle singleton.
+5. **Continuous Documentation & Skill Maintenance**:
+   - Maintained `AGENTS.md` and `.agents/skills/` as continuous sources of truth, updating rules and conventions whenever dependencies or integration patterns evolved.
+
 ### 1. Architecture & Approach (Part 1)
 
 - **Separation of Concerns (Server vs. Client State)**:
