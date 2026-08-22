@@ -4,11 +4,11 @@ import React from 'react';
 import SectionHeader from '@/shared/SectionHeader';
 import {
   MessageSquare,
-  FileText,
-  Zap,
   Users,
+  Smile,
+  Pin,
   Search,
-  Key,
+  ShieldCheck,
   Sparkles,
 } from 'lucide-react';
 
@@ -31,10 +31,10 @@ const Highlight = ({ children }: { children: React.ReactNode }) => (
 const FEATURE_CARDS: FeatureCard[] = [
   /* Row 1: 3 cards (Card 1 expanded to 6 cols, Card 2 & 3 are 3 cols each) */
   {
-    title: 'Multi-Model & Socket Access',
+    title: '1-on-1 Direct Messaging',
     description: (
       <>
-        Access persistent <Highlight>WebSocket channels</Highlight>, direct messages, and group channels — all in one unified workspace without tab fatigue.
+        Send instant private messages with <Highlight>0ms optimistic dispatch</Highlight>, real-time read receipts, and sub-millisecond WebSocket delivery.
       </>
     ),
     icon: MessageSquare,
@@ -44,67 +44,67 @@ const FEATURE_CARDS: FeatureCard[] = [
     initialGlow: true,
   },
   {
-    title: 'Analyze Any File Instantly',
+    title: 'Group Channels & Admin Access',
     description: (
       <>
-        Upload PDFs, Docs, Sheets, or code and get <Highlight>accurate, context-aware answers</Highlight> and summaries in seconds.
+        Create multi-member workspaces with <Highlight>role-gated admin controls</Highlight>, member invitations, and co-admin promotions.
       </>
     ),
-    icon: FileText,
+    icon: Users,
     colSpan: 'lg:col-span-3',
     iconBg: 'from-indigo-100/90 via-blue-50/70 to-indigo-50/50 dark:from-indigo-950/60 dark:to-blue-950/40',
     iconColor: 'text-indigo-600 dark:text-indigo-300',
     initialGlow: false,
   },
   {
-    title: 'Compare Model & Speed',
+    title: 'Tenor GIFs & Emoji Reactions',
     description: (
       <>
-        Experience <Highlight>zero-latency optimistic delivery</Highlight> with sub-10ms network dispatch and instant status transitions.
+        Express ideas with <Highlight>animated Tenor GIFs</Highlight>, 1-tap emoji reaction counters, and particle confetti celebrations.
       </>
     ),
-    icon: Zap,
+    icon: Smile,
     colSpan: 'lg:col-span-3',
-    iconBg: 'from-amber-100/90 via-orange-50/70 to-amber-50/50 dark:from-amber-950/60 dark:to-orange-950/40',
-    iconColor: 'text-amber-600 dark:text-amber-300',
+    iconBg: 'from-pink-100/90 via-purple-50/70 to-pink-50/50 dark:from-pink-950/60 dark:to-purple-950/40',
+    iconColor: 'text-pink-600 dark:text-pink-300',
     initialGlow: true,
   },
 
   /* Row 2: 3 cards (4 cols each) */
   {
-    title: 'Built-In Team Collaboration',
+    title: 'Pinned Channel Announcements',
     description: (
       <>
-        Share chats, <Highlight>assign admin roles</Highlight>, and work together in real time — collaboration is included at no extra cost.
+        Pin important roadmaps and specifications to the <Highlight>top of any channel</Highlight> for high visibility across your team.
       </>
     ),
-    icon: Users,
+    icon: Pin,
     colSpan: 'lg:col-span-4',
-    iconBg: 'from-emerald-100/90 via-teal-50/70 to-emerald-50/50 dark:from-emerald-950/60 dark:to-teal-950/40',
-    iconColor: 'text-emerald-600 dark:text-emerald-300',
+    iconBg: 'from-amber-100/90 via-orange-50/70 to-amber-50/50 dark:from-amber-950/60 dark:to-orange-950/40',
+    iconColor: 'text-amber-600 dark:text-amber-300',
     initialGlow: true,
   },
   {
-    title: 'Live User & Message Search',
+    title: 'Global Search & User Discovery',
     description: (
       <>
-        Real-time <Highlight>300ms debounced search</Highlight> built in. Instant sidebar cache lookup with client-side self-exclusion.
+        Fuzzy search teammates and channels with <Highlight>300ms debouncing</Highlight> and 1-click room creation via ⌘K command palette.
       </>
     ),
     icon: Search,
     colSpan: 'lg:col-span-4',
-    iconBg: 'from-pink-100/90 via-rose-50/70 to-pink-50/50 dark:from-pink-950/60 dark:to-rose-950/40',
-    iconColor: 'text-pink-600 dark:text-pink-300',
+    iconBg: 'from-emerald-100/90 via-teal-50/70 to-emerald-50/50 dark:from-emerald-950/60 dark:to-teal-950/40',
+    iconColor: 'text-emerald-600 dark:text-emerald-300',
     initialGlow: false,
   },
   {
-    title: 'Bring Your Own Token & API',
+    title: 'Stateless JWT & Gap-Filling Sync',
     description: (
       <>
-        <Highlight>JWT Bearer tokens</Highlight> authenticated on every REST request and WebSocket handshake with automated session recovery.
+        Zero-password phone login secured with <Highlight>JWT Bearer tokens</Highlight>, automatic reconnect gap-filling, and 401 cache purges.
       </>
     ),
-    icon: Key,
+    icon: ShieldCheck,
     colSpan: 'lg:col-span-4',
     iconBg: 'from-purple-100/90 via-fuchsia-50/70 to-purple-50/50 dark:from-purple-950/60 dark:to-fuchsia-950/40',
     iconColor: 'text-purple-600 dark:text-purple-300',
