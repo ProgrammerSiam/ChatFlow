@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useLayoutEffect, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   AlertCircle,
   ArrowDown,
@@ -10,9 +11,11 @@ import {
   Copy,
   ExternalLink,
   Search,
+  MessageSquare,
 } from 'lucide-react';
 import { Message, GroupParticipant } from '@/types';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useConversations } from '@/hooks/useConversations';
 import { toast } from 'sonner';
 import CoolTooltip from '@/shared/CoolTooltip';
 
@@ -168,12 +171,24 @@ export default function MessageList({
   onRetryMessage,
 }: MessageListProps) {
   const { user: currentUser } = useAuthStore();
+  const router = useRouter();
+  const { createDirectConversation } = useConversations();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showScrollDownPill, setShowScrollDownPill] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [profilePopup, setProfilePopup] = useState<{
+    id: string;
+    name: string;
+    phone?: string;
+    x: number;
+    y: number;
+    initial: string;
+    avatarColor: string;
+  } | null>(null);
+
   const prevMessagesCountRef = useRef(messages.length);
   const prevScrollHeightRef = useRef<number>(0);
 
@@ -184,6 +199,34 @@ export default function MessageList({
     const q = searchQuery.trim().toLowerCase();
     return messages.filter((m) => m.text?.toLowerCase().includes(q));
   }, [messages, isSearchActive, searchQuery]);
+
+  // Close profile popup on document click
+  useEffect(() => {
+    if (!profilePopup) return;
+    const handleClose = () => setProfilePopup(null);
+    document.addEventListener('click', handleClose);
+    return () => document.removeEventListener('click', handleClose);
+  }, [profilePopup]);
+
+  const handleStartDirectChat = async (userId: string) => {
+    try {
+      setProfilePopup(null);
+      if (!userId || userId === currentUser?._id) return;
+      const conv = await createDirectConversation(userId);
+      if (conv?._id) {
+        router.push(`/chat/${conv._id}`);
+      }
+    } catch {
+      toast.error('Could not open direct chat');
+    }
+  };
+
+  const handleCopyProfile = (name: string, phone?: string) => {
+    const text = `${name} (${phone || 'No phone'})`;
+    navigator.clipboard.writeText(text);
+    toast.success(`Copied "${name}" details to clipboard`);
+    setProfilePopup(null);
+  };
 
   const handleCopyLink = (id: string, text: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -222,6 +265,10 @@ export default function MessageList({
   }, []);
 
   const handleScroll = () => {
+    if (profilePopup) {
+      setProfilePopup(null);
+    }
+
     const container = scrollContainerRef.current;
     if (!container) return;
 
@@ -309,7 +356,7 @@ export default function MessageList({
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar p-4 space-y-3"
+        className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar p-4 space-y-1"
       >
         {/* Loading older messages indicator */}
         {isFetchingNextPage && (
@@ -341,26 +388,6 @@ export default function MessageList({
               <div className="p-3.5 rounded-2xl rounded-br-xs bg-purple-100/70 dark:bg-purple-950/40 border border-purple-200/50 dark:border-purple-900/40 space-y-2 w-56 sm:w-72">
                 <div className="h-3.5 w-full rounded bg-purple-200/80 dark:bg-purple-900/60" />
                 <div className="h-3.5 w-1/2 rounded bg-purple-200/80 dark:bg-purple-900/60" />
-                <div className="h-2.5 w-14 rounded bg-purple-200/60 dark:bg-purple-900/40 ml-auto mt-1" />
-              </div>
-            </div>
-
-            {/* Incoming short message skeleton */}
-            <div className="flex items-start gap-2.5 max-w-[80%]">
-              <div className="h-9 w-9 rounded-xl bg-slate-200 dark:bg-muted/70 shrink-0" />
-              <div className="space-y-1.5 w-48 sm:w-60">
-                <div className="h-3 w-16 rounded bg-slate-200 dark:bg-muted/70" />
-                <div className="p-3.5 rounded-2xl rounded-bl-xs bg-slate-100 dark:bg-muted/50 border border-slate-200/50 dark:border-border/40 space-y-2">
-                  <div className="h-3.5 w-full rounded bg-slate-200 dark:bg-muted/70" />
-                  <div className="h-2.5 w-12 rounded bg-slate-200 dark:bg-muted/60 ml-auto mt-1" />
-                </div>
-              </div>
-            </div>
-
-            {/* Outgoing short message skeleton */}
-            <div className="flex flex-col items-end gap-1 ml-auto max-w-[75%] sm:max-w-[65%]">
-              <div className="p-3.5 rounded-2xl rounded-br-xs bg-purple-100/70 dark:bg-purple-950/40 border border-purple-200/50 dark:border-purple-900/40 space-y-2 w-44 sm:w-52">
-                <div className="h-3.5 w-full rounded bg-purple-200/80 dark:bg-purple-900/60" />
                 <div className="h-2.5 w-14 rounded bg-purple-200/60 dark:bg-purple-900/40 ml-auto mt-1" />
               </div>
             </div>
@@ -412,7 +439,7 @@ export default function MessageList({
               </div>
             )}
 
-            {displayedMessages.map((message) => {
+            {displayedMessages.map((message, idx) => {
               const senderObj =
                 typeof message.sender === 'object' ? message.sender : null;
               const senderId = senderObj ? senderObj._id : message.sender;
@@ -456,6 +483,8 @@ export default function MessageList({
                 participantMatch?.name ||
                 (typeof message.sender === 'string' && message.sender.length < 30 ? message.sender : 'Teammate');
 
+              const senderPhone = senderObj?.phone || participantMatch?.phone;
+
               const isSenderNameMatch = Boolean(
                 (resolvedMyName && senderName.toLowerCase().trim() === resolvedMyName) ||
                 (currentName && senderName.toLowerCase().trim() === currentName) ||
@@ -481,28 +510,87 @@ export default function MessageList({
                 isSenderNameMatch ||
                 isSenderPhoneMatch;
 
+              // Message Grouping Calculation (consecutive messages from same sender)
+              const prevMsg = idx > 0 ? displayedMessages[idx - 1] : null;
+              const nextMsg = idx < displayedMessages.length - 1 ? displayedMessages[idx + 1] : null;
+
+              const prevSenderKey = prevMsg ? (typeof prevMsg.sender === 'object' ? prevMsg.sender?._id : prevMsg.sender) : null;
+              const currSenderKey = typeof message.sender === 'object' ? message.sender?._id : message.sender;
+              const nextSenderKey = nextMsg ? (typeof nextMsg.sender === 'object' ? nextMsg.sender?._id : nextMsg.sender) : null;
+
+              const isSameSenderAsPrev = Boolean(prevSenderKey && prevSenderKey === currSenderKey);
+              const isSameSenderAsNext = Boolean(nextSenderKey && nextSenderKey === currSenderKey);
+
+              const isFirstInGroup = !isSameSenderAsPrev;
+              const isLastInGroup = !isSameSenderAsNext;
+              const isSingle = isFirstInGroup && isLastInGroup;
+
+              let bubbleCorners = '';
+              if (isSelf) {
+                if (isSingle) {
+                  bubbleCorners = 'rounded-2xl rounded-br-xs';
+                } else if (isFirstInGroup) {
+                  bubbleCorners = 'rounded-2xl rounded-br-md';
+                } else if (isLastInGroup) {
+                  bubbleCorners = 'rounded-2xl rounded-tr-md rounded-br-xs';
+                } else {
+                  bubbleCorners = 'rounded-2xl rounded-r-md';
+                }
+              } else {
+                if (isSingle) {
+                  bubbleCorners = 'rounded-2xl rounded-bl-xs';
+                } else if (isFirstInGroup) {
+                  bubbleCorners = 'rounded-2xl rounded-bl-md';
+                } else if (isLastInGroup) {
+                  bubbleCorners = 'rounded-2xl rounded-tl-md rounded-bl-xs';
+                } else {
+                  bubbleCorners = 'rounded-2xl rounded-l-md';
+                }
+              }
+
               const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
               const hasLink = urlRegex.test(message.text);
+              const senderIdStr = typeof senderId === 'string' ? senderId : senderObj?._id || '';
 
               return (
                 <div
                   key={message._id || message.tempId}
                   className={`flex items-end gap-2 sm:gap-2.5 ${
                     isSelf ? 'justify-end' : 'justify-start'
-                  } group/row`}
+                  } ${isFirstInGroup ? 'mt-2.5' : 'mt-0.5'} group/row relative z-10 hover:z-30`}
                 >
-                  {/* Left Profile Avatar for Incoming Messages with Name on Hover */}
+                  {/* Left Profile Avatar for Incoming Messages (Rendered on last message in consecutive group) */}
                   {!isSelf && (
-                    <CoolTooltip content={senderName} side="top">
-                      <div
-                        className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-xs shrink-0 cursor-pointer select-none transition-all hover:scale-110 active:scale-95 ring-2 ring-white dark:ring-card ${getAvatarColor(
-                          senderName || (typeof senderId === 'string' ? senderId : 'user')
-                        )}`}
-                        title={senderName}
-                      >
-                        {(senderName || 'U').charAt(0).toUpperCase()}
-                      </div>
-                    </CoolTooltip>
+                    isLastInGroup ? (
+                      <CoolTooltip content={senderName} side="top" align="start">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setProfilePopup({
+                              id: senderIdStr,
+                              name: senderName,
+                              phone: senderPhone,
+                              x: Math.min(rect.right + 8, window.innerWidth - 240),
+                              y: Math.max(16, Math.min(rect.top - 20, window.innerHeight - 280)),
+                              initial: (senderName || 'U').charAt(0).toUpperCase(),
+                              avatarColor: getAvatarColor(
+                                senderName || senderIdStr || 'user'
+                              ),
+                            });
+                          }}
+                          className={`h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs shadow-xs shrink-0 cursor-pointer select-none transition-all hover:scale-110 active:scale-95 ring-2 ring-white dark:ring-card ${getAvatarColor(
+                            senderName || senderIdStr || 'user'
+                          )}`}
+                          title={`Click for options • ${senderName}`}
+                        >
+                          {(senderName || 'U').charAt(0).toUpperCase()}
+                        </button>
+                      </CoolTooltip>
+                    ) : (
+                      <div className="w-8 shrink-0 select-none" />
+                    )
                   )}
 
                   {/* Message Bubble Column */}
@@ -511,12 +599,12 @@ export default function MessageList({
                       isSelf ? 'items-end' : 'items-start'
                     } max-w-[85%] sm:max-w-[75%]`}
                   >
-                    {/* Message Bubble */}
+                    {/* Message Bubble with rounded grouping */}
                     <div
-                      className={`group relative w-full rounded-2xl px-4 py-2.5 shadow-xs transition-all ${
+                      className={`group relative w-full ${bubbleCorners} px-4 py-2.5 shadow-xs transition-all ${
                         isSelf
-                          ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white rounded-br-xs shadow-md shadow-purple-500/15'
-                          : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
+                          ? 'bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-600 text-white shadow-md shadow-purple-500/15'
+                          : 'bg-white dark:bg-card text-card-foreground border border-border/80'
                       }`}
                     >
                       {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
@@ -599,12 +687,62 @@ export default function MessageList({
                   </div>
                 </div>
               );
-          })}
-        </>
-      )}
+            })}
+          </>
+        )}
 
-      <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} />
       </div>
+
+      {/* Floating Profile Action Menu on Avatar Click */}
+      {profilePopup && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: 'fixed',
+            left: `${profilePopup.x}px`,
+            top: `${profilePopup.y}px`,
+          }}
+          className="z-50 w-56 rounded-2xl bg-white dark:bg-[#1C1C1F] border border-slate-200 dark:border-zinc-800 shadow-2xl shadow-black/30 p-2 space-y-1 animate-in fade-in zoom-in-95 duration-150 select-none text-slate-800 dark:text-zinc-100"
+        >
+          {/* Header Info */}
+          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-zinc-900/80 border border-slate-100 dark:border-zinc-800/60 mb-1">
+            <div
+              className={`h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs shrink-0 shadow-xs ring-2 ring-white dark:ring-zinc-800 ${profilePopup.avatarColor}`}
+            >
+              {profilePopup.initial}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h4 className="font-bold text-xs sm:text-sm truncate leading-tight">
+                {profilePopup.name}
+              </h4>
+              <p className="text-[11px] text-slate-500 dark:text-zinc-400 truncate font-medium">
+                {profilePopup.phone || 'Teammate'}
+              </p>
+            </div>
+          </div>
+
+          {/* Action: Send Direct Message */}
+          <button
+            type="button"
+            onClick={() => handleStartDirectChat(profilePopup.id)}
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-colors cursor-pointer text-left"
+          >
+            <MessageSquare className="h-4 w-4 shrink-0" />
+            <span>Send direct message</span>
+          </button>
+
+          {/* Action: Copy Details */}
+          <button
+            type="button"
+            onClick={() => handleCopyProfile(profilePopup.name, profilePopup.phone)}
+            className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-left"
+          >
+            <Copy className="h-4 w-4 text-slate-400 shrink-0" />
+            <span>Copy profile info</span>
+          </button>
+        </div>
+      )}
 
       {/* Floating "↓ New message" Pill Button */}
       {showScrollDownPill && (

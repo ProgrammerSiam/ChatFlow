@@ -232,13 +232,17 @@ export default function GifPickerPopover({
     if (!isOpen) return;
     const query = searchQuery.trim();
     if (!query) {
-      setOnlineGifs([]);
-      setIsLoadingOnline(false);
-      return;
+      const resetTimer = setTimeout(() => {
+        setOnlineGifs([]);
+        setIsLoadingOnline(false);
+      }, 0);
+      return () => clearTimeout(resetTimer);
     }
 
     let isMounted = true;
-    setIsLoadingOnline(true);
+    const loadTimer = setTimeout(() => {
+      setIsLoadingOnline(true);
+    }, 0);
 
     const timer = setTimeout(async () => {
       try {
@@ -272,6 +276,7 @@ export default function GifPickerPopover({
 
     return () => {
       isMounted = false;
+      clearTimeout(loadTimer);
       clearTimeout(timer);
     };
   }, [searchQuery, isOpen]);
