@@ -11,7 +11,14 @@ export default function TestimonialsSection() {
         <SectionHeader
           badge="Testimonial"
           badgeIcon={<MessageSquareQuote className="size-3 text-purple-600 dark:text-purple-400" />}
-          title="Trusted by creators, founders & teams"
+          title={
+            <>
+              Trusted by{' '}
+              <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight">
+                Creators & Teams
+              </span>
+            </>
+          }
           description="See how fast-moving teams use ChatFlow to synchronize communications, scale channels, and build collaborative workflows."
         />
 

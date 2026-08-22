@@ -24,9 +24,12 @@ export default function AiModelsPricingSection() {
 
             <h2
               id="unlock-models-heading"
-              className="text-slate-900 dark:text-white text-3xl sm:text-4xl md:text-[42px] font-medium tracking-[-1px] leading-[1.15]"
+              className="text-slate-900 dark:text-white text-2xl sm:text-3xl md:text-4xl font-medium tracking-[-1px] leading-[1.15] max-w-3xl mx-auto"
             >
-              All the Top AI Models, One Subscription - Save 90%
+              All Top AI Models in One{' '}
+              <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight">
+                Workspace
+              </span>
             </h2>
 
             <p className="text-slate-500 dark:text-slate-400 max-w-xl text-sm sm:text-base leading-relaxed">

@@ -19,7 +19,10 @@ export default function CallToActionSection() {
           {/* Heading & Subtitle */}
           <div className="space-y-4">
             <h2 className="text-slate-900 dark:text-white text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] font-medium tracking-[-0.02em] text-balance whitespace-pre-wrap">
-              Work Smarter With Real-Time ChatFlow
+              Work Smarter With{' '}
+              <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight">
+                Real-Time ChatFlow
+              </span>
             </h2>
             <p className="text-slate-500 dark:text-slate-400 mx-auto max-w-xl text-sm sm:text-base leading-[1.6] text-pretty">
               Instant Socket.io synchronization, TanStack Query client caching, and role-gated group workspaces built for high-velocity teams and creators.

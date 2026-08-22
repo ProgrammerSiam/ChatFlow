@@ -63,7 +63,14 @@ export default function FaqSection() {
         <SectionHeader
           badge="FAQ"
           badgeIcon={<HelpCircle className="size-3 text-purple-600 dark:text-purple-400" />}
-          title="Frequently Asked Questions"
+          title={
+            <>
+              Frequently Asked{' '}
+              <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight">
+                Questions
+              </span>
+            </>
+          }
           description="Everything you need to know about ChatFlow, from real-time WebSockets and state architecture to collaboration and security."
         />
 

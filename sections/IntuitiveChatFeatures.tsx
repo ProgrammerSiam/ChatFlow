@@ -120,7 +120,14 @@ export default function IntuitiveChatFeatures() {
         <SectionHeader
           badge="Features"
           badgeIcon={<Sparkles className="size-3 text-purple-600 dark:text-purple-400" />}
-          title="Powerful Features for Teams and Creators"
+          title={
+            <>
+              Powerful Features for{' '}
+              <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight">
+                Teams and Creators
+              </span>
+            </>
+          }
           description="The all-in-one communication platform for work, study, research, and creation. Access multiple channels, collaborate in real time, and share instantly — at no extra cost."
         />
 

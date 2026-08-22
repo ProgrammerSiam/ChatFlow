@@ -18,7 +18,14 @@ export default function HowItWorksSection() {
         <SectionHeader
           badge="How it works"
           badgeIcon={<Layers className="size-3 text-purple-600 dark:text-purple-400" />}
-          title="How ChatFlow Works"
+          title={
+            <>
+              How{' '}
+              <span className="inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-xl bg-gradient-to-r from-[#8E7CFF] to-[#725CFF] text-white shadow-xs align-middle leading-tight">
+                ChatFlow Works
+              </span>
+            </>
+          }
           description="From idea to result in seconds — choose direct or group channels, ask or upload anything, and collaborate with your team in a private, secure Workspace."
         />
 
