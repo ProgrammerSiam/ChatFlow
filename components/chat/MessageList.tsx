@@ -87,11 +87,23 @@ export default function MessageList({
   const prevMessagesCountRef = useRef(messages.length);
   const prevScrollHeightRef = useRef<number>(0);
 
-  const handleCopyMessage = (id: string, text: string, e: React.MouseEvent) => {
+  const handleCopyLink = (id: string, text: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(text);
+    const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
+    const match = text.match(urlRegex);
+    let targetCopy = text;
+    if (match) {
+      let url = match[0];
+      const matchTrailing = url.match(/[.,!?;:]+$/);
+      if (matchTrailing) {
+        url = url.slice(0, -matchTrailing[0].length);
+      }
+      targetCopy = url.startsWith('www.') ? `https://${url}` : url;
+    }
+
+    navigator.clipboard.writeText(targetCopy);
     setCopiedId(id);
-    toast.success('Message copied to clipboard');
+    toast.success('Link copied to clipboard');
     setTimeout(() => {
       setCopiedId(null);
     }, 2000);
@@ -331,6 +343,9 @@ export default function MessageList({
               isSenderNameMatch ||
               isSenderPhoneMatch;
 
+            const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
+            const hasLink = urlRegex.test(message.text);
+
             return (
               <div
                 key={message._id || message.tempId}
@@ -351,32 +366,38 @@ export default function MessageList({
                       : 'bg-white dark:bg-card text-card-foreground border border-border/80 rounded-bl-xs'
                   }`}
                 >
-                  {/* Copy Button Quick Action on Hover */}
-                  <button
-                    type="button"
-                    onClick={(e) =>
-                      handleCopyMessage(
-                        message._id || message.tempId || '',
-                        message.text,
-                        e
-                      )
-                    }
-                    className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
-                      isSelf
-                        ? 'hover:bg-white/20 text-white/70 hover:text-white bg-black/10'
-                        : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
-                    }`}
-                    title="Copy message text"
-                  >
-                    {copiedId === (message._id || message.tempId) ? (
-                      <Check className="h-3 w-3 text-emerald-300" />
-                    ) : (
-                      <Copy className="h-3 w-3" />
-                    )}
-                  </button>
+                  {/* Copy Link Button - ONLY shown on hover for messages containing a link */}
+                  {hasLink && (
+                    <button
+                      type="button"
+                      onClick={(e) =>
+                        handleCopyLink(
+                          message._id || message.tempId || '',
+                          message.text,
+                          e
+                        )
+                      }
+                      className={`absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-all p-1 rounded-lg cursor-pointer ${
+                        isSelf
+                          ? 'hover:bg-white/20 text-white/80 hover:text-white bg-black/10'
+                          : 'hover:bg-slate-100 dark:hover:bg-muted text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 bg-white/80 dark:bg-card/80 border border-slate-200/50 dark:border-border/50 shadow-2xs'
+                      }`}
+                      title="Copy link"
+                    >
+                      {copiedId === (message._id || message.tempId) ? (
+                        <Check className="h-3 w-3 text-emerald-300" />
+                      ) : (
+                        <Copy className="h-3 w-3" />
+                      )}
+                    </button>
+                  )}
 
                   {/* Message Text with URL linkifier */}
-                  <div className="whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text pr-4">
+                  <div
+                    className={`whitespace-pre-wrap break-words leading-relaxed text-sm sm:text-[15px] font-medium select-text cursor-text ${
+                      hasLink ? 'pr-4' : 'pr-0'
+                    }`}
+                  >
                     {renderMessageContent(message.text, isSelf)}
                   </div>
 
