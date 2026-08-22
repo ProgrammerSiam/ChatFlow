@@ -5,12 +5,14 @@ import React from 'react';
 interface BadgePillProps {
   label: string;
   showAvatars?: boolean;
+  icon?: React.ReactNode;
   className?: string;
 }
 
 export default function BadgePill({
   label,
   showAvatars = false,
+  icon,
   className = '',
 }: BadgePillProps) {
   const gradientId0 = React.useId().replace(/:/g, '_');
@@ -20,8 +22,12 @@ export default function BadgePill({
     <div
       className={`border-slate-200/80 dark:border-border/60 bg-white dark:bg-card relative z-10 inline-flex items-center gap-2.5 overflow-hidden rounded-lg border-[0.5px] p-1 pe-3.5 shadow-2xs ${className}`}
     >
-      {/* Overlapping Avatars or Mini Lightning Icon */}
-      {showAvatars ? (
+      {/* Custom Icon, Overlapping Avatars, or Default Gradient Lightning */}
+      {icon ? (
+        <div className="border-slate-100 dark:border-border bg-white/80 dark:bg-card/80 flex size-5.5 items-center justify-center rounded-md border-[0.5px]">
+          {icon}
+        </div>
+      ) : showAvatars ? (
         <div className="flex -space-x-1.5 items-center pl-0.5">
           <img
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"

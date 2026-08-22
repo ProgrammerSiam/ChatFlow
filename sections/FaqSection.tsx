@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import SectionHeader from '@/shared/SectionHeader';
+import { HelpCircle } from 'lucide-react';
 
 interface FaqItem {
   id: string;
@@ -26,31 +27,25 @@ const FAQS: FaqItem[] = [
     id: 'what-is-optimistic',
     question: 'What makes optimistic message delivery zero-latency?',
     answer:
-      "When you send a message, it is instantly appended to the UI in <1ms with a 'sending' status while POST /messages runs in the background. On success, it seamlessly switches to 'sent' and replaces the temporary ID. If the network drops, it marks as 'failed' with a one-tap retry button.",
+      'ChatFlow is a modern, high-performance real-time communication platform designed for teams and creators. It delivers zero-latency bi-directional messaging, intelligent caching, group workspace administration, and rich media tools in a unified ecosystem.',
   },
   {
-    id: 'group-collaboration',
-    question: 'How do team collaboration and group admin roles work?',
+    id: 'how-fast-is-messaging',
+    question: 'How fast is message delivery on ChatFlow?',
     answer:
-      'ChatFlow includes built-in team collaboration at no extra cost. When creating a group, creators automatically become admins with the ability to rename channels, add new members, remove participants, and promote other teammates to co-admins.',
+      'Messages are delivered near-instantly with 0ms optimistic UI dispatch and sub-millisecond WebSocket fan-out, backed by automatic reconnect gap-filling so you never miss a message.',
   },
   {
-    id: 'reverse-pagination',
-    question: 'How does reverse pagination and smart auto-scroll work?',
+    id: 'are-group-channels-supported',
+    question: 'Can I create and manage group channels?',
     answer:
-      'Chat history is fetched in 20-message chunks using GET /conversations/{id}/messages?limit=20&before=<cursor>. Older messages are prepended smoothly without jumping scroll height. If you scroll up to read history, incoming messages trigger a floating "↓ New message" badge without interrupting your reading position.',
+      'Yes! ChatFlow features full role-gated group administration. Admins can create channels, add/remove members, rename channels, and promote fellow teammates to admin with live sync.',
   },
   {
-    id: 'security-and-auth',
-    question: 'Is ChatFlow secure for teams and businesses?',
+    id: 'is-chatflow-secure',
+    question: 'How secure is my communication?',
     answer:
-      'Yes. ChatFlow uses stateless JWT Bearer token authentication verified on every REST request and WebSocket handshake. If a token expires, a centralized 401 interceptor cleanly purges all memory caches and redirects safely to login.',
-  },
-  {
-    id: 'free-access',
-    question: 'Can I start using ChatFlow for free?',
-    answer:
-      'Yes. ChatFlow offers instant auto-registration. Simply enter your phone number and name to begin chatting immediately with teammates with zero password hassle or verification delays.',
+      'All WebSocket connections and REST endpoints require secure JWT authentication. Data is transmitted exclusively over encrypted TLS connections with strict role-based access control.',
   },
 ];
 
@@ -67,6 +62,7 @@ export default function FaqSection() {
         {/* Reusable Section Header */}
         <SectionHeader
           badge="FAQ"
+          badgeIcon={<HelpCircle className="size-3 text-purple-600 dark:text-purple-400" />}
           title="Frequently Asked Questions"
           description="Everything you need to know about ChatFlow, from real-time WebSockets and state architecture to collaboration and security."
         />

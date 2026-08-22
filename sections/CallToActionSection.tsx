@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useAuthStore } from '@/store/useAuthStore';
 import BadgePill from '@/shared/BadgePill';
+import { Sparkles } from 'lucide-react';
 
 export default function CallToActionSection() {
   const { isAuthenticated } = useAuthStore();
@@ -13,7 +14,7 @@ export default function CallToActionSection() {
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 text-center sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-5">
           {/* Top Tag Pill */}
-          <BadgePill label="Ready to Explore?" />
+          <BadgePill icon={<Sparkles className="size-3 text-purple-600 dark:text-purple-400" />} label="Ready to Explore?" />
 
           {/* Heading & Subtitle */}
           <div className="space-y-4">

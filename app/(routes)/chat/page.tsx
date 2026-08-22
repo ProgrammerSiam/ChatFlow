@@ -97,7 +97,7 @@ export default function ChatIndexPage() {
               type="text"
               readOnly
               onClick={() => setNewChatOpen(true)}
-              placeholder="Search teammates..."
+              placeholder="Global search..."
               className="w-full h-9.5 rounded-2xl border border-slate-200/90 dark:border-border/80 bg-slate-50/80 hover:bg-white dark:bg-muted/40 dark:hover:bg-muted/70 pl-9.5 pr-14 text-xs sm:text-[13px] text-slate-900 dark:text-white placeholder:text-slate-400 group-hover:border-purple-300 dark:group-hover:border-purple-700/60 group-hover:shadow-xs cursor-pointer transition-all focus:outline-none"
             />
             <div className="absolute right-2.5 flex items-center pointer-events-none">
@@ -140,7 +140,11 @@ export default function ChatIndexPage() {
 
             {/* Main Pillar Badge with Dynamic Time Greeting & User Name */}
             <div className="space-y-3 flex flex-col items-center">
-              <BadgePill label={`${greeting.text}, ${displayName}!`} className="shadow-2xs" />
+              <BadgePill
+                icon={<GreetingIcon className="size-3.5 text-amber-500 dark:text-amber-400" />}
+                label={`${greeting.text}, ${displayName}!`}
+                className="shadow-2xs"
+              />
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white pt-0.5">
                 Your Real-Time Workspace
               </h1>

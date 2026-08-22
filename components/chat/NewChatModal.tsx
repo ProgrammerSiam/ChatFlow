@@ -2,12 +2,24 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, UserPlus, Users, X, Loader2, User as UserIcon, MessageSquare, ArrowRight, CheckCircle2 } from 'lucide-react';
+import {
+  Search,
+  UserPlus,
+  Users,
+  X,
+  Loader2,
+  User as UserIcon,
+  MessageSquare,
+  ArrowRight,
+  CheckCircle2,
+  Sparkles,
+  Hash,
+} from 'lucide-react';
 import { useChatUIStore } from '@/store/useChatUIStore';
 import { useConversations } from '@/hooks/useConversations';
 import { useUserSearch } from '@/hooks/useUserSearch';
 import { toast } from 'sonner';
-import { SearchUser } from '@/types';
+import { SearchUser, Conversation } from '@/types';
 import { triggerCelebration } from '@/lib/confetti';
 
 export default function NewChatModal() {
@@ -16,7 +28,7 @@ export default function NewChatModal() {
   const { conversations, createDirectConversation } = useConversations();
   const { query, setQuery, users, isLoading, error } = useUserSearch();
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [filterMode, setFilterMode] = useState<'all' | 'new_only'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'users' | 'groups'>('all');
 
   // Close on Escape key
   useEffect(() => {
@@ -49,17 +61,21 @@ export default function NewChatModal() {
     );
   };
 
-  // Filtered users list based on active filter
-  const displayedUsers = useMemo(() => {
-    if (filterMode === 'new_only') {
-      return users.filter((u) => !getExistingConversation(u._id));
+  // Matching group channels based on search query
+  const matchingGroups = useMemo(() => {
+    if (!query.trim()) {
+      return conversations.filter((c) => c.type === 'group');
     }
-    return users;
-  }, [users, conversations, filterMode]);
+    const cleanQ = query.toLowerCase().trim();
+    return conversations.filter(
+      (c) => c.type === 'group' && c.name?.toLowerCase().includes(cleanQ)
+    );
+  }, [conversations, query]);
 
-  const newUsersCount = useMemo(() => {
-    return users.filter((u) => !getExistingConversation(u._id)).length;
-  }, [users, conversations]);
+  // Filtered users list
+  const filteredUsers = useMemo(() => {
+    return users;
+  }, [users]);
 
   if (!isNewChatOpen) return null;
 
@@ -91,6 +107,14 @@ export default function NewChatModal() {
     }
   };
 
+  const handleSelectGroup = (group: Conversation) => {
+    setNewChatOpen(false);
+    setActiveConversationId(group._id);
+    router.push(`/chat/${group._id}`);
+  };
+
+  const totalResults = (activeTab === 'groups' ? 0 : filteredUsers.length) + (activeTab === 'users' ? 0 : matchingGroups.length);
+
   return (
     <div
       onClick={() => setNewChatOpen(false)}
@@ -98,20 +122,19 @@ export default function NewChatModal() {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
+        className="w-full max-w-lg rounded-[28px] border border-slate-200/80 dark:border-border/80 bg-white dark:bg-card p-6 sm:p-7 shadow-2xl text-card-foreground"
       >
-        
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-border/60">
           <div className="flex items-center gap-3">
-            <div className="flex h-9.5 w-9.5 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-100 to-indigo-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 font-bold shadow-2xs">
-              <UserPlus className="h-5 w-5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-100 via-indigo-100 to-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 font-bold shadow-2xs">
+              <Search className="h-5 w-5" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white">
-                New Direct Message
+                Global Search
               </h2>
-              <p className="text-xs text-slate-400">Search and chat with any registered user</p>
+              <p className="text-xs text-slate-400">Search teammates, phone numbers, and group channels</p>
             </div>
           </div>
           <button
@@ -124,57 +147,74 @@ export default function NewChatModal() {
 
         {/* Search Input */}
         <div className="mt-5 space-y-1.5">
-          <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Search Teammate
-          </label>
           <div className="relative flex items-center">
             <Search className="absolute left-3.5 h-4.5 w-4.5 text-slate-400 pointer-events-none" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by name or phone number..."
+              placeholder="Search teammates by name or phone, or find channels..."
               autoFocus
-              className="w-full h-12 rounded-xl border border-slate-200 dark:border-border bg-slate-50/60 dark:bg-muted/40 pl-10.5 pr-4 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white dark:focus:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-purple-400/40 focus:border-purple-400 shadow-2xs transition-all"
+              className="w-full h-12 rounded-xl border border-slate-200 dark:border-border bg-slate-50/60 dark:bg-muted/40 pl-10.5 pr-10 text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400 focus:bg-white dark:focus:bg-muted/80 focus:outline-none focus:ring-2 focus:ring-purple-400/40 focus:border-purple-400 shadow-2xs transition-all font-sans"
             />
+            {query && (
+              <button
+                onClick={() => setQuery('')}
+                className="absolute right-3 p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Filter Tabs: All vs New Contacts Only */}
-        {!isLoading && users.length > 0 && (
-          <div className="flex items-center gap-2 mt-3 pt-1">
+        {/* Filter Tabs: All vs Teammates vs Channels */}
+        <div className="flex items-center gap-2 mt-3 pt-1">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'all'
+                ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
+            }`}
+          >
+            <span>All Results</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'users'
+                ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
+                : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
+            }`}
+          >
+            <UserIcon className="h-3 w-3" />
+            <span>Teammates ({filteredUsers.length})</span>
+          </button>
+
+          {matchingGroups.length > 0 && (
             <button
-              onClick={() => setFilterMode('all')}
+              onClick={() => setActiveTab('groups')}
               className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                filterMode === 'all'
+                activeTab === 'groups'
                   ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
                   : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
               }`}
             >
               <Users className="h-3 w-3" />
-              <span>All Users ({users.length})</span>
+              <span>Channels ({matchingGroups.length})</span>
             </button>
-            <button
-              onClick={() => setFilterMode('new_only')}
-              className={`px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                filterMode === 'new_only'
-                  ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950 border border-slate-900 dark:border-white shadow-2xs'
-                  : 'bg-slate-100/70 text-slate-600 hover:bg-slate-200/70 dark:bg-muted/40 dark:text-slate-400'
-              }`}
-            >
-              <UserPlus className="h-3 w-3" />
-              <span>New Contacts Only ({newUsersCount})</span>
-            </button>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Results List with Top & Bottom Shadow Fades */}
         <div className="relative mt-3">
           {/* Top Shadow Vignette */}
           <div className="pointer-events-none absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-white dark:from-card to-transparent z-10 rounded-t-2xl" />
 
-          {/* Scrollable User List */}
-          <div className="max-h-60 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2 py-1 pb-3 pr-0.5">
+          {/* Scrollable Results List */}
+          <div className="max-h-72 overflow-y-auto overflow-x-hidden no-scrollbar space-y-2 py-1 pb-3 pr-0.5">
             {isLoading ? (
               <div className="space-y-2 py-1 animate-pulse">
                 {[1, 2, 3].map((i) => (
@@ -195,99 +235,141 @@ export default function NewChatModal() {
               </div>
             ) : error ? (
               <div className="py-8 text-center text-xs text-rose-500">
-                Failed to search users. Please try again.
+                Failed to search. Please try again.
               </div>
-            ) : displayedUsers.length === 0 ? (
+            ) : totalResults === 0 ? (
               <div className="py-8 text-center text-slate-400 space-y-1 border border-slate-200/60 rounded-2xl bg-slate-50/40 p-4">
-                <UserIcon className="h-7 w-7 mx-auto opacity-30" />
+                <Search className="h-7 w-7 mx-auto opacity-30" />
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                  {filterMode === 'new_only'
-                    ? 'No new contacts found'
-                    : query
-                    ? 'No matching users found'
-                    : 'No registered users found'}
+                  {query ? 'No matching results found' : 'No registered teammates found'}
                 </p>
                 <p className="text-xs text-slate-400">
-                  {filterMode === 'new_only'
-                    ? 'You have already messaged all available contacts.'
-                    : query
-                    ? 'Check spelling and try again'
-                    : 'Invite teammates to join ChatFlow'}
+                  {query ? 'Try searching by phone number or different name' : 'Invite teammates to join ChatFlow'}
                 </p>
               </div>
             ) : (
-              displayedUsers.map((targetUser) => {
-                const isStarting = selectedUserId === targetUser._id;
-                const existingConv = getExistingConversation(targetUser._id);
-                const isAlreadyMessaged = !!existingConv;
-
-                return (
-                  <button
-                    key={targetUser._id}
-                    disabled={isStarting}
-                    onClick={() => handleSelectUser(targetUser)}
-                    className="w-full flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-xs transition-all text-left cursor-pointer group disabled:opacity-50"
-                  >
-                    <div className="flex items-center gap-3 min-w-0 pr-2">
-                      <div className="relative shrink-0">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-bold text-xs shadow-2xs group-hover:scale-105 transition-transform">
-                          {targetUser.name.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
-                      </div>
-                      <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white truncate">
-                              {targetUser.name}
-                            </p>
-                            {isAlreadyMessaged ? (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 border border-purple-100 dark:border-purple-900/40 px-1.5 py-0.2 rounded-md shrink-0">
-                                <CheckCircle2 className="h-2.5 w-2.5 text-purple-600 dark:text-purple-400" />
-                                <span>Direct Contact</span>
-                              </span>
-                            ) : getSharedGroups(targetUser._id).length > 0 ? (
-                              <span
-                                title={`In group: ${getSharedGroups(targetUser._id).map((g) => g.name).join(', ')}`}
-                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/40 px-1.5 py-0.2 rounded-md shrink-0 max-w-[150px]"
-                              >
-                                <Users className="h-2.5 w-2.5 text-blue-600 dark:text-blue-400 shrink-0" />
-                                <span className="truncate">
-                                  {getSharedGroups(targetUser._id).length === 1
-                                    ? getSharedGroups(targetUser._id)[0].name
-                                    : `${getSharedGroups(targetUser._id)[0].name} (+${getSharedGroups(targetUser._id).length - 1})`}
-                                </span>
-                              </span>
-                            ) : null}
+              <>
+                {/* 1. Group Channels Section */}
+                {(activeTab === 'all' || activeTab === 'groups') && matchingGroups.length > 0 && (
+                  <div className="space-y-1.5 mb-2">
+                    <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2 pt-1">
+                      Group Channels ({matchingGroups.length})
+                    </p>
+                    {matchingGroups.map((group) => (
+                      <button
+                        key={group._id}
+                        onClick={() => handleSelectGroup(group)}
+                        className="w-full flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-xs transition-all text-left cursor-pointer group"
+                      >
+                        <div className="flex items-center gap-3 min-w-0 pr-2">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold shrink-0 border border-indigo-100 dark:border-indigo-900/40 shadow-2xs group-hover:scale-105 transition-transform">
+                            <Users className="h-5 w-5" />
                           </div>
-                        <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
-                          {targetUser.phone}
-                        </p>
-                      </div>
-                    </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white truncate">
+                                {group.name}
+                              </p>
+                              <span className="text-[10px] font-medium text-slate-500 bg-slate-100 dark:bg-muted px-1.5 py-0.5 rounded-md shrink-0">
+                                {group.participants?.length || 0} members
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-0.5 truncate">
+                              {group.lastMessage?.text || 'Team Channel'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 px-3 py-1 rounded-xl bg-slate-100 dark:bg-muted text-slate-700 dark:text-slate-300 text-xs font-semibold group-hover:bg-slate-950 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950 transition-colors shrink-0">
+                          <span>Open</span>
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
 
-                    {isStarting ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-slate-900 dark:text-white shrink-0" />
-                    ) : isAlreadyMessaged ? (
-                      <div className="flex items-center gap-1 px-3 py-1 rounded-xl bg-slate-100 dark:bg-muted text-slate-700 dark:text-slate-300 text-xs font-semibold group-hover:bg-slate-950 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950 transition-colors shrink-0">
-                        <span>Open</span>
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 text-xs font-semibold shadow-2xs transition-colors shrink-0">
-                        <MessageSquare className="h-3.5 w-3.5" />
-                        <span>Chat</span>
-                      </div>
+                {/* 2. Teammates Section */}
+                {(activeTab === 'all' || activeTab === 'users') && filteredUsers.length > 0 && (
+                  <div className="space-y-1.5">
+                    {matchingGroups.length > 0 && activeTab === 'all' && (
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2 pt-1">
+                        Teammates ({filteredUsers.length})
+                      </p>
                     )}
-                  </button>
-                );
-              })
+                    {filteredUsers.map((targetUser) => {
+                      const isStarting = selectedUserId === targetUser._id;
+                      const existingConv = getExistingConversation(targetUser._id);
+                      const isAlreadyMessaged = !!existingConv;
+
+                      return (
+                        <button
+                          key={targetUser._id}
+                          disabled={isStarting}
+                          onClick={() => handleSelectUser(targetUser)}
+                          className="w-full flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-card border border-slate-200/70 dark:border-border/60 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-xs transition-all text-left cursor-pointer group disabled:opacity-50"
+                        >
+                          <div className="flex items-center gap-3 min-w-0 pr-2">
+                            <div className="relative shrink-0">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-[#8E7CFF] via-[#A293FF] to-[#D5CCFF] text-white font-bold text-xs shadow-2xs group-hover:scale-105 transition-transform">
+                                {targetUser.name.charAt(0).toUpperCase()}
+                              </div>
+                              <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-card" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2">
+                                <p className="font-semibold text-sm leading-tight text-slate-900 dark:text-white truncate">
+                                  {targetUser.name}
+                                </p>
+                                {isAlreadyMessaged ? (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/60 border border-purple-100 dark:border-purple-900/40 px-1.5 py-0.2 rounded-md shrink-0">
+                                    <CheckCircle2 className="h-2.5 w-2.5 text-purple-600 dark:text-purple-400" />
+                                    <span>Direct Chat</span>
+                                  </span>
+                                ) : getSharedGroups(targetUser._id).length > 0 ? (
+                                  <span
+                                    title={`In group: ${getSharedGroups(targetUser._id).map((g) => g.name).join(', ')}`}
+                                    className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/40 px-1.5 py-0.2 rounded-md shrink-0 max-w-[150px]"
+                                  >
+                                    <Users className="h-2.5 w-2.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                                    <span className="truncate">
+                                      {getSharedGroups(targetUser._id).length === 1
+                                        ? getSharedGroups(targetUser._id)[0].name
+                                        : `${getSharedGroups(targetUser._id)[0].name} (+${getSharedGroups(targetUser._id).length - 1})`}
+                                    </span>
+                                  </span>
+                                ) : null}
+                              </div>
+                              <p className="text-xs text-slate-400 font-mono mt-0.5 truncate">
+                                {targetUser.phone}
+                              </p>
+                            </div>
+                          </div>
+
+                          {isStarting ? (
+                            <Loader2 className="h-4 w-4 animate-spin text-slate-900 dark:text-white shrink-0" />
+                          ) : isAlreadyMessaged ? (
+                            <div className="flex items-center gap-1 px-3 py-1 rounded-xl bg-slate-100 dark:bg-muted text-slate-700 dark:text-slate-300 text-xs font-semibold group-hover:bg-slate-950 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-950 transition-colors shrink-0">
+                              <span>Open</span>
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-950 text-white dark:bg-white dark:text-slate-950 text-xs font-semibold shadow-2xs transition-colors shrink-0">
+                              <MessageSquare className="h-3.5 w-3.5" />
+                              <span>Chat</span>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
             )}
           </div>
 
           {/* Bottom Shadow Vignette */}
           <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-5 bg-gradient-to-t from-white dark:from-card to-transparent z-10 rounded-b-2xl" />
         </div>
-
       </div>
     </div>
   );

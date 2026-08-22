@@ -2,7 +2,7 @@
 
 import React from 'react';
 import SectionHeader from '@/shared/SectionHeader';
-import { Paperclip, Image, FileText, Send, Sparkles, ChevronDown } from 'lucide-react';
+import { Paperclip, Image, FileText, Send, Sparkles, ChevronDown, Layers } from 'lucide-react';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span className="font-medium text-slate-900 dark:text-white underline decoration-purple-400/60 dark:decoration-purple-400/80 decoration-[1.5px] underline-offset-4 transition-colors">
@@ -17,6 +17,7 @@ export default function HowItWorksSection() {
         {/* Reusable Section Header */}
         <SectionHeader
           badge="How it works"
+          badgeIcon={<Layers className="size-3 text-purple-600 dark:text-purple-400" />}
           title="How ChatFlow Works"
           description="From idea to result in seconds — choose direct or group channels, ask or upload anything, and collaborate with your team in a private, secure Workspace."
         />

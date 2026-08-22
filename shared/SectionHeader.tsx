@@ -5,6 +5,7 @@ import BadgePill from '@/shared/BadgePill';
 
 interface SectionHeaderProps {
   badge?: string;
+  badgeIcon?: React.ReactNode;
   title: React.ReactNode;
   description?: React.ReactNode;
   align?: 'center' | 'left';
@@ -13,6 +14,7 @@ interface SectionHeaderProps {
 
 export default function SectionHeader({
   badge,
+  badgeIcon,
   title,
   description,
   align = 'center',
@@ -29,7 +31,7 @@ export default function SectionHeader({
       } ${className}`}
     >
       {/* Reusable Glowing Pill Badge (Matches User Exact Code) */}
-      {badge && <BadgePill label={badge} />}
+      {badge && <BadgePill icon={badgeIcon} label={badge} />}
 
       {/* Main Section Headline */}
       <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-medium tracking-[-1.5px] text-foreground leading-[1.15]">

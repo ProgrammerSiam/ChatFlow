@@ -324,7 +324,7 @@ export default function LiveDemoSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (Reduced, punchy, compact) */}
             <div className="lg:col-span-5 xl:col-span-4 flex flex-col items-start text-left space-y-5">
-              <BadgePill label="Direct Messaging" />
+              <BadgePill icon={<Zap className="size-3 text-purple-600 dark:text-purple-400" />} label="Direct Messaging" />
 
               <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-1.5px] text-slate-900 dark:text-white leading-[1.2]">
                 Direct chats with <br />
@@ -540,7 +540,7 @@ export default function LiveDemoSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (Order-2 on desktop, reduced & compact) */}
             <div className="lg:col-span-5 xl:col-span-4 lg:order-2 flex flex-col items-start text-left space-y-5">
-              <BadgePill label="Team Channels" />
+              <BadgePill icon={<Users className="size-3 text-purple-600 dark:text-purple-400" />} label="Team Channels" />
 
               <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-1.5px] text-slate-900 dark:text-white leading-[1.2]">
                 Team channels with <br />
@@ -746,7 +746,7 @@ export default function LiveDemoSection() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (Reduced & compact) */}
             <div className="lg:col-span-5 xl:col-span-4 flex flex-col items-start text-left space-y-5">
-              <BadgePill label="Expressive Chat" />
+              <BadgePill icon={<PartyPopper className="size-3 text-purple-600 dark:text-purple-400" />} label="Expressive Chat" />
 
               <h2 className="text-3xl sm:text-4xl font-semibold tracking-[-1.5px] text-slate-900 dark:text-white leading-[1.2]">
                 Express ideas with <br />

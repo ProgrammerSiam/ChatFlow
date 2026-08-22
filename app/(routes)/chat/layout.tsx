@@ -8,11 +8,13 @@ import Sidebar from '@/components/chat/Sidebar';
 import NewChatModal from '@/components/chat/NewChatModal';
 import NewGroupModal from '@/components/chat/NewGroupModal';
 import UserProfileModal from '@/components/chat/UserProfileModal';
+import { useChatUIStore } from '@/store/useChatUIStore';
 
 export default function ChatLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, isLoading } = useAuthStore();
+  const { setNewChatOpen } = useChatUIStore();
 
   // Initialize socket lifecycle
   useSocket();
@@ -22,6 +24,18 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
       router.push('/login');
     }
   }, [isAuthenticated, isLoading, router]);
+
+  // Global Command+K / Ctrl+K keyboard shortcut for Global Search
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setNewChatOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, [setNewChatOpen]);
 
   // Layout-based Skeleton Loading (Exact layout and element anatomy)
   if (isLoading) {

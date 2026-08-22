@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import BadgePill from '@/shared/BadgePill';
+import { Bot } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function AiModelsPricingSection() {
@@ -19,7 +20,7 @@ export default function AiModelsPricingSection() {
         <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 dark:border-zinc-800/80 bg-slate-50/70 dark:bg-zinc-950/60 p-6 sm:p-12 lg:p-16 backdrop-blur-xl shadow-xl">
           {/* Top Pill & Headline */}
           <div className="relative z-10 mx-auto mb-10 flex max-w-2xl flex-col items-center gap-4 text-center sm:mb-14">
-            <BadgePill label="Frontier AI Ecosystem" />
+            <BadgePill icon={<Bot className="size-3 text-purple-600 dark:text-purple-400" />} label="Frontier AI Ecosystem" />
 
             <h2
               id="unlock-models-heading"

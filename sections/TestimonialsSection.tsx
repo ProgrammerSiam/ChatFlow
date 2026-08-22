@@ -1,6 +1,7 @@
 'use client';
 
 import SectionHeader from '@/shared/SectionHeader';
+import { MessageSquareQuote } from 'lucide-react';
 
 export default function TestimonialsSection() {
   return (
@@ -9,6 +10,7 @@ export default function TestimonialsSection() {
         {/* Reusable Section Header */}
         <SectionHeader
           badge="Testimonial"
+          badgeIcon={<MessageSquareQuote className="size-3 text-purple-600 dark:text-purple-400" />}
           title="Trusted by creators, founders & teams"
           description="See how fast-moving teams use ChatFlow to synchronize communications, scale channels, and build collaborative workflows."
         />
