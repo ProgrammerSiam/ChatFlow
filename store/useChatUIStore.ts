@@ -10,6 +10,7 @@ interface ChatUIState {
   activeConversationId: string | null;
   isSocketConnected: boolean;
   isReconnecting: boolean;
+  isSidebarCollapsed: boolean;
 
   setNewChatOpen: (open: boolean) => void;
   setNewGroupOpen: (open: boolean) => void;
@@ -18,6 +19,8 @@ interface ChatUIState {
   setActiveConversationId: (id: string | null) => void;
   setSocketConnected: (connected: boolean) => void;
   setReconnecting: (reconnecting: boolean) => void;
+  setSidebarCollapsed: (collapsed: boolean) => void;
+  toggleSidebarCollapsed: () => void;
 }
 
 export const useChatUIStore = create<ChatUIState>((set) => ({

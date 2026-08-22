@@ -284,9 +284,7 @@ export default function NewGroupModal() {
                 <div className="py-6 text-center text-slate-400 space-y-1 border border-slate-200/60 rounded-2xl bg-slate-50/40 p-4">
                   <UserIcon className="h-6 w-6 mx-auto opacity-30" />
                   <p className="text-xs">
-                    {filterMode === 'direct_only'
-                      ? 'No direct contacts found'
-                      : filterMode === 'shared_groups_only'
+                    {filterMode === 'shared_groups_only'
                       ? 'No teammates found in shared groups'
                       : filterMode === 'new_only'
                       ? 'No new contacts found'

@@ -312,10 +312,11 @@ export default function EmojiPickerPopover({
   // Focus search input when popover opens
   useEffect(() => {
     if (isOpen) {
-      setSearchQuery('');
-      setTimeout(() => {
+      const timer = setTimeout(() => {
+        setSearchQuery('');
         searchInputRef.current?.focus();
       }, 50);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
